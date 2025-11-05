@@ -28,6 +28,32 @@
   transform: rotate(360deg);
 }
 
+.icon img {
+  width: 32px;        /* Kích thước icon */
+  height: 32px;
+  object-fit: contain; /* Giữ tỉ lệ ảnh gốc */
+  border-radius: 8px;  /* Bo góc nhẹ nếu muốn */
+}
+
+.discord {
+  background: #5865F2; /* màu chính Discord */
+  background: linear-gradient(127deg, #5865F2 0%, #4752C4 100%);
+}
+
+.discord .icon img {
+  width: 40px;           /* Cỡ ngang bằng các icon FA */
+  height: 40px;
+  object-fit: contain;
+  margin: 5px 14px;     /* Căn giữa giống các icon khác */
+  border-radius: 8px;
+  transition: transform 0.5s ease;
+}
+
+.discord:hover .icon img {
+  transform: rotate(360deg) scale(1.1); /* Xoay + phóng nhẹ khi hover */
+}
+
+
 /* popup hiển thị ảnh */
 .popup {
   display: none;
@@ -159,19 +185,20 @@
 </div>
 </div>
 </div>
-<!-- zalo -->
-<div class='box zalo'>
-<div class='row'>
-<div class='col-2'>
-<div class='icon'>
-<div class='div-logo zalo-icon'></div>
-</div>
-</div>
-<div class='col-10' onclick='openlink("https://zalo.me/0962833514");'>
-<p class='detail'>Zalo Admin</p>
-<p class='linked'>Phùng Việt Đại</p>
-</div>
-</div>
+
+<!-- discord -->
+<div class='box discord'>
+  <div class='row'>
+    <div class='col-2'>
+      <div class='icon'>
+        <img src='https://files.catbox.moe/rrvsd1.png' alt='Discord Logo'>
+      </div>
+    </div>
+    <div class='col-10' onclick='openlink("https://discord.gg/XnBeuQrTFP");'>
+      <p class='detail'>Discord Sever</p>
+      <p class='linked'>Gà Con MC</p>
+    </div>
+  </div>
 </div>
 
 <!-- Luật Sever -->
