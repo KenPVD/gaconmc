@@ -82,6 +82,14 @@
   to { transform: scale(1); opacity: 1; }
 }
 
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+.video-small {
+    pointer-events: auto; /* cho phép bấm để mở popup */
+}
+
 /* Chèn CSS vào đây */
 /*------------------------------------------------*/
 /* Name: Template Giới Thiệu Bản Thân             */
@@ -217,9 +225,33 @@
   </div>
 </div>
 
-<!-- popup hiển thị ảnh luật -->
-<div id="popup" class="popup" onclick="closePopup()">
-  <img id="popup-img" src="" alt="popup">
+<div style="display: flex; justify-content: center; margin-top: 7px;">
+  <video 
+    class="video-small"
+    src="videoip.mp4"
+    autoplay
+    loop
+    muted
+    playsinline
+    onclick="openVideoPopup('videoip.mp4')"
+    style="
+      width: 85%;
+      max-width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      cursor: pointer;
+    "
+  ></video>
+</div>
+<div id="video-popup" 
+     class="popup" 
+     onclick="closeVideoPopup()"
+     style="display:none; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999;">
+     
+  <video id="popup-video" controls autoplay 
+         style="max-width:90%; max-height:90%; border-radius:15px;">
+  </video>
+
 </div>
 
 
@@ -289,6 +321,22 @@ document.addEventListener("click", function startMusic() {
   // Chỉ chạy một lần
   document.removeEventListener("click", startMusic);
 });
+</script>
+
+<script>
+function openVideoPopup(src) {
+  const vid = document.getElementById("popup-video");
+  vid.src = src;
+  document.getElementById("video-popup").style.display = "flex";
+  vid.play();
+}
+
+function closeVideoPopup() {
+  const vid = document.getElementById("popup-video");
+  vid.pause();
+  vid.currentTime = 0;
+  document.getElementById("video-popup").style.display = "none";
+}
 </script>
 
 <!-- Phát nhạc nền -->
