@@ -90,6 +90,17 @@ video::-webkit-media-controls {
     pointer-events: auto; /* cho phép bấm để mở popup */
 }
 
+.swal-html-custom {
+  font-family: "Roboto";
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.swal-title-custom {
+  font-family: "Lobster";
+  color: #ffffff;
+}
+
 /* Chèn CSS vào đây */
 /*------------------------------------------------*/
 /* Name: Template Giới Thiệu Bản Thân             */
@@ -211,22 +222,18 @@ video::-webkit-media-controls {
 </div>
 
 <!-- Luật Sever -->
-<div class='box luat'>
+<div class='box luat' onclick='showRules()' style="cursor:pointer;">
   <div class='row'>
     <div class='col-2'>
       <div class='icon'>
-        <img src='cam.png' alt='Luật Sever' class='avatar' onclick='showImage(this.src)'>
+        <img src='cam.png' alt='Luật Sever' class='avatar'>
       </div>
     </div>
-    <div class='col-10' onclick='showImage("luat.png")'>
+    <div class='col-10'>
       <p class='detail'>Luật Sever</p>
       <p class='linked'>Bấm để xem chi tiết</p>
     </div>
   </div>
-</div>
-<!-- popup ảnh -->
-<div id="popup" class="popup" onclick="closePopup()">
-  <img id="popup-img" src="" alt="Ảnh popup">
 </div>
 
 <div style="display: flex; justify-content: center; margin-top: 7px;">
@@ -264,30 +271,39 @@ video::-webkit-media-controls {
 </div>
 <div id='bg'></div>
 </div>
-<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
-<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-<script type='text/javascript'>
-			//<![CDATA[
-				// loading
-				$(".loader").delay(1000).fadeOut("fast");
-				// open link
-				function openlink(url) {
-					window.open(url, "_blank").focus();
-				}
-				// click copy
-				function copytext(str) {
-					const el = document.createElement("textarea");
-					el.value = str;
-					document.body.appendChild(el);
-					el.select();
-					document.execCommand("copy");
-					Swal.fire("Thông Báo", "Copy IP Thành Công!", "success");
-				}
-			//]]>
-		</script>
 
-		<script>
-  // Hiển thị ảnh lớn khi bấm vào avatar hoặc box Luật
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    //<![CDATA[
+    
+    // loading
+    $(".loader").delay(1000).fadeOut("fast");
+
+    // open link
+    function openlink(url) {
+        window.open(url, "_blank").focus();
+    }
+    // click copy
+    function copytext(str) {
+        const el = document.createElement("textarea");
+        el.value = str;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+
+        Swal.fire({
+            title: "Copy Ip Thành Công",
+            html: "Và Code Mở Đầu Dành Cho Member Mới <br> <br> Nhập Code: <span style='color:green;font-weight:bold;'>HELLO</span> <br> Nhận món nho nhỏ <br> <br> Cách Nhập: <span style='color:green;font-weight:bold;'>/redeemHELLO</span>",
+            icon: "success"
+        });
+    }
+    //]]>
+    
+</script>
+
+   // Hiển thị ảnh lớn khi bấm vào avatar hoặc box Luật
   function showImage(src) {
     document.getElementById("popup-img").src = src;
     document.getElementById("popup").style.display = "flex";
@@ -356,8 +372,118 @@ document.addEventListener("click", function startMusic() {
 });
 </script>
 
+/* Bảng Luật */
+<script>
+function showRules() {
+  Swal.fire({
+    title: 'LUẬT SEVER GÀ CON MC',
+    html: `
+      <div class="content">
+        <b>1. Không phá base phá máy farm của người khác <br>
+        2. Cấm PvP (chém) trong base của người khác. Ngoài base thì được PvP tự do + có ý thức (Cấm bắt nạt member mới) <br>
+        3. Không dùng mod, hack, X-ray để gian lận <br>
+        4. Mời bạn bè, thành viên thì trước tiên phải mời vô box mess trước <br>
+        5. Không trộm cắp đồ trong rương và đồ ở ngoài (Các member cũng không nên để đồ quan trọng trong rương. Rất khó tìm thủ phạm, ko biết thủ phạm Ad không chịu trách nhiệm) <br>
+        6. Luật theo ý thức của mỗi người chơi</br> </b>
+        <div class="center-text">Đọc Rõ Luật Trách Mất Lòng Nhau!</div>
+      </div>
+    `,
+    width: 600,
+    confirmButtonText: 'ĐỐNG Ý',
+    background: 'transparent',
+    showCloseButton: true,
+    customClass: {
+      title: 'swal-title-custom',
+      htmlContainer: 'swal-html-custom'
+    },
+    didOpen: () => {
+      document.querySelector('.content').style.display = 'block';
+    }
+  });
+}
+</script>
+
+<style>
+@keyframes rainbowBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+
+@keyframes fadeIn {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+.content {
+  display:none;
+  margin:20px auto;
+  max-width:700px;
+  background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
+  background-size:800% 800%;
+  border-radius:20px;
+  padding:25px 30px;
+  text-align:left;
+  line-height:1.8;
+  color:#000000; /* chữ luôn trắng, đọc rõ */
+  font-family:"Roboto", sans-serif;
+  animation: rainbowBG 15s ease-in-out infinite, fadeIn .6s ease forwards;
+  box-shadow:0 0 25px rgba(255,127,39,0.4);
+  max-height:400px;
+  overflow-y:auto;
+}
+
+.swal-title-custom {
+  font-family: "Lobster", cursive;
+  font-size:28px;
+  text-align:center;
+  color:#ffffff; /* chữ luôn trắng */
+  text-shadow: 0 0 8px rgba(0,0,0,0.4); /* thêm bóng nhẹ để nổi bật */
+}
+
+.swal-html-custom {
+  text-align:left;
+  font-size:16px;
+  line-height:1.6;
+  color:#000000; /* chữ luôn rõ, không bị mờ */
+}
+
+.content {
+  display: block;
+  margin: 0 auto;
+  max-width: 700px;
+  background: linear-gradient(270deg, red, orange, yellow, green, cyan, blue, violet, red);
+  background-size: 400% 400%;
+  border-radius: 15px;
+  padding: 25px;
+  text-align: left;
+  line-height: 1.8;
+  color: black; /* chữ luật màu đen */
+  animation: rainbowBG 5s linear infinite;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* chữ Hello đứng giữa */
+.center-text {
+  display: flex;
+  justify-content: center;  /* căn ngang */
+  align-items: center;      /* căn dọc */
+  font-weight: bold;
+  font-size: 22px;
+  margin-top: 15px;
+}
+
+/* hiệu ứng nháy nháy nền gradient */
+@keyframes rainbowBG {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+</style>
+/* Hết bảng luật */
+
 </body>
 </html>
-
-
 
