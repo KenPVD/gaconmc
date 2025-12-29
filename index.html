@@ -101,6 +101,106 @@ video::-webkit-media-controls {
   color: #ffffff;
 }
 
+/*Box messenger */
+.mess-sub {
+  display: none;
+  margin: 8px auto 12px;
+  width: 85%;
+}
+
+.mess-item {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin-top: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.mess-item:hover {
+  background: rgba(255,255,255,0.35);
+  transform: scale(1.05);
+}
+
+/*Box messener hiệu ứng*/
+.mess-btn {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.mess-btn span {
+  display: block;
+  transition: all 0.35s cubic-bezier(.4,0,.2,1);
+}
+
+.mess-btn .text-normal {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.mess-btn .text-hover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.mess-btn:hover .text-normal {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.mess-btn:hover .text-hover {
+  transform: translateY(-50%);
+  opacity: 1;
+}
+
+.mess-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 18px rgba(255,255,255,0.6);
+}
+
+/*căn lè box mess*/
+.mess-btn {
+  width: 380px;
+  padding: 10px 14px;
+  margin: 2px auto;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(.4,0,.2,1);
+}
+
+.mess-btn span {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.35s cubic-bezier(.4,0,.2,1);
+}
+
+.mess-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 18px rgba(255,255,255,0.55);
+}
+
+/* Trong chữ trắng */
+.swal-title-custom {
+  color: white; /* chữ trắng */
+  font-family: "Lobster", cursive;
+  font-size: 28px;
+  text-align: center;
+}
+
 /* Chèn CSS vào đây */
 /*------------------------------------------------*/
 /* Name: Template Giới Thiệu Bản Thân             */
@@ -192,18 +292,32 @@ video::-webkit-media-controls {
 </div>
 
 <!-- messenger -->
-<div class='box messenger'>
-<div class='row'>
-<div class='col-2'>
-<div class='icon'>
-<i class='fab fa-facebook-messenger'></i>
+<div class='box messenger' onclick="showMessBox()">
+  <div class='row'>
+    <div class='col-2'>
+      <div class='icon'>
+        <i class='fab fa-facebook-messenger'></i>
+      </div>
+    </div>
+    <div class='col-10'>
+      <p class='detail'>Box Mess Sever</p>
+      <p class='linked'>Bấm để mở</p>
+    </div>
+  </div>
 </div>
-</div>
-<div class='col-10' onclick='openlink("https://m.me/j/AbYRiUyr7kWrkuPX/")'>
-<p class='detail'>Box Mess Sever</p>
-<p class='linked'>Box Sever Gà Con MC</p>
-</div>
-</div>
+
+  <!-- 3 thanh con -->
+  <div class="mess-sub" id="mess-sub">
+    <div class="mess-item" onclick="openlink('https://m.me/j/BOX_LINK')">
+      📩 Box Chat Sever
+    </div>
+    <div class="mess-item" onclick="openlink('https://m.me/ADMIN1')">
+      👑 Admin Ken
+    </div>
+    <div class="mess-item" onclick="openlink('https://m.me/ADMIN2')">
+      🛠 QTV Hỗ Trợ
+    </div>
+  </div>
 </div>
 
 <!-- discord -->
@@ -300,19 +414,7 @@ video::-webkit-media-controls {
         });
     }
     //]]>
-    
 </script>
-
-   // Hiển thị ảnh lớn khi bấm vào avatar hoặc box Luật
-  function showImage(src) {
-    document.getElementById("popup-img").src = src;
-    document.getElementById("popup").style.display = "flex";
-  }
-
-  // Đóng popup khi click ra ngoài ảnh
-  function closePopup() {
-    document.getElementById("popup").style.display = "none";
-  }
 </script>
 
 <audio id="bg-music" preload="auto" loop muted>
@@ -466,7 +568,7 @@ function showRules() {
   overflow-y: auto;
 }
 
-/* chữ Hello đứng giữa */
+/* chữ đứng ở giữa */
 .center-text {
   display: flex;
   justify-content: center;  /* căn ngang */
@@ -483,13 +585,39 @@ function showRules() {
   100% {background-position:0% 50%;}
 }
 </style>
-/* Hết bảng luật */
+
+<script>
+function showMessBox() {
+  Swal.fire({
+    title: '📩 BOX MESSENGER SEVER',
+    html:
+      '<div style="display:flex;flex-direction:column;gap:12px;margin-top:15px;color:white;">' + // <-- màu trắng toàn bộ
+        '<div class="mess-btn" style="background:linear-gradient(127deg,#3f5efb,#fc466b);padding:14px;border-radius:14px;color:white;font-weight:bold;cursor:pointer" ' +
+        'onclick="window.open(\'https://m.me/ch/AbbrvNspO3NhH-8P/\',\'_blank\')">' +
+          '<span class="text-normal">👑 Box Chat Tổng</span>' +
+          '<span class="text-hover">👉 Bấm để vào nhóm</span>' +
+        '</div>' +
+        '<div class="mess-btn" style="background:linear-gradient(127deg,#00c6ff,#0072ff);padding:14px;border-radius:14px;color:white;font-weight:bold;cursor:pointer" ' +
+        'onclick="window.open(\'https://m.me/j/AbYRiUyr7kWrkuPX/\',\'_blank\')">' +
+          '<span class="text-normal">1️⃣ Box Chat Nhánh 1</span>' +
+          '<span class="text-hover">👉 Bấm để vào nhóm</span>' +
+        '</div>' +
+        '<div class="mess-btn" style="background:linear-gradient(127deg,#f7971e,#ffd200);padding:14px;border-radius:14px;color:black;font-weight:bold;cursor:pointer" ' +
+        'onclick="window.open(\'https://m.me/j/Aba4r6huoc4Nmi_L/\',\'_blank\')">' +
+          '<span class="text-normal">2️⃣ Box Chat Nhánh 2</span>' +
+          '<span class="text-hover">👉 Bấm để vào nhóm</span>' +
+        '</div>' +
+      '</div>',
+    showConfirmButton: false,
+    showCloseButton: true,
+    background: 'transparent',
+    customClass: {
+      title: 'swal-title-custom',
+      htmlContainer: 'swal-html-custom'
+    }
+  });
+}
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
