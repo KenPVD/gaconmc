@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background-image:url("https://files.catbox.moe/pikbqa.jpg");
+  background-size:cover;
+  background-position:center;
+  background-attachment:fixed;
+}
+
+#box{
+  max-width:480px;
+  margin:auto;
+  background:rgba(255,255,255,0.95);
+  min-height:100vh;
+  padding:10px;
+}
+
+#messages{
+  height:55vh;
+  overflow-y:auto;
+  border:1px solid #ccc;
+  padding:6px;
+  background:#fff;
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  box-sizing:border-box;
+}
+
+.admin{color:red}
+.kiemduyet{color:green}
+.member{color:blue}
+
+.msg{
+  border-bottom:1px solid #eee;
+  padding:6px 0;
+  font-size:14px;
+}
+
+.msg-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.name{font-weight:bold}
+
+.ctrls{
+  display:flex;
+  gap:4px;
+}
+
+.ctrls button{
+  width:26px;
+  height:26px;
+  padding:0;
+  font-size:13px;
+  border-radius:4px;
+  border:1px solid #ccc;
+  background:#f5f5f5;
+  cursor:pointer;
+}
+.ctrls button:hover{background:#ddd}
+
+.text{
+  margin-top:4px;
+  word-break:break-word;
+}
+
+.notice{
+  color:red;
+  text-align:center;
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+#mutes{
+  background:#fff3f3;
+  border:1px solid #f5c2c2;
+  padding:6px;
+  margin-top:6px;
+  font-size:13px;
+  display:none;
+}
+
+.mute-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px dashed #ccc;
+  padding:4px 0;
+}
+
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#333;
+  color:#fff;
+  padding:8px 14px;
+  border-radius:20px;
+  font-size:13px;
+  opacity:0;
+  transition:.3s;
+  z-index:999;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="box">
+
+<div id="loginBox">
+  <h3>Đăng nhập</h3>
+  <input id="user" placeholder="Tài khoản">
+  <input id="pass" type="password" placeholder="Mật khẩu">
+  <button id="loginBtn">Đăng nhập</button>
+  <hr>
+  <button id="guestBtn">Vào với tư cách Member</button>
+</div>
+
+<div id="chatBox" style="display:none">
+  <h3 id="roleText"></h3>
+  <div id="notice" class="notice"></div>
+
+  <button id="toggleMuteBtn" style="display:none">🚫 Xem người bị chặn</button>
+
+  <div id="mutes">
+    <b>Thiết bị đang bị chặn</b>
+    <div id="muteList"></div>
+  </div>
+
+  <div id="messages"></div>
+  <input id="msg" placeholder="Nhập tin nhắn">
+  <button id="sendBtn">Gửi</button>
+</div>
+
+</div>
+
+<audio id="notifySound" src="boa.mp3" preload="auto"></audio>
+
+<script>
+let role="",name="";
+let deviceId=localStorage.getItem("deviceId");
+if(!deviceId){
+  deviceId=crypto.randomUUID();
+  localStorage.setItem("deviceId",deviceId);
+}
+
+loginBtn.onclick=()=>{
+  if(user.value==="admin1409" && pass.value==="140907"){
+    role="admin";name="Admin";start();
+  }
+  else if(user.value==="kiemduyet2007" && pass.value==="678678"){
+    role="kiemduyet";name="Kiểm duyệt";start();
+  }
+  else alert("Sai tài khoản");
+};
+
+guestBtn.onclick=()=>{
+  role="member";
+  name="Member-"+Math.floor(Math.random()*1000);
+  start();
+};
+
+function start(){
+  loginBox.style.display="none";
+  chatBox.style.display="block";
+  roleText.innerText="Bạn là: "+name;
+  initChat();
+
+  if(role!=="member"){
+    toggleMuteBtn.style.display="block";
+    toggleMuteBtn.onclick=()=>{
+      mutes.style.display =
+        mutes.style.display==="none" ? "block" : "none";
+    };
+  }
+}
+
+if("Notification" in window){
+  Notification.requestPermission();
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, onSnapshot,
+  query, orderBy, serverTimestamp,
+  doc, setDoc, deleteDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyAOqWngNA4k7bMi0c7rfBbXAHfcB2g9LJM",
+  authDomain:"gaconmc.firebaseapp.com",
+  projectId:"gaconmc",
+  storageBucket:"gaconmc.firebasestorage.app",
+  messagingSenderId:"5696392304",
+  appId:"1:5696392304:web:6470b74607fdbef4d9b8b5"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+let lastNotify=0;
+
+/* ================== 🔊 ÂM THANH NGAY CẢ KHI CHƯA ĐĂNG NHẬP ================== */
+const soundQuery=query(collection(db,"messages"),orderBy("time"));
+onSnapshot(soundQuery,s=>{
+  s.docChanges().forEach(c=>{
+    if(c.type==="added"){
+      notifySound.currentTime=0;
+      notifySound.play().catch(()=>{});
+    }
+  });
+});
+/* ======================================================================== */
+
+window.initChat=()=>{
+  checkMute();
+  loadMessages();
+  loadMuteList();
+
+  sendBtn.onclick=async()=>{
+    if(role==="member"){
+      const m=await getDoc(doc(db,"mute",deviceId));
+      if(m.exists()) return alert("Bạn đang bị chặn chat");
+    }
+    if(!msg.value) return;
+    await addDoc(collection(db,"messages"),{
+      name,role,text:msg.value,deviceId,time:serverTimestamp()
+    });
+    msg.value="";
+  };
+};
+
+async function checkMute(){
+  if(role!=="member") return;
+  const m=await getDoc(doc(db,"mute",deviceId));
+  if(m.exists()){
+    msg.disabled=true;
+    sendBtn.disabled=true;
+    notice.innerText="🚫 Bạn đang bị chặn chat";
+  }
+}
+
+function loadMessages(){
+  const q=query(collection(db,"messages"),orderBy("time"));
+  onSnapshot(q,s=>{
+    messages.innerHTML="";
+    s.forEach(d=>{
+      const m=d.data();
+
+      messages.innerHTML+=`
+      <div class="msg ${m.role}">
+        <div class="msg-head">
+          <div class="name">${m.name}</div>
+          <div class="ctrls">
+            <button onclick="copyText('${m.text.replace(/'/g,"")}')">📋</button>
+            ${role!=="member" && m.role==="member" ? `
+              <button onclick="delMsg('${d.id}')">❌</button>
+              <button onclick="mute('${m.deviceId}','${m.name}')">🚫</button>
+            `:""}
+          </div>
+        </div>
+        <div class="text">${m.text}</div>
+      </div>`;
+    });
+    messages.scrollTop=messages.scrollHeight;
+  });
+}
+
+function loadMuteList(){
+  if(role==="member") return;
+  onSnapshot(collection(db,"mute"),s=>{
+    muteList.innerHTML="";
+    if(s.empty){
+      muteList.innerHTML="<i>Không có thiết bị bị chặn</i>";
+      return;
+    }
+    s.forEach(d=>{
+      muteList.innerHTML+=`
+      <div class="mute-item">
+        <span>${d.data().name}</span>
+        <button onclick="unmute('${d.id}')">♻️</button>
+      </div>`;
+    });
+  });
+}
+
+window.copyText=t=>{
+  navigator.clipboard.writeText(t);
+  toast("📋 Đã copy");
+};
+window.delMsg=id=>deleteDoc(doc(db,"messages",id));
+window.mute=(id,name)=>setDoc(doc(db,"mute",id),{name});
+window.unmute=id=>deleteDoc(doc(db,"mute",id));
+
+function toast(t){
+  const d=document.createElement("div");
+  d.className="toast";
+  d.innerText=t;
+  document.body.appendChild(d);
+  setTimeout(()=>d.classList.add("show"),10);
+  setTimeout(()=>{d.classList.remove("show");d.remove()},1000);
+}
+</script>
+
+</body>
+</html>
