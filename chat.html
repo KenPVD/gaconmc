@@ -9,20 +9,15 @@
 body{
   margin:0;
   font-family:Arial;
-  background-image:url("https://pomf2.lain.la/f/3qghdbbr.jpg");
-  background-size:cover;
-  background-position:center;
-  background-attachment:fixed;
+  background:url("https://pomf2.lain.la/f/3qghdbbr.jpg") center/cover fixed;
 }
-
 #box{
   max-width:480px;
   margin:auto;
-  background:rgba(255,255,255,0.95);
+  background:rgba(255,255,255,.95);
   min-height:100vh;
   padding:10px;
 }
-
 #messages{
   height:55vh;
   overflow-y:auto;
@@ -30,79 +25,39 @@ body{
   padding:6px;
   background:#fff;
 }
-
-input,button{
+input, button{
   width:100%;
   padding:10px;
   margin-top:5px;
   box-sizing:border-box;
 }
-
-.admin{color:red}
-.kiemduyet{color:green}
-.member{color:blue}
-
 .msg{
   border-bottom:1px solid #eee;
   padding:6px 0;
   font-size:14px;
 }
-
 .msg-head{
   display:flex;
   justify-content:space-between;
-  align-items:center;
 }
-
 .name{font-weight:bold}
-
-.ctrls{
-  display:flex;
-  gap:4px;
-}
-
+.admin{color:red}
+.kiemduyet{color:green}
+.member{color:blue}
+.msg.bot .name,.msg.bot .text{color:#ff5ca8}
 .ctrls button{
-  width:26px;
-  height:26px;
-  padding:0;
-  font-size:13px;
-  border-radius:4px;
-  border:1px solid #ccc;
-  background:#f5f5f5;
-  cursor:pointer;
+  width:26px;height:26px;padding:0;font-size:13px;
 }
-.ctrls button:hover{background:#ddd}
-
 .text{
   margin-top:4px;
+  white-space:pre-line;
   word-break:break-word;
-  white-space: pre-line; /* ⭐ CHÍNH DÒNG NÀY */
 }
-
 .notice{
-  color:red;
   text-align:center;
+  color:red;
   font-size:13px;
-  margin-bottom:6px;
 }
-
-#mutes{
-  background:#fff3f3;
-  border:1px solid #f5c2c2;
-  padding:6px;
-  margin-top:6px;
-  font-size:13px;
-  display:none;
-}
-
-.mute-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px dashed #ccc;
-  padding:4px 0;
-}
-
 .toast{
   position:fixed;
   bottom:20px;
@@ -112,21 +67,10 @@ input,button{
   color:#fff;
   padding:8px 14px;
   border-radius:20px;
-  font-size:13px;
   opacity:0;
   transition:.3s;
-  z-index:999;
 }
 .toast.show{opacity:1}
-
-/* 🤖 BOT RIÊNG – KHÔNG DÍNH ADMIN */
-.msg.bot .name{
-  color:#ff5ca8 !important;
-}
-.msg.bot .text{
-  color:#ff5ca8 !important;
-}
-
 </style>
 </head>
 <body>
@@ -144,18 +88,8 @@ input,button{
 
 <div id="chatBox" style="display:none">
   <h3 id="roleText"></h3>
-
-  <button id="soundToggleBtn">🔊 Âm thanh: BẬT</button>
-
+  <button id="soundBtn">🔊 Âm thanh: BẬT</button>
   <div id="notice" class="notice"></div>
-
-  <button id="toggleMuteBtn" style="display:none">🚫 Xem người bị chặn</button>
-
-  <div id="mutes">
-    <b>Thiết bị đang bị chặn</b>
-    <div id="muteList"></div>
-  </div>
-
   <div id="messages"></div>
   <input id="msg" placeholder="Nhập tin nhắn">
   <button id="sendBtn">Gửi</button>
@@ -163,12 +97,11 @@ input,button{
 
 </div>
 
-<audio id="notifySound" src="boa.mp3" preload="auto"></audio>
+<audio id="notifySound" src="boa.mp3"></audio>
 
 <script>
 let role="",name="";
-let soundOn = localStorage.getItem("soundOn");
-soundOn = soundOn === null ? true : soundOn === "true";
+let soundOn=localStorage.getItem("soundOn")!=="false";
 
 let deviceId=localStorage.getItem("deviceId");
 if(!deviceId){
@@ -179,11 +112,9 @@ if(!deviceId){
 loginBtn.onclick=()=>{
   if(user.value==="admin1409" && pass.value==="140907"){
     role="admin";name="Admin";start();
-  }
-  else if(user.value==="kiemduyet2007" && pass.value==="678678"){
+  }else if(user.value==="kiemduyet2007" && pass.value==="678678"){
     role="kiemduyet";name="Kiểm duyệt";start();
-  }
-  else alert("Sai tài khoản");
+  }else alert("Sai tài khoản");
 };
 
 guestBtn.onclick=()=>{
@@ -196,26 +127,13 @@ function start(){
   loginBox.style.display="none";
   chatBox.style.display="block";
   roleText.innerText="Bạn là: "+name;
-  initChat();
-
-  soundToggleBtn.innerText = soundOn ? "🔊 Âm thanh: BẬT" : "🔇 Âm thanh: TẮT";
-  soundToggleBtn.onclick = ()=>{
-    soundOn = !soundOn;
+  soundBtn.innerText=soundOn?"🔊 Âm thanh: BẬT":"🔇 Âm thanh: TẮT";
+  soundBtn.onclick=()=>{
+    soundOn=!soundOn;
     localStorage.setItem("soundOn",soundOn);
-    soundToggleBtn.innerText = soundOn ? "🔊 Âm thanh: BẬT" : "🔇 Âm thanh: TẮT";
+    soundBtn.innerText=soundOn?"🔊 Âm thanh: BẬT":"🔇 Âm thanh: TẮT";
   };
-
-  if(role!=="member"){
-    toggleMuteBtn.style.display="block";
-    toggleMuteBtn.onclick=()=>{
-      mutes.style.display =
-        mutes.style.display==="none" ? "block" : "none";
-    };
-  }
-}
-
-if("Notification" in window){
-  Notification.requestPermission();
+  initChat();
 }
 </script>
 
@@ -224,64 +142,61 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import {
   getFirestore, collection, addDoc, onSnapshot,
   query, orderBy, serverTimestamp,
-  doc, setDoc, deleteDoc, getDoc
+  doc, getDoc, setDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig={
   apiKey:"AIzaSyAOqWngNA4k7bMi0c7rfBbXAHfcB2g9LJM",
   authDomain:"gaconmc.firebaseapp.com",
   projectId:"gaconmc",
-  storageBucket:"gaconmc.firebasestorage.app",
-  messagingSenderId:"5696392304",
-  appId:"1:5696392304:web:6470b74607fdbef4d9b8b5"
 };
-
 const app=initializeApp(firebaseConfig);
 const db=getFirestore(app);
 
-/* 🔊 + 🔔 ÂM THANH & THÔNG BÁO */
-const soundQuery=query(collection(db,"messages"),orderBy("time"));
-onSnapshot(soundQuery,s=>{
-  s.docChanges().forEach(c=>{
-    if(c.type==="added"){
-      const data=c.doc.data();
+const q=query(collection(db,"messages"),orderBy("time"));
 
-      if(soundOn){
+window.initChat=()=>{
+  checkMute();
+
+  onSnapshot(q,snap=>{
+    snap.docChanges().forEach(c=>{
+      if(c.type!=="added") return;
+      const m=c.doc.data();
+
+      if(soundOn && m.deviceId!=="bot"){
         notifySound.currentTime=0;
         notifySound.play().catch(()=>{});
       }
 
-      // 🔔 THÔNG BÁO KIỂU MESSENGER
-      if(
-        Notification.permission==="granted" &&
-        data.name!==name
-      ){
-        const n=new Notification("💬 Tin nhắn mới",{
-          body:data.name+": "+data.text,
-          icon:"https://files.catbox.moe/6j8p6y.jpg"
-        });
-        n.onclick=()=>{
-          window.focus();
-          n.close();
-        };
-      }
-    }
+      const div=document.createElement("div");
+      div.className=`msg ${m.role} ${m.deviceId==="bot"?"bot":""}`;
+      div.innerHTML=`
+        <div class="msg-head">
+          <div class="name">${m.name}</div>
+          <div class="ctrls">
+            <button onclick="copyText('${m.text.replace(/'/g,"")}')">📋</button>
+            ${role!=="member"?`
+              <button onclick="delMsg('${c.doc.id}')">❌</button>
+              <button onclick="mute('${m.deviceId}','${m.name}')">🚫</button>
+            `:""}
+          </div>
+        </div>
+        <div class="text">${m.text}</div>
+      `;
+      messages.appendChild(div);
+      messages.scrollTop=messages.scrollHeight;
+    });
   });
-});
-
-window.initChat=()=>{
-  checkMute();
-  loadMessages();
-  loadMuteList();
 
   sendBtn.onclick=async()=>{
+    if(!msg.value) return;
     if(role==="member"){
       const m=await getDoc(doc(db,"mute",deviceId));
       if(m.exists()) return alert("Bạn đang bị chặn chat");
     }
-    if(!msg.value) return;
     await addDoc(collection(db,"messages"),{
-      name,role,text:msg.value,deviceId,time:serverTimestamp()
+      name,role,text:msg.value,
+      deviceId,time:serverTimestamp()
     });
     msg.value="";
   };
@@ -297,56 +212,138 @@ async function checkMute(){
   }
 }
 
-function loadMessages(){
-  const q=query(collection(db,"messages"),orderBy("time"));
-  onSnapshot(q,s=>{
-    messages.innerHTML="";
-    s.forEach(d=>{
-      const m=d.data();
-      messages.innerHTML+=`
-      <div class="msg ${m.role} ${m.deviceId==="bot"?"bot":""}">
-        <div class="msg-head">
-          <div class="name">${m.name}</div>
-          <div class="ctrls">
-            <button onclick="copyText('${m.text.replace(/'/g,"")}')">📋</button>
-            ${role!=="member" ? `
-              <button onclick="delMsg('${d.id}')">❌</button>
-              <button onclick="mute('${m.deviceId}','${m.name}')">🚫</button>
-            `:""}
-          </div>
-        </div>
-        <div class="text">${m.text}</div>
-      </div>`;
-    });
-    messages.scrollTop=messages.scrollHeight;
-  });
-}
+/* 🤖 BOT – ANTI SPAM FIX */
 
-function loadMuteList(){
-  if(role==="member") return;
-  onSnapshot(collection(db,"mute"),s=>{
-    muteList.innerHTML="";
-    if(s.empty){
-      muteList.innerHTML="<i>Không có thiết bị bị chặn</i>";
-      return;
+let lastMemberTime = 0;
+let lastBotReplyTime = 0;
+
+const IDLE = 300000;      // 5 phút
+const COOLDOWN = 300000; // 5 phút
+const startTime = Date.now();
+
+onSnapshot(q, async snap => {
+  for (const c of snap.docChanges()) {
+    if (c.type !== "added") continue;
+
+    const m = c.doc.data();
+
+    // ❌ bỏ qua bot
+    if (m.deviceId === "bot") continue;
+
+    // ❌ bỏ qua tin cũ
+    if (m.time?.toMillis && m.time.toMillis() < startTime) continue;
+
+    // ❌ chỉ phản hồi MEMBER
+    if (m.role !== "member") continue;
+
+    const now = Date.now();
+
+    const isStrange = /^Member-\d+$/.test(m.name);
+    const isIdle = lastMemberTime !== 0 && now - lastMemberTime > IDLE;
+    const isCooldown = now - lastBotReplyTime < COOLDOWN;
+
+    // ❌ đang cooldown → không làm gì
+    if (isCooldown) {
+      lastMemberTime = now;
+      continue;
     }
-    s.forEach(d=>{
-      muteList.innerHTML+=`
-      <div class="mute-item">
-        <span>${d.data().name}</span>
-        <button onclick="unmute('${d.id}')">♻️</button>
-      </div>`;
-    });
-  });
-}
 
+    // ✅ đủ điều kiện → bot trả lời
+    if (isStrange || isIdle) {
+      lastBotReplyTime = now;
+
+      // TIN 1
+      await addDoc(collection(db, "messages"), {
+        name: "🤖 Bot",
+        role: "admin",
+        deviceId: "bot",
+        time: serverTimestamp(),
+        text: "Hello 👋 hiện tại không có ai online, bạn đợi chút ạ."
+      });
+
+      // TIN 2
+      await addDoc(collection(db, "messages"), {
+        name: "🤖 Bot",
+        role: "admin",
+        deviceId: "bot",
+        time: serverTimestamp(),
+        text: "👉 https://fb.com"
+      });
+    }
+
+    // ✅ luôn cập nhật sau cùng
+    lastMemberTime = now;
+  }
+});
+
+/* ================= 📌 COMMAND HANDLER – OPTIMIZED ================= */
+
+const commandStartTime = Date.now();
+
+onSnapshot(
+  query(collection(db, "messages"), orderBy("time")),
+  async snap => {
+
+    for (const c of snap.docChanges()) {
+      if (c.type !== "added") continue;
+
+      const m = c.doc.data();
+
+      // ❌ bỏ qua bot
+      if (m.deviceId === "bot") continue;
+
+      // ❌ bỏ qua tin cũ trước khi load trang
+      if (m.time?.toMillis && m.time.toMillis() < commandStartTime) continue;
+
+      // ❌ không có text
+      if (!m.text) continue;
+
+      // chuẩn hoá lệnh
+      const cmd = m.text.trim().toLowerCase();
+
+      /* ======= /info ======= */
+      if (cmd !== "/info") continue;
+
+      await addDoc(collection(db, "messages"), {
+        name: "🤖 Bot",
+        role: "admin",
+        deviceId: "bot",
+        time: serverTimestamp(),
+        text:
+`📌 INFO CÁC CHỨC VỤ SERVER
+
+👤 Admin Chính:
+👉 Facebook: https://www.facebook.com/profile.php?id=61583009645768
+
+👤 Admin Phụ:
+👉 Facebook: https://www.facebook.com/thu.trang.1401207
+
+👤 Các QTV:
+👉 Facebook: https://www.facebook.com/MrSomeOne1
+👉 Facebook: https://www.facebook.com/profile.php?id=61582928121714
+
+👤 Các Support:
+👉 Facebook: https://www.facebook.com/le.tuan.anh.347063
+👉 Facebook: https://www.facebook.com/nguyen.chi.anh.853868
+👉 Facebook: https://www.facebook.com/profile.php?id=61574102743872
+
+❤️ Hãy liên hệ những người trên để được hỗ trợ ❤️`
+      });
+    }
+  }
+);
+
+/* =============================================================== */
+
+
+
+/* utils */
 window.copyText=t=>{
   navigator.clipboard.writeText(t);
   toast("📋 Đã copy");
 };
 window.delMsg=id=>deleteDoc(doc(db,"messages",id));
 window.mute=(id,name)=>setDoc(doc(db,"mute",id),{name});
-window.unmute=id=>deleteDoc(doc(db,"mute",id));
 
 function toast(t){
   const d=document.createElement("div");
@@ -354,68 +351,8 @@ function toast(t){
   d.innerText=t;
   document.body.appendChild(d);
   setTimeout(()=>d.classList.add("show"),10);
-  setTimeout(()=>{d.classList.remove("show");d.remove()},1000);
+  setTimeout(()=>d.remove(),1200);
 }
-
-/* ================= 🤖 BOT LOGIC FINAL – NO BUG ================= */
-
-let lastMemberTime = null;
-let botLock = false;
-
-const IDLE_TIME = 300000;      // 5 phút
-const BOT_COOLDOWN = 300000;   // 5 phút
-
-onSnapshot(
-  query(collection(db,"messages"), orderBy("time")),
-  async snap => {
-
-    for(const c of snap.docChanges()){
-      if(c.type !== "added") continue;
-
-      const m = c.doc.data();
-
-      // ❌ bỏ qua bot
-      if(m.deviceId === "bot") continue;
-
-      const now = Date.now();
-
-      // ❌ chỉ bot phản hồi MEMBER
-      if(m.role !== "member") return;
-
-      const isStrangeMember = /^Member-\d+$/.test(m.name);
-      const isIdle =
-        lastMemberTime !== null &&
-        now - lastMemberTime >= IDLE_TIME;
-
-      // 🔥 MEMBER GỬI TIN → BOT MỚI PHẢN HỒI
-      if((isStrangeMember || isIdle) && !botLock){
-        botLock = true;
-
-        await addDoc(collection(db,"messages"),{
-          name:"🤖 Bot",
-          role:"admin",
-          text:"Hello 👋 hiện tại không có ai online, bạn đợi chút ạ hoặc liên hệ Facebook.",
-          deviceId:"bot",
-          time:serverTimestamp()
-        });
-
-        await addDoc(collection(db,"messages"),{
-          name:"🤖 Bot",
-          role:"admin",
-          text:"👉 https://fb.com",
-          deviceId:"bot",
-          time:serverTimestamp()
-        });
-
-        setTimeout(()=>botLock=false, BOT_COOLDOWN);
-      }
-
-      // ✅ cập nhật SAU CÙNG
-      lastMemberTime = now;
-    }
-  }
-);
-/* =============================================================== */
 </script>
 
 </body>
