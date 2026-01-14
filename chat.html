@@ -399,7 +399,7 @@ const handledInfoMessages = new Set();
 onSnapshot(q, async snap => {
 
   // ❗ chỉ ADMIN điều khiển bot
-  if (role !== "admin") return;
+  if (!["admin","kiemduyet","member"].includes(role)) return;
 
   for (const c of snap.docChanges()) {
     if (c.type !== "added") continue;
