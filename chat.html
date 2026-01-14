@@ -113,7 +113,7 @@ loginBtn.onclick=()=>{
   if(user.value==="admin1409" && pass.value==="140907"){
     role="admin";name="Admin";start();
   }else if(user.value==="kiemduyet2007" && pass.value==="678678"){
-    role="kiemduyet";name="Kiểm duyệt";start();
+    role="kiemduyet";name="Kiểm Duyệt Viên";start();
   }else alert("Sai tài khoản");
 };
 
@@ -258,7 +258,7 @@ onSnapshot(q, async snap => {
         role: "admin",
         deviceId: "bot",
         time: serverTimestamp(),
-        text: "Hello 👋 hiện tại không có ai online, bạn đợi chút ạ."
+        text: "Hello👋 Nếu bạn nhắn mà không ai trả lời thì chắc các Kiểm Duyệt Viên đang bận á, bạn đợi 1 tí sẽ có người trả lời liền. Hoặc có thể liên hệ với Support qua Facebook nàyy!"
       });
 
       // TIN 2
@@ -267,7 +267,7 @@ onSnapshot(q, async snap => {
         role: "admin",
         deviceId: "bot",
         time: serverTimestamp(),
-        text: "👉 https://fb.com"
+        text: "https://www.facebook.com/100069576183683"
       });
     }
 
@@ -276,33 +276,24 @@ onSnapshot(q, async snap => {
   }
 });
 
-/* ================= 📌 COMMAND HANDLER – OPTIMIZED ================= */
-
-const commandStartTime = Date.now();
+/* ================= 📌 COMMAND HANDLER – FINAL NO SPAM ================= */
 
 onSnapshot(
   query(collection(db, "messages"), orderBy("time")),
   async snap => {
+
+    // ❗ chỉ ADMIN client chạy bot
+    if (role !== "admin") return;
 
     for (const c of snap.docChanges()) {
       if (c.type !== "added") continue;
 
       const m = c.doc.data();
 
-      // ❌ bỏ qua bot
       if (m.deviceId === "bot") continue;
-
-      // ❌ bỏ qua tin cũ trước khi load trang
-      if (m.time?.toMillis && m.time.toMillis() < commandStartTime) continue;
-
-      // ❌ không có text
       if (!m.text) continue;
 
-      // chuẩn hoá lệnh
-      const cmd = m.text.trim().toLowerCase();
-
-      /* ======= /info ======= */
-      if (cmd !== "/info") continue;
+      if (m.text.trim().toLowerCase() !== "/info") continue;
 
       await addDoc(collection(db, "messages"), {
         name: "🤖 Bot",
@@ -333,9 +324,7 @@ onSnapshot(
   }
 );
 
-/* =============================================================== */
-
-
+/* ==================================================================== */
 
 /* utils */
 window.copyText=t=>{
