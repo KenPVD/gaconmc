@@ -417,57 +417,6 @@ onSnapshot(
 );
 /* =============================================================== */
 
-/* ================= 📌 COMMAND HANDLER – FINAL FIX ================= */
-
-const commandStartTime = Date.now();
-
-onSnapshot(
-  query(collection(db,"messages"), orderBy("time")),
-  async snap => {
-
-    for(const c of snap.docChanges()){
-      if(c.type !== "added") continue;
-
-      const m = c.doc.data();
-
-      // ❌ bỏ qua bot
-      if(m.deviceId === "bot") continue;
-
-      // ❌ bỏ qua tin cũ trước khi load trang
-      if(m.time && m.time.toMillis && m.time.toMillis() < commandStartTime) continue;
-
-      if(!m.text) continue;
-
-      const cmd = m.text.trim().toLowerCase();
-
-      /* ======= /info ======= */
-      if(cmd === "/info"){
-        await addDoc(collection(db,"messages"),{
-          name:"🤖 Bot",
-          role:"admin",
-          deviceId:"bot",
-          time:serverTimestamp(),
-          text:
-"📌 INFO CÁC CHỨC VỤ SEVER\n\n"+
-"👤 Admin Chính:\n"+
-"👉 Facebook: https://www.facebook.com/profile.php?id=61583009645768\n\n"+
-"👤 Admin Phụ:\n"+
-"👉 Facebook: https://www.facebook.com/thu.trang.1401207\n\n"+
-"👤 Các QTV:\n"+
-"👉 Facebook: https://www.facebook.com/MrSomeOne1\n"+
-"👉 Facebook: https://www.facebook.com/profile.php?id=61582928121714\n\n"+
-"👤 Các Support:\n"+
-"👉 Facebook: https://www.facebook.com/le.tuan.anh.347063\n"+
-"👉 Facebook: https://www.facebook.com/nguyen.chi.anh.853868\n"+
-"👉 Facebook: https://www.facebook.com/profile.php?id=61574102743872\n\n"+
-"❤️ Hãy Liên Hệ Qua Những Người Này Để Được Hỗ Trợ ❤️"
-        });
-      }
-    }
-  }
-);
-/* =============================================================== */
-
 </script>
 
 </body>
