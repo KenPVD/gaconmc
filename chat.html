@@ -392,28 +392,39 @@ onSnapshot(q, async snap => {
   }
 });
 
-/* ================= 📌 Lệnh /Info ================= */
+/* ================= 📌 Lệnh /Info – FIX SPAM TUYỆT ĐỐI ================= */
+
+const handledInfoMessages = new Set();
+
 onSnapshot(q, async snap => {
-  // Chỉ Admin client mới có quyền điều khiển Bot trả lời
-  if (!["admin","kiemduyet","member"].includes(role)) return;
+
+  // ❗ chỉ ADMIN điều khiển bot
+  if (role !== "admin") return;
 
   for (const c of snap.docChanges()) {
     if (c.type !== "added") continue;
 
+    // ❌ nếu tin này đã xử lý rồi → bỏ
+    if (handledInfoMessages.has(c.doc.id)) continue;
+
     const m = c.doc.data();
     const msgTime = m.time?.toMillis ? m.time.toMillis() : Date.now();
 
-    // Bỏ qua tin nhắn của Bot, tin nhắn trống hoặc tin nhắn cũ từ trước khi mở web
+    // ❌ bỏ qua bot / tin trống / tin cũ
     if (m.deviceId === "bot" || !m.text || msgTime < startTime) continue;
 
-    // Kiểm tra lệnh /info
-    if (m.text.trim().toLowerCase() === "/info") {
-      await addDoc(collection(db, "messages"), {
-        name: "🤖 Bot",
-        role: "admin",
-        deviceId: "bot",
-        time: serverTimestamp(),
-        text: `📌 INFO CÁC CHỨC VỤ SERVER
+    // ❌ không phải /info
+    if (m.text.trim().toLowerCase() !== "/info") continue;
+
+    // ✅ ĐÁNH DẤU ĐÃ XỬ LÝ
+    handledInfoMessages.add(c.doc.id);
+
+    await addDoc(collection(db, "messages"), {
+      name: "🤖 Bot",
+      role: "admin",
+      deviceId: "bot",
+      time: serverTimestamp(),
+      text: `📌 INFO CÁC CHỨC VỤ SERVER
 
 👤 Admin Chính:
 👉 Facebook: https://www.facebook.com/profile.php?id=61583009645768
@@ -431,10 +442,10 @@ onSnapshot(q, async snap => {
 👉 Facebook: https://www.facebook.com/profile.php?id=61574102743872
 
 ❤️ Hãy liên hệ những người trên để được hỗ trợ ❤️`
-      });
-    }
+    });
   }
 });
+
 /* ==================================================================== */
 </script>
 
