@@ -76,6 +76,7 @@ input,button{
 .text{
   margin-top:4px;
   word-break:break-word;
+  white-space: pre-line; /* ⭐ CHÍNH DÒNG NÀY */
 }
 
 .notice{
@@ -117,6 +118,15 @@ input,button{
   z-index:999;
 }
 .toast.show{opacity:1}
+
+/* 🤖 BOT RIÊNG – KHÔNG DÍNH ADMIN */
+.msg.bot .name{
+  color:#ff5ca8 !important;
+}
+.msg.bot .text{
+  color:#ff5ca8 !important;
+}
+
 </style>
 </head>
 <body>
@@ -294,12 +304,12 @@ function loadMessages(){
     s.forEach(d=>{
       const m=d.data();
       messages.innerHTML+=`
-      <div class="msg ${m.role}">
+      <div class="msg ${m.role} ${m.deviceId==="bot"?"bot":""}">
         <div class="msg-head">
           <div class="name">${m.name}</div>
           <div class="ctrls">
             <button onclick="copyText('${m.text.replace(/'/g,"")}')">📋</button>
-            ${role!=="member" && m.role==="member" ? `
+            ${role!=="member" ? `
               <button onclick="delMsg('${d.id}')">❌</button>
               <button onclick="mute('${m.deviceId}','${m.name}')">🚫</button>
             `:""}
@@ -346,6 +356,118 @@ function toast(t){
   setTimeout(()=>d.classList.add("show"),10);
   setTimeout(()=>{d.classList.remove("show");d.remove()},1000);
 }
+
+/* ================= 🤖 BOT LOGIC FINAL – NO BUG ================= */
+
+let lastMemberTime = null;
+let botLock = false;
+
+const IDLE_TIME = 300000;      // 5 phút
+const BOT_COOLDOWN = 300000;   // 5 phút
+
+onSnapshot(
+  query(collection(db,"messages"), orderBy("time")),
+  async snap => {
+
+    for(const c of snap.docChanges()){
+      if(c.type !== "added") continue;
+
+      const m = c.doc.data();
+
+      // ❌ bỏ qua bot
+      if(m.deviceId === "bot") continue;
+
+      const now = Date.now();
+
+      // ❌ chỉ bot phản hồi MEMBER
+      if(m.role !== "member") return;
+
+      const isStrangeMember = /^Member-\d+$/.test(m.name);
+      const isIdle =
+        lastMemberTime !== null &&
+        now - lastMemberTime >= IDLE_TIME;
+
+      // 🔥 MEMBER GỬI TIN → BOT MỚI PHẢN HỒI
+      if((isStrangeMember || isIdle) && !botLock){
+        botLock = true;
+
+        await addDoc(collection(db,"messages"),{
+          name:"🤖 Bot",
+          role:"admin",
+          text:"Hello 👋 hiện tại không có ai online, bạn đợi chút ạ hoặc liên hệ Facebook.",
+          deviceId:"bot",
+          time:serverTimestamp()
+        });
+
+        await addDoc(collection(db,"messages"),{
+          name:"🤖 Bot",
+          role:"admin",
+          text:"👉 https://fb.com",
+          deviceId:"bot",
+          time:serverTimestamp()
+        });
+
+        setTimeout(()=>botLock=false, BOT_COOLDOWN);
+      }
+
+      // ✅ cập nhật SAU CÙNG
+      lastMemberTime = now;
+    }
+  }
+);
+/* =============================================================== */
+
+/* ================= 📌 COMMAND HANDLER – FINAL FIX ================= */
+
+const commandStartTime = Date.now();
+
+onSnapshot(
+  query(collection(db,"messages"), orderBy("time")),
+  async snap => {
+
+    for(const c of snap.docChanges()){
+      if(c.type !== "added") continue;
+
+      const m = c.doc.data();
+
+      // ❌ bỏ qua bot
+      if(m.deviceId === "bot") continue;
+
+      // ❌ bỏ qua tin cũ trước khi load trang
+      if(m.time && m.time.toMillis && m.time.toMillis() < commandStartTime) continue;
+
+      if(!m.text) continue;
+
+      const cmd = m.text.trim().toLowerCase();
+
+      /* ======= /info ======= */
+      if(cmd === "/info"){
+        await addDoc(collection(db,"messages"),{
+          name:"🤖 Bot",
+          role:"admin",
+          deviceId:"bot",
+          time:serverTimestamp(),
+          text:
+"📌 INFO CÁC CHỨC VỤ SEVER\n\n"+
+"👤 Admin Chính:\n"+
+"👉 Facebook: https://www.facebook.com/profile.php?id=61583009645768\n\n"+
+"👤 Admin Phụ:\n"+
+"👉 Facebook: https://www.facebook.com/thu.trang.1401207\n\n"+
+"👤 Các QTV:\n"+
+"👉 Facebook: https://www.facebook.com/MrSomeOne1\n"+
+"👉 Facebook: https://www.facebook.com/profile.php?id=61582928121714\n\n"+
+"👤 Các Support:\n"+
+"👉 Facebook: https://www.facebook.com/le.tuan.anh.347063\n"+
+"👉 Facebook: https://www.facebook.com/nguyen.chi.anh.853868\n"+
+"👉 Facebook: https://www.facebook.com/profile.php?id=61574102743872\n\n"+
+"❤️ Hãy Liên Hệ Qua Những Người Này Để Được Hỗ Trợ ❤️"
+        });
+      }
+    }
+  }
+);
+/* =============================================================== */
+
 </script>
 
 </body>
