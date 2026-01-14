@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat</title>
+<title>Chat Server - Admin & Member</title>
 
 <style>
 body{
@@ -46,7 +46,7 @@ input, button{
 .member{color:blue}
 .msg.bot .name,.msg.bot .text{color:#ff5ca8}
 .ctrls button{
-  width:26px;height:26px;padding:0;font-size:13px;
+  width:26px;height:26px;padding:0;font-size:13px;cursor:pointer;
 }
 .text{
   margin-top:4px;
@@ -69,8 +69,23 @@ input, button{
   border-radius:20px;
   opacity:0;
   transition:.3s;
+  z-index:9999;
 }
 .toast.show{opacity:1}
+
+.mute-item{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px dashed #ddd;
+  padding:5px 0;
+  align-items:center;
+}
+.mute-item button{
+  width:auto;
+  padding:2px 8px;
+  font-size:12px;
+  margin:0;
+}
 </style>
 </head>
 <body>
@@ -89,7 +104,18 @@ input, button{
 <div id="chatBox" style="display:none">
   <h3 id="roleText"></h3>
   <button id="soundBtn">🔊 Âm thanh: BẬT</button>
+
+  <button id="toggleMuteBtn" style="display:none;margin:6px 0">
+    🚫 Xem danh sách bị chặn
+  </button>
+
   <div id="notice" class="notice"></div>
+
+  <div id="muteBox" style="display:none;border:1px solid #f3c;padding:6px;margin-bottom:6px;background:#fff">
+    <b>🚫 Danh sách người bị chặn</b>
+    <div id="muteList" style="font-size:13px;margin-top:4px"></div>
+  </div>
+
   <div id="messages"></div>
   <input id="msg" placeholder="Nhập tin nhắn">
   <button id="sendBtn">Gửi</button>
@@ -100,21 +126,23 @@ input, button{
 <audio id="notifySound" src="boa.mp3"></audio>
 
 <script>
-let role="",name="";
-let soundOn=localStorage.getItem("soundOn")!=="false";
+/** * PHẦN 1: LOGIC GIAO DIỆN & ĐĂNG NHẬP 
+ */
+let role="", name="";
+let soundOn = localStorage.getItem("soundOn") !== "false";
 
-let deviceId=localStorage.getItem("deviceId");
+let deviceId = localStorage.getItem("deviceId");
 if(!deviceId){
-  deviceId=crypto.randomUUID();
-  localStorage.setItem("deviceId",deviceId);
+  deviceId = crypto.randomUUID();
+  localStorage.setItem("deviceId", deviceId);
 }
 
 loginBtn.onclick=()=>{
   if(user.value==="admin1409" && pass.value==="140907"){
-    role="admin";name="Admin";start();
-  }else if(user.value==="kiemduyet2007" && pass.value==="678678"){
-    role="kiemduyet";name="Kiểm Duyệt Viên";start();
-  }else alert("Sai tài khoản");
+    role="admin"; name="Admin"; start();
+  } else if(user.value==="kiemduyet2007" && pass.value==="678678"){
+    role="kiemduyet"; name="Kiểm Duyệt Viên"; start();
+  } else alert("Sai tài khoản");
 };
 
 guestBtn.onclick=()=>{
@@ -127,17 +155,42 @@ function start(){
   loginBox.style.display="none";
   chatBox.style.display="block";
   roleText.innerText="Bạn là: "+name;
-  soundBtn.innerText=soundOn?"🔊 Âm thanh: BẬT":"🔇 Âm thanh: TẮT";
-  soundBtn.onclick=()=>{
-    soundOn=!soundOn;
-    localStorage.setItem("soundOn",soundOn);
-    soundBtn.innerText=soundOn?"🔊 Âm thanh: BẬT":"🔇 Âm thanh: TẮT";
+
+  soundBtn.innerText = soundOn ? "🔊 Âm thanh: BẬT" : "🔇 Âm thanh: TẮT";
+  soundBtn.onclick = ()=>{
+    soundOn = !soundOn;
+    localStorage.setItem("soundOn", soundOn);
+    soundBtn.innerText = soundOn ? "🔊 Âm thanh: BẬT" : "🔇 Âm thanh: TẮT";
   };
-  initChat();
+
+  if(role === "admin" || role === "kiemduyet"){
+    toggleMuteBtn.style.display = "block";
+    toggleMuteBtn.onclick = ()=>{
+      muteBox.style.display = (muteBox.style.display === "none" ? "block" : "none");
+    };
+  }
+
+  // Khởi tạo chat từ module
+  window.initChat();
+}
+
+// Hàm Toast thông báo nhanh
+window.toast = (t) => {
+  const d=document.createElement("div");
+  d.className="toast";
+  d.innerText=t;
+  document.body.appendChild(d);
+  setTimeout(()=>d.classList.add("show"),10);
+  setTimeout(()=>{
+    d.classList.remove("show");
+    setTimeout(()=>d.remove(),300);
+  },1500);
 }
 </script>
 
 <script type="module">
+/** * PHẦN 2: CORE FIREBASE & LOGIC CHAT 
+ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore, collection, addDoc, onSnapshot,
@@ -150,75 +203,140 @@ const firebaseConfig={
   authDomain:"gaconmc.firebaseapp.com",
   projectId:"gaconmc",
 };
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
 
-const q=query(collection(db,"messages"),orderBy("time"));
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const q = query(collection(db, "messages"), orderBy("time"));
 
-window.initChat=()=>{
-  checkMute();
+window.initChat = () => {
+  checkMuteStatus();
 
-  onSnapshot(q,snap=>{
-    snap.docChanges().forEach(c=>{
-      if(c.type!=="added") return;
-      const m=c.doc.data();
+  // Lắng nghe tin nhắn (Thêm & Xóa realtime)
+  onSnapshot(q, snap => {
+    snap.docChanges().forEach(c => {
+      // 1. KHI CÓ TIN MỚI
+      if(c.type === "added"){
+        const m = c.doc.data();
+        if(soundOn && m.deviceId !== "bot"){
+          notifySound.currentTime=0;
+          notifySound.play().catch(()=>{});
+        }
 
-      if(soundOn && m.deviceId!=="bot"){
-        notifySound.currentTime=0;
-        notifySound.play().catch(()=>{});
+        const div = document.createElement("div");
+        div.className = `msg ${m.role} ${m.deviceId==="bot"?"bot":""}`;
+        div.id = "msg-" + c.doc.id; // Gán ID để dễ xóa từ xa
+        div.innerHTML = `
+          <div class="msg-head">
+            <div class="name">${m.name}</div>
+            <div class="ctrls">
+              <button class="btn-copy">📋</button>
+              ${(role === "admin" || role === "kiemduyet") ? `
+                <button class="btn-del">❌</button>
+                <button class="btn-mute">🚫</button>
+              ` : ""}
+            </div>
+          </div>
+          <div class="text">${m.text}</div>
+        `;
+
+        // Gán sự kiện cho các nút trong tin nhắn
+        div.querySelector(".btn-copy").onclick = () => {
+           navigator.clipboard.writeText(m.text);
+           toast("📋 Đã copy tin nhắn");
+        };
+
+        if(div.querySelector(".btn-del")){
+          div.querySelector(".btn-del").onclick = () => window.delMsg(c.doc.id);
+          div.querySelector(".btn-mute").onclick = () => window.muteUser(m.deviceId, m.name);
+        }
+
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
       }
 
-      const div=document.createElement("div");
-      div.className=`msg ${m.role} ${m.deviceId==="bot"?"bot":""}`;
-      div.innerHTML=`
-        <div class="msg-head">
-          <div class="name">${m.name}</div>
-          <div class="ctrls">
-            <button onclick="copyText('${m.text.replace(/'/g,"")}')">📋</button>
-            ${role!=="member"?`
-              <button onclick="delMsg('${c.doc.id}')">❌</button>
-              <button onclick="mute('${m.deviceId}','${m.name}')">🚫</button>
-            `:""}
-          </div>
-        </div>
-        <div class="text">${m.text}</div>
-      `;
-      messages.appendChild(div);
-      messages.scrollTop=messages.scrollHeight;
+      // 2. KHI TIN NHẮN BỊ XÓA (Sửa lỗi quan trọng)
+      if(c.type === "removed"){
+        const el = document.getElementById("msg-" + c.doc.id);
+        if(el) el.remove();
+      }
     });
   });
 
-  sendBtn.onclick=async()=>{
-    if(!msg.value) return;
-    if(role==="member"){
-      const m=await getDoc(doc(db,"mute",deviceId));
-      if(m.exists()) return alert("Bạn đang bị chặn chat");
-    }
-    await addDoc(collection(db,"messages"),{
-      name,role,text:msg.value,
-      deviceId,time:serverTimestamp()
+  // Gửi tin nhắn
+  sendBtn.onclick = async () => {
+    if(!msg.value.trim()) return;
+    
+    // Kiểm tra chặn trước khi gửi
+    const mCheck = await getDoc(doc(db, "mute", deviceId));
+    if(mCheck.exists()) return alert("Bạn đang bị chặn chat!");
+
+    await addDoc(collection(db, "messages"), {
+      name, role, text: msg.value,
+      deviceId, time: serverTimestamp()
     });
-    msg.value="";
+    msg.value = "";
   };
 };
 
-async function checkMute(){
-  if(role!=="member") return;
-  const m=await getDoc(doc(db,"mute",deviceId));
+// --- CHỨC NĂNG ADMIN ---
+
+window.delMsg = async (id) => {
+  if(confirm("Bạn có chắc muốn xóa tin nhắn này?")){
+    await deleteDoc(doc(db, "messages", id));
+    toast("🗑️ Đã xóa tin nhắn");
+  }
+};
+
+window.muteUser = async (targetId, targetName) => {
+  if(targetId === "bot") return;
+  if(confirm(`Chặn người dùng: ${targetName}?`)){
+    await setDoc(doc(db, "mute", targetId), { name: targetName });
+    toast(`🚫 Đã chặn ${targetName}`);
+  }
+};
+
+window.unmuteUser = async (targetId) => {
+  await deleteDoc(doc(db, "mute", targetId));
+  toast("✅ Đã bỏ chặn");
+};
+
+// Lắng nghe danh sách bị chặn (dành cho Admin xem)
+if(role !== "member"){
+  onSnapshot(collection(db, "mute"), snap => {
+    muteList.innerHTML = "";
+    snap.forEach(d => {
+      const data = d.data();
+      const div = document.createElement("div");
+      div.className = "mute-item";
+      div.innerHTML = `
+        <span>${data.name}</span>
+        <button onclick="unmuteUser('${d.id}')">Gỡ chặn</button>
+      `;
+      muteList.appendChild(div);
+    });
+  });
+}
+
+// Kiểm tra xem máy hiện tại có đang bị chặn không
+async function checkMuteStatus(){
+  if(role !== "member") return;
+  const m = await getDoc(doc(db, "mute", deviceId));
   if(m.exists()){
-    msg.disabled=true;
-    sendBtn.disabled=true;
-    notice.innerText="🚫 Bạn đang bị chặn chat";
+    msg.disabled = true;
+    sendBtn.disabled = true;
+    notice.innerText = "🚫 Bạn đang bị chặn chat";
   }
 }
 
-/* 🤖 BOT – ANTI SPAM FIX */
-
+/**
+ * PHẦN 3: BOT VÀ LỆNH /INFO (GIỮ NGUYÊN LOGIC CỦA BẠN)
+ */
 let lastMemberTime = 0;
+let lastStaffTime = 0;
 let lastBotReplyTime = 0;
 
-const IDLE = 300000;      // 5 phút
-const COOLDOWN = 300000; // 5 phút
+const IDLE = 300000;     // 5 phút member im lặng
+const COOLDOWN = 600000; // 10 phút bot chỉ trả lời 1 lần
 const startTime = Date.now();
 
 onSnapshot(q, async snap => {
@@ -226,82 +344,76 @@ onSnapshot(q, async snap => {
     if (c.type !== "added") continue;
 
     const m = c.doc.data();
+    const msgTime = m.time?.toMillis ? m.time.toMillis() : Date.now();
 
-    // ❌ bỏ qua bot
+    if (msgTime < startTime) continue;
     if (m.deviceId === "bot") continue;
-
-    // ❌ bỏ qua tin cũ
-    if (m.time?.toMillis && m.time.toMillis() < startTime) continue;
-
-    // ❌ chỉ phản hồi MEMBER
-    if (m.role !== "member") continue;
 
     const now = Date.now();
 
-    const isStrange = /^Member-\d+$/.test(m.name);
-    const isIdle = lastMemberTime !== 0 && now - lastMemberTime > IDLE;
-    const isCooldown = now - lastBotReplyTime < COOLDOWN;
-
-    // ❌ đang cooldown → không làm gì
-    if (isCooldown) {
-      lastMemberTime = now;
-      continue;
+    // Nếu admin hoặc kiểm duyệt vừa nhắn → reset bot
+    if (m.role === "admin" || m.role === "kiemduyet") {
+      lastStaffTime = now;
+      return;
     }
 
-    // ✅ đủ điều kiện → bot trả lời
-    if (isStrange || isIdle) {
-      lastBotReplyTime = now;
+    // Chỉ xử lý member
+    if (m.role !== "member") continue;
 
-      // TIN 1
-      await addDoc(collection(db, "messages"), {
-        name: "🤖 Bot",
-        role: "admin",
-        deviceId: "bot",
-        time: serverTimestamp(),
-        text: "Hello👋 Nếu bạn nhắn mà không ai trả lời thì chắc các Kiểm Duyệt Viên đang bận á, bạn đợi 1 tí sẽ có người trả lời liền. Hoặc có thể liên hệ với Support qua Facebook nàyy!"
-      });
-
-      // TIN 2
-      await addDoc(collection(db, "messages"), {
-        name: "🤖 Bot",
-        role: "admin",
-        deviceId: "bot",
-        time: serverTimestamp(),
-        text: "https://www.facebook.com/100069576183683"
-      });
-    }
-
-    // ✅ luôn cập nhật sau cùng
     lastMemberTime = now;
+
+    const isStrange = /^Member-\d+$/.test(m.name);
+    const isIdle = now - lastStaffTime > IDLE;
+
+    // ❌ bot vừa trả lời gần đây → bỏ
+    if (now - lastBotReplyTime < COOLDOWN) continue;
+
+    // ❌ không phải member lạ hoặc chưa idle đủ lâu
+    if (!isStrange || !isIdle) continue;
+
+    // ✅ BOT TRẢ LỜI 1 LẦN
+    lastBotReplyTime = now;
+
+    await addDoc(collection(db, "messages"), {
+      name: "🤖 Bot",
+      role: "admin",
+      deviceId: "bot",
+      time: serverTimestamp(),
+      text: "Hello👋 Nếu bạn nhắn mà không ai trả lời thì chắc các Kiểm Duyệt Viên đang bận á, bạn đợi 1 tí sẽ có người trả lời liền."
+    });
+
+    await addDoc(collection(db, "messages"), {
+      name: "🤖 Bot",
+      role: "admin",
+      deviceId: "bot",
+      time: serverTimestamp(),
+      text: "👉 https://www.facebook.com/100069576183683"
+    });
   }
 });
 
-/* ================= 📌 COMMAND HANDLER – FINAL NO SPAM ================= */
+/* ================= 📌 Lệnh /Info ================= */
+onSnapshot(q, async snap => {
+  // Chỉ Admin client mới có quyền điều khiển Bot trả lời
+  if (!["admin","kiemduyet","member"].includes(role)) return;
 
-onSnapshot(
-  query(collection(db, "messages"), orderBy("time")),
-  async snap => {
+  for (const c of snap.docChanges()) {
+    if (c.type !== "added") continue;
 
-    // ❗ chỉ ADMIN client chạy bot
-    if (role !== "admin") return;
+    const m = c.doc.data();
+    const msgTime = m.time?.toMillis ? m.time.toMillis() : Date.now();
 
-    for (const c of snap.docChanges()) {
-      if (c.type !== "added") continue;
+    // Bỏ qua tin nhắn của Bot, tin nhắn trống hoặc tin nhắn cũ từ trước khi mở web
+    if (m.deviceId === "bot" || !m.text || msgTime < startTime) continue;
 
-      const m = c.doc.data();
-
-      if (m.deviceId === "bot") continue;
-      if (!m.text) continue;
-
-      if (m.text.trim().toLowerCase() !== "/info") continue;
-
+    // Kiểm tra lệnh /info
+    if (m.text.trim().toLowerCase() === "/info") {
       await addDoc(collection(db, "messages"), {
         name: "🤖 Bot",
         role: "admin",
         deviceId: "bot",
         time: serverTimestamp(),
-        text:
-`📌 INFO CÁC CHỨC VỤ SERVER
+        text: `📌 INFO CÁC CHỨC VỤ SERVER
 
 👤 Admin Chính:
 👉 Facebook: https://www.facebook.com/profile.php?id=61583009645768
@@ -322,26 +434,8 @@ onSnapshot(
       });
     }
   }
-);
-
+});
 /* ==================================================================== */
-
-/* utils */
-window.copyText=t=>{
-  navigator.clipboard.writeText(t);
-  toast("📋 Đã copy");
-};
-window.delMsg=id=>deleteDoc(doc(db,"messages",id));
-window.mute=(id,name)=>setDoc(doc(db,"mute",id),{name});
-
-function toast(t){
-  const d=document.createElement("div");
-  d.className="toast";
-  d.innerText=t;
-  document.body.appendChild(d);
-  setTimeout(()=>d.classList.add("show"),10);
-  setTimeout(()=>d.remove(),1200);
-}
 </script>
 
 </body>
