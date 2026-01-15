@@ -86,68 +86,19 @@ input, button{
   font-size:12px;
   margin:0;
 }
-
-/* Màu phần đăng nhập */
-.login-summary{
-  cursor:pointer;
-  background:#e6f1ff;
-  color:#1a4fb3;
-  padding:6px 10px;
-  border-radius:8px;
-  font-weight:bold;
-  border:1px solid #b6d4ff;
-
-  display:inline-block;   /* ⭐ QUAN TRỌNG */
-  width:fit-content;      /* ⭐ chỉ dài tới chữ */
-  max-width:100%;
-}
-
-
-/* Container bao quanh khung tin nhắn để định vị loading */
-#messages-container {
-    position: relative;
-    width: 100%;
-}
-
-/* Hiệu ứng xoay nằm gọn trong ô chat */
-#loading-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8); /* Nền trắng mờ để thấy tin nhắn bên dưới */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 99;
-    border: 1px solid #ccc; /* Khớp với viền của khung messages */
-    box-sizing: border-box;
-}
-
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #ff5ca8;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 </style>
 </head>
 <body>
 
 <div id="box">
 
-<div id="loading-screen">
-  <div class="spinner"></div>
-  <p>Đang Load Ticker GaConMc...</p>
+<div id="loginBox">
+  <h3>Đăng nhập</h3>
+  <input id="user" placeholder="Tài khoản">
+  <input id="pass" type="password" placeholder="Mật khẩu">
+  <button id="loginBtn">Đăng nhập</button>
+  <hr>
+  <button id="guestBtn">Vào với tư cách Member</button>
 </div>
 
 <div id="chatBox" style="display:none">
@@ -170,23 +121,12 @@ input, button{
   <button id="sendBtn">Gửi</button>
 </div>
 
-<div id="staffLogin" style="margin-top:6px;font-size:12px">
-  <details>
-    <summary class="login-summary">
-      🔐 Đăng nhập Admin / Kiểm Duyệt Viên
-    </summary>
-
-    <input id="staffUser" placeholder="Tài khoản">
-    <input id="staffPass" type="password" placeholder="Mật khẩu">
-    <button id="staffLoginBtn">Đăng nhập</button>
-  </details>
-</div>
 </div>
 
 <audio id="notifySound" src="boa.mp3"></audio>
 
 <script>
-/** * LOGIC GIAO DIỆN & ĐĂNG NHẬP 
+/** * PHẦN 1: LOGIC GIAO DIỆN & ĐĂNG NHẬP 
  */
 let role="", name="";
 let soundOn = localStorage.getItem("soundOn") !== "false";
@@ -197,48 +137,63 @@ if(!deviceId){
   localStorage.setItem("deviceId", deviceId);
 }
 
-staffLoginBtn.onclick = () => {
-  const u = staffUser.value.trim();
-  const p = staffPass.value.trim();
+loginBtn.onclick = () => {
 
+  const u = user.value.trim();
+  const p = pass.value.trim();
+
+  /* ===== MAP TÀI KHOẢN -> SỐ (CÓ NHIỄU) ===== */
   const USER_NUM = {
+    "admin": 1,
+    "admin3124": 8,
     "admin1409": 4,
+    "admin1234": 6,
+
+    "kiemduyetvien2007": 3,
+    "kiemduyetsever2007": 2,
     "kiemduyet2007": 7
   };
 
+  /* ===== MAP MẬT KHẨU -> SỐ (CÓ NHIỄU) ===== */
   const PASS_NUM = {
+    "admin7": 1,
     "140907": 5,
-    "678678": 9
+    "431676": 2,
+    "137631": 8,
+
+    "678678": 9,
+    "321321": 3,
+    "861461": 7
   };
 
-  // ===== ADMIN =====
-  if (USER_NUM[u] === 4 && PASS_NUM[p] === 5) {
+  const uNum = USER_NUM[u];
+  const pNum = PASS_NUM[p];
+
+  if (uNum === 4 && pNum === 5) {
     role = "admin";
     name = "Admin";
-
-    staffLogin.style.display = "none"; // ✅ Ẩn form login
-    start();                            // ✅ GỌI START
-
-    toast("✅ Đăng nhập Admin");
+    start();
     return;
   }
 
-  // ===== KIỂM DUYỆT =====
-  if (USER_NUM[u] === 7 && PASS_NUM[p] === 9) {
+  if (uNum === 7 && pNum === 9) {
     role = "kiemduyet";
     name = "Kiểm Duyệt Viên";
-
-    staffLogin.style.display = "none";
-    start();                            // ✅ GỌI START
-
-    toast("✅ Đăng nhập Kiểm Duyệt");
+    start();
     return;
   }
 
   alert("Sai tài khoản hoặc mật khẩu");
 };
 
+guestBtn.onclick=()=>{
+  role="member";
+  name="Member-"+Math.floor(Math.random()*1000);
+  start();
+};
+
 function start(){
+  loginBox.style.display="none";
   chatBox.style.display="block";
   roleText.innerText="Bạn là: "+name;
 
@@ -252,10 +207,11 @@ function start(){
   if(role === "admin" || role === "kiemduyet"){
     toggleMuteBtn.style.display = "block";
     toggleMuteBtn.onclick = ()=>{
-      muteBox.style.display = muteBox.style.display === "none" ? "block" : "none";
+      muteBox.style.display = (muteBox.style.display === "none" ? "block" : "none");
     };
   }
 
+  // Khởi tạo chat từ module
   window.initChat();
 }
 
@@ -545,45 +501,6 @@ onSnapshot(q, async snap => {
 });
 
 /* ==================================================================== */
-
-/* ===== AUTO MEMBER ===== */
-window.addEventListener("load", () => {
-  if (!role) {
-    role = "member";
-
-    // giữ tên cũ nếu reload
-    name = localStorage.getItem("memberName");
-    if (!name) {
-      name = "Member-" + Math.floor(Math.random() * 10000);
-      localStorage.setItem("memberName", name);
-    }
-
-    start();
-  }
-});
-
-/* ===== AUTO MEMBER & LOADING ===== */
-window.addEventListener("load", () => {
-  // Hiệu ứng chờ 3 giây
-  setTimeout(() => {
-    const loader = document.getElementById('loading-screen');
-    if(loader) {
-      loader.style.transition = "0.5s";
-      loader.style.opacity = "0";
-      setTimeout(() => loader.remove(), 500); // Xóa hẳn sau khi mờ đi
-    }
-  }, 900); // 3000ms = 3 giây
-
-  if (!role) {
-    role = "member";
-    name = localStorage.getItem("memberName");
-    if (!name) {
-      name = "Member-" + Math.floor(Math.random() * 10000);
-      localStorage.setItem("memberName", name);
-    }
-    start();
-  }
-});
 </script>
 
 </body>
