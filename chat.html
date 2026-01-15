@@ -199,6 +199,30 @@
     z-index: 50; /* nổi lên trên */
 }
 
+/* hỗ trợ chữ để đẩy đăng nhập lên */
+.admin-login-note {
+    background: #d9edfa;
+    border: 3px solid #fffb00;
+    color: #0077ff;
+
+    padding: 6px 16px;
+    border-radius: 14px;
+
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+    font-size: 16px;
+    font-weight: 800;          /* 🔥 IN ĐẬM RÕ */
+    letter-spacing: 0.4px;
+    line-height: 1.6;
+
+    text-align: center;
+
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
     </style>
 </head>
 <body>
@@ -255,9 +279,15 @@
                 <div class="login-form-inner">
                     <input id="staffUser" placeholder="Tên đăng nhập">
                     <input id="staffPass" type="password" placeholder="Mật khẩu">
-                    <button id="staffLoginBtn">OK</button>
+                    <button id="staffLoginBtn">Đăng Nhập</button>
                 </div>
             </details>
+            
+            <!-- 👇 DÒNG CHỮ MỚI -->
+            <div class="admin-login-note">
+            ⭐ TICKER CHAT SERVER GÀ CON MC ⭐
+            </div>
+        </details>
         </div>
     </div>
 </div>
