@@ -137,12 +137,53 @@ if(!deviceId){
   localStorage.setItem("deviceId", deviceId);
 }
 
-loginBtn.onclick=()=>{
-  if(user.value==="admin1409" && pass.value==="140907"){
-    role="admin"; name="Admin"; start();
-  } else if(user.value==="kiemduyet2007" && pass.value==="678678"){
-    role="kiemduyet"; name="Kiểm Duyệt Viên"; start();
-  } else alert("Sai tài khoản");
+loginBtn.onclick = () => {
+
+  const u = user.value.trim();
+  const p = pass.value.trim();
+
+  /* ===== MAP TÀI KHOẢN -> SỐ (CÓ NHIỄU) ===== */
+  const USER_NUM = {
+    "admin": 1,
+    "admin3124": 8,
+    "admin1409": 4,
+    "admin1234": 6,
+
+    "kiemduyetvien2007": 3,
+    "kiemduyetsever2007": 2,
+    "kiemduyet2007": 7
+  };
+
+  /* ===== MAP MẬT KHẨU -> SỐ (CÓ NHIỄU) ===== */
+  const PASS_NUM = {
+    "admin7": 1,
+    "140907": 5,
+    "431676": 2,
+    "137631": 8,
+
+    "678678": 9,
+    "321321": 3,
+    "861461": 7
+  };
+
+  const uNum = USER_NUM[u];
+  const pNum = PASS_NUM[p];
+
+  if (uNum === 4 && pNum === 5) {
+    role = "admin";
+    name = "Admin";
+    start();
+    return;
+  }
+
+  if (uNum === 7 && pNum === 9) {
+    role = "kiemduyet";
+    name = "Kiểm Duyệt Viên";
+    start();
+    return;
+  }
+
+  alert("Sai tài khoản hoặc mật khẩu");
 };
 
 guestBtn.onclick=()=>{
