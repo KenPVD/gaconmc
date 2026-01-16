@@ -178,7 +178,7 @@
 
     position: absolute;
     left: 50%;
-    top: 7%;              /* đẩy xuống dưới khung trắng */
+    top: 69%;              /* đẩy xuống dưới khung trắng */
     transform: translateX(-50%);
     margin-top: 7px;
 
@@ -217,8 +217,8 @@
 
     text-align: center;
 
-    margin-top: 12px;
-    margin-bottom: 12px;
+    margin-top: 10px;
+    margin-bottom: -2px;
 
     box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
@@ -285,7 +285,7 @@
             
             <!-- 👇 DÒNG CHỮ MỚI -->
             <div class="admin-login-note">
-            ⭐TICKER CHAT SERVER GCMC⭐
+            ⭐ TICKER CHAT SERVER GÀ CON MC ⭐
             </div>
         </details>
         </div>
@@ -358,7 +358,7 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
                         </div>
                     </div>
                     <div class="text">${data.text || ""}</div>
-                    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...'}</div>
+                    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Vừa xong'}</div>
                 `;
                 document.getElementById('messages').appendChild(div);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
@@ -571,6 +571,24 @@ onSnapshot(doc(db, "mute", deviceId), (snap) => {
         muteNotice.style.display = "none";
     }
 });
+
+// sửa lỗi âm thanh thông báo ko hoạt động
+let audioUnlocked = false;
+const audio = document.getElementById("notifySound");
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audioUnlocked = true;
+        console.log("🔓 Audio unlocked");
+    }).catch(()=>{});
+}
+
+// chỉ cần 1 lần click bất kỳ
+document.addEventListener("click", unlockAudio, { once: true });
+document.addEventListener("touchstart", unlockAudio, { once: true });
 
 </script>
 </body>
