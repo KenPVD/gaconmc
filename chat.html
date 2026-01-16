@@ -242,6 +242,18 @@
 </head>
 <body>
 
+<div id="nicknameModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:360px; box-shadow:0 15px 35px rgba(0,0,0,0.2); text-align:center;">
+        <h2 style="margin:0 0 10px 0; color:#333; font-size:18px;">✨ Đặt biệt danh</h2>
+        <p id="targetInfo" style="font-size:12px; color:#777; margin-bottom:15px;"></p>
+        <input type="text" id="newNicknameInput" style="width:100%; padding:12px; border:2px solid #eee; border-radius:10px; margin-bottom:15px; outline:none; font-size:15px; box-sizing:border-box;">
+        <div style="display:flex; gap:10px;">
+            <button onclick="window.closeNicknameModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">Hủy</button>
+            <button id="confirmNicknameBtn" style="flex:1; padding:10px; border:none; border-radius:8px; background:#ff5ca8; color:white; cursor:pointer;">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
 <div id="toast"></div>
 
 <div id="loading-screen">
@@ -370,20 +382,24 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
                 const div = document.createElement("div");
                 div.className = `msg ${isMe ? 'me' : 'other'} ${data.role} ${data.deviceId === 'bot' ? 'bot' : ''}`;
                 div.id = "msg-" + id;
-                div.innerHTML = `
-                    <div class="msg-head">
-                        <span class="name">${data.name}</span>
-                        <div class="ctrls">
-                            <button onclick="copyTxt('${(data.text||'').replace(/'/g, "\\'")}')">📋</button>
-                            ${(role === "admin" || role === "kiemduyet") ? `
-                                <button onclick="window.delMsg('${id}')" style="color:red">❌</button>
-                                <button onclick="window.muteUser('${data.deviceId}','${data.name}')" style="color:orange">🚫</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="text">${formatText(data.text || "")}</div>
-                    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Vừa xong'}</div>
-                `;
+
+div.innerHTML = `
+    <div class="msg-head">
+        <span class="name" id="name-${id}">${data.name}</span>
+        <div class="ctrls">
+            <button onclick="copyTxt('${(data.text||'').replace(/'/g, "\\'")}')">📋</button>
+            
+            <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">📝</button>
+
+            ${(role === "admin" || role === "kiemduyet") ? `
+                <button onclick="window.delMsg('${id}')" style="color:red">❌</button>
+                <button onclick="window.muteUser('${data.deviceId}','${data.name}')" style="color:orange">🚫</button>
+            ` : ''}
+        </div>
+    </div>
+    <div class="text">${formatText(data.text || "")}</div>
+    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Vừa xong'}</div>
+`;
                 document.getElementById('messages').appendChild(div);
                 document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
                 if (!isMe && isSoundEnabled && data.deviceId !== "bot" && data.time?.toMillis() > Date.now() - 5000) {
@@ -420,16 +436,7 @@ const BOT_COMMANDS = {
 👉 FB: https://www.facebook.com/profile.php?id=61574102743872
 👉 FB: https://www.facebook.com/profile.php?id=61578659525630
 
-❤️ Liên hệ để được hỗ trợ ❤️`,
-
-  "/luatsever": `📜 LUẬT SERVER GCMC
-
-❌ Cấm spam / quảng cáo
-❌ Cấm xúc phạm, toxic
-❌ Cấm gửi link độc hại
-✅ Tôn trọng QTV & Admin
-
-⚠️ Vi phạm sẽ bị mute hoặc ban`
+❤️ Liên hệ để được hỗ trợ ❤️`
 };
 
 // 🛡️ chống spam & reload
@@ -801,6 +808,79 @@ const formatText = (text) => {
     });
 };
 
+let currentMsgId = null; // Lưu ID tin nhắn cụ thể
+
+// --- LOGIC ĐỔI BIỆT DANH ---
+// 1. Hàm mở bảng
+window.setNickname = (msgId, targetDeviceId, targetRole, currentName) => {
+    let canEdit = (role === "admin") || (role === "kiemduyet" && targetRole !== "admin") || (targetDeviceId === deviceId);
+    if (!canEdit) return alert("⛔ Không có quyền!");
+
+    currentMsgId = msgId; // Lưu lại ID tin nhắn này
+    document.getElementById('targetInfo').innerText = `Đổi biệt danh: ${currentName}`;
+    document.getElementById('newNicknameInput').value = currentName;
+    document.getElementById('nicknameModal').style.display = 'flex';
+};
+
+// 2. Hàm đóng bảng
+window.closeNicknameModal = () => {
+    document.getElementById('nicknameModal').style.display = 'none';
+};
+
+// 3. Xử lý nút Xác nhận (Bản Fix lỗi Admin bị biến thành Member)
+document.getElementById('confirmNicknameBtn').onclick = async () => {
+    let newName = document.getElementById('newNicknameInput').value.trim();
+    if (!currentMsgId) return window.closeNicknameModal();
+
+    // Tạm thời đóng bảng để người dùng thấy chat
+    window.closeNicknameModal();
+    
+    try {
+        const msgRef = doc(db, "messages", currentMsgId);
+        const targetMsgDoc = await getDoc(msgRef);
+        
+        if (!targetMsgDoc.exists()) return;
+        const targetData = targetMsgDoc.data();
+
+        // --- LOGIC 1: CHẶN ĐỔI TÊN BOT ---
+        if (targetData.deviceId === "bot") {
+            showToast("❌ Không thể đổi tên hệ thống!");
+            return; 
+        }
+
+        // --- LOGIC 2: NẾU TRỐNG THÌ TRẢ VỀ TÊN THEO CHỨC VỤ ---
+        if (newName === "") {
+            if (targetData.role === "admin") {
+                newName = "Admin";
+            } else if (targetData.role === "kiemduyet") {
+                newName = "KiểmDuyệt-" + Math.floor(1000 + Math.random() * 9000);
+            } else {
+                newName = "Member-" + Math.floor(1000 + Math.random() * 9000);
+            }
+        }
+
+        showToast("⏳ Đang lưu...");
+        
+        // Cập nhật biệt danh vào Firebase
+        await setDoc(msgRef, { name: newName }, { merge: true });
+
+        // Nếu là chính mình thì lưu vào máy để lần sau nhắn tin dùng tên mới
+        if (targetData.deviceId === deviceId) {
+            localStorage.setItem("memberName", newName);
+        }
+        
+        showToast("✅ Đã đổi! Đang tải lại...");
+
+        // Reload trang để cập nhật UI
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+
+    } catch (e) {
+        console.error(e);
+        alert("Lỗi: " + e.message);
+    }
+};
 </script>
 </body>
 </html>
