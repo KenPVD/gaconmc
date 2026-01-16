@@ -223,6 +223,21 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
+/* Màu link xanh, không gạch chân */
+.chat-link {
+    color: #0084ff; 
+    text-decoration: none; 
+    font-weight: 500;
+    word-break: break-all; /* Tránh tràn khung nếu link quá dài */
+    transition: color 0.2s;
+}
+
+/* Hiệu ứng khi di chuột vào link */
+.chat-link:hover {
+    color: #0056b3;
+    text-decoration: none; /* Vẫn giữ không gạch chân khi hover */
+}
+
     </style>
 </head>
 <body>
@@ -255,8 +270,8 @@
 
             
             <div class="header-btns">
-                
                 <div class="header-btns">
+    
     <button id="soundToggle" class="sound-btn">🔊</button>
     
     <button id="adminChatToggle" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #e74c3c; background: white; color: #e74c3c; cursor: pointer; font-weight: bold; margin-right: 5px;">🔒 KHÓA CHAT</button>
@@ -366,7 +381,7 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
                             ` : ''}
                         </div>
                     </div>
-                    <div class="text">${data.text || ""}</div>
+                    <div class="text">${formatText(data.text || "")}</div>
                     <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Vừa xong'}</div>
                 `;
                 document.getElementById('messages').appendChild(div);
@@ -381,48 +396,84 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
 
     import { runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* ==================================================================== 
-   BOT PHẦN 1: LỆNH /INFO (CHỈ TAB GỬI MỚI ĐƯỢC PHẢN HỒI)
-   ==================================================================== */
-const handledInfo = new Set();
-let lastInfoTime = 0; 
+/* =========================================================
+   BOT COMMAND SYSTEM (ANTI SPAM – ANTI RELOAD – ANTI MULTI TAB)
+   ========================================================= */
 
-onSnapshot(qMessages, async snap => {
-    for (const c of snap.docChanges()) {
-        if (c.type !== "added") continue;
+// 📜 DANH SÁCH LỆNH (thêm lệnh mới chỉ cần thêm dòng)
+const BOT_COMMANDS = {
+  "/info": `📌 INFO CÁC QUẢN TRỊ SERVER
 
-        const m = c.doc.data();
-        const mid = c.doc.id;
+👤 Admin Chính:
+👉 FB: https://www.facebook.com/profile.php?id=61583009645768
 
-        // Bỏ qua tin cũ, tin của bot, hoặc tin đã xử lý
-        if (m.time && m.time.toMillis() < startTime) continue;
-        if (m.deviceId === "bot" || handledInfo.has(mid)) continue;
-        handledInfo.add(mid);
+👤 Admin Phụ:
+👉 FB: https://www.facebook.com/thu.trang.1401207
 
-        if (m.text?.trim().toLowerCase() === "/info") {
-            const now = Date.now();
+👤 Các QTV:
+👉 FB: https://www.facebook.com/MrSomeOne1
+👉 FB: https://www.facebook.com/profile.php?id=61582928121714
 
-            /* GIỐNG PHẦN 2: 
-               Chỉ thiết bị vừa gửi tin nhắn (m.deviceId === deviceId) 
-               mới được quyền ra lệnh cho Bot phản hồi.
-            */
-            if (m.deviceId === deviceId && (now - lastInfoTime > 5000)) {
-                lastInfoTime = now; // Chống spam 5 giây tại máy đó
+👤 Các Support:
+👉 FB: https://www.facebook.com/nguyen.chi.anh.853868
+👉 FB: https://www.facebook.com/le.tuan.anh.347063
+👉 FB: https://www.facebook.com/profile.php?id=61574102743872
+👉 FB: https://www.facebook.com/profile.php?id=61578659525630
 
-                try {
-                    await addDoc(collection(db, "messages"), {
-                        name: "🤖 Bot",
-                        role: "admin",
-                        deviceId: "bot",
-                        time: serverTimestamp(),
-                        text: `📌 INFO CÁC QUẢN TRỊ SERVER\n\n👤 Admin Chính:\n👉 FB: https://www.facebook.com/profile.php?id=61583009645768\n\n👤 Admin Phụ:\n👉 FB: https://www.facebook.com/thu.trang.1401207\n\n👤 Các QTV:\n👉 FB: https://www.facebook.com/MrSomeOne1\n👉 FB: https://www.facebook.com/profile.php?id=61582928121714\n\n👤 Các Support:\n👉 FB: https://www.facebook.com/nguyen.chi.anh.853868\n👉 FB: https://www.facebook.com/le.tuan.anh.347063\n👉 FB: https://www.facebook.com/profile.php?id=61574102743872\n👉 FB: https://www.facebook.com/profile.php?id=61578659525630\n\n❤️ Liên hệ để được hỗ trợ ❤️`
-                    });
-                } catch (e) {
-                    console.error("Bot gửi info lỗi:", e);
-                }
-            }
-        }
+❤️ Liên hệ để được hỗ trợ ❤️`,
+
+  "/luatsever": `📜 LUẬT SERVER GCMC
+
+❌ Cấm spam / quảng cáo
+❌ Cấm xúc phạm, toxic
+❌ Cấm gửi link độc hại
+✅ Tôn trọng QTV & Admin
+
+⚠️ Vi phạm sẽ bị mute hoặc ban`
+};
+
+// 🛡️ chống spam & reload
+const handledCmd = new Set();   // mỗi tin xử lý 1 lần
+let lastCmdTime = 0;            // cooldown theo thiết bị
+const CMD_COOLDOWN = 5000;      // 5 giây
+
+onSnapshot(qMessages, async (snap) => {
+  for (const c of snap.docChanges()) {
+    if (c.type !== "added") continue;
+
+    const m = c.doc.data();
+    const mid = c.doc.id;
+
+    // ❌ bỏ tin cũ, bot, tin đã xử lý
+    if (m.time && m.time.toMillis() < startTime) continue;
+    if (m.deviceId === "bot") continue;
+    if (handledCmd.has(mid)) continue;
+
+    const cmd = m.text?.trim().toLowerCase();
+    if (!BOT_COMMANDS[cmd]) continue;
+
+    handledCmd.add(mid);
+
+    const now = Date.now();
+
+    // 🔒 chỉ TAB gửi lệnh mới được bot trả lời + cooldown
+    if (m.deviceId !== deviceId) continue;
+    if (now - lastCmdTime < CMD_COOLDOWN) continue;
+
+    lastCmdTime = now;
+
+    try {
+      await addDoc(collection(db, "messages"), {
+        name: "🤖 Bot",
+        role: "admin",
+        deviceId: "bot",
+        time: serverTimestamp(),
+        text: BOT_COMMANDS[cmd]
+      });
+    } catch (e) {
+      console.error("BOT CMD ERROR:", e);
     }
+  }
 });
 
 /* ==================================================================== 
@@ -528,14 +579,27 @@ onSnapshot(qMessages, async snap => {
     };
 
     document.getElementById('staffLoginBtn').onclick = () => {
-        const u = document.getElementById('staffUser').value.trim();
-        const p = document.getElementById('staffPass').value.trim();
-        if (u === "admin1409" && p === "140907") { role = "admin"; name = "Admin"; }
-        else if (u === "kiemduyet2007" && p === "678678") { role = "kiemduyet"; name = "Kiểm Duyệt Viên"; }
-        else return alert("Sai!");
-        localStorage.setItem("userRole", role); localStorage.setItem("memberName", name);
-        location.reload();
-    };
+    const u = document.getElementById('staffUser').value.trim();
+    const p = document.getElementById('staffPass').value.trim();
+
+    const suffix = Math.floor(Math.random() * 10000); // số xxx
+
+    if (u === "admin1409" && p === "140907") {
+        role = "admin";
+        name = "Admin";
+    }
+    else if (u === "kiemduyet2007" && p === "678678") {
+        role = "kiemduyet";
+        name = "KiểmDuyệt-" + suffix;
+    }
+    else {
+        return alert("Sai tài khoản hoặc mật khẩu!");
+    }
+
+    localStorage.setItem("userRole", role);
+    localStorage.setItem("memberName", name);
+    location.reload();
+};
 
     document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.reload(); };
 
@@ -727,6 +791,15 @@ document.getElementById('chatForm').addEventListener('submit', (e) => {
         msgInput.value = "";
     }
 });
+
+// Hàm biến chữ thành link có thể bấm được
+const formatText = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        // text-decoration: none để bỏ gạch chân
+        return `<a href="${url}" target="_blank" class="chat-link">${url}</a>`;
+    });
+};
 
 </script>
 </body>
