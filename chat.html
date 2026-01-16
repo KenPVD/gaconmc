@@ -389,7 +389,7 @@ div.innerHTML = `
         <div class="ctrls">
             <button onclick="copyTxt('${(data.text||'').replace(/'/g, "\\'")}')">📋</button>
             
-            <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">📝</button>
+            <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">✏️</button>
 
             ${(role === "admin" || role === "kiemduyet") ? `
                 <button onclick="window.delMsg('${id}')" style="color:red">❌</button>
