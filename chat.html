@@ -334,7 +334,7 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
         soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
     };
 
-    const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(40));
+    const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(100));
 
     // Lắng nghe tin nhắn để hiển thị UI
     onSnapshot(qMessages, (snap) => {
@@ -385,7 +385,8 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
                 handledInfo.add(mid);
                 await addDoc(collection(db, "messages"), {
                     name: "🤖 Bot", role: "admin", deviceId: "bot", time: serverTimestamp(),
-                    text: `📌 INFO CÁC CHỨC VỤ SERVER\n\n👤 Admin Chính:\n👉 FB: https://www.facebook.com/profile.php?id=61583009645768\n\n👤 Admin Phụ:\n👉 FB: https://www.facebook.com/thu.trang.1401207\n\n👤 Các QTV:\n👉 FB: https://www.facebook.com/MrSomeOne1\n👉 FB: https://www.facebook.com/profile.php?id=61582928121714\n\n❤️ Liên hệ để được hỗ trợ ❤️`
+                    text: `📌 INFO CÁC QUẢN TRỊ SERVER\n\n👤 Admin Chính:\n👉 FB: https://www.facebook.com/profile.php?id=61583009645768\n\n👤 Admin Phụ:\n👉 FB: https://www.facebook.com/thu.trang.1401207\n\n👤 Các QTV:\n👉 FB: https://www.facebook.com/MrSomeOne1\n👉 FB: https://www.facebook.com/profile.php?id=61582928121714\n
+                    👤Các Support\n👉 FB: https://www.facebook.com/nguyen.chi.anh.853868 \n👉 FB: https://www.facebook.com/le.tuan.anh.347063\n👉 FB: https://www.facebook.com/profile.php?id=61574102743872\n👉 FB: https://www.facebook.com/profile.php?id=61578659525630\n\n❤️ Liên hệ để được hỗ trợ ❤️`
                 });
             }
         }
