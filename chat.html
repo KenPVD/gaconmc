@@ -255,8 +255,15 @@
 
             
             <div class="header-btns">
-                <button id="soundToggle" class="sound-btn">🔊</button>
-                <button id="toggleMuteBtn" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #ddd; background: white; cursor: pointer;">🚫 DS Chặn</button>
+                
+                <div class="header-btns">
+    <button id="soundToggle" class="sound-btn">🔊</button>
+    
+    <button id="adminChatToggle" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #e74c3c; background: white; color: #e74c3c; cursor: pointer; font-weight: bold; margin-right: 5px;">🔒 KHÓA CHAT</button>
+    
+    <button id="toggleMuteBtn" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #ddd; background: white; cursor: pointer;">🚫 DS Chặn</button>
+</div>
+                
             </div>
         </div>
 
@@ -269,9 +276,11 @@
 
         <div class="input-area">
             <div id="notice" style="color:red; font-size: 11px; margin-bottom: 6px; text-align: center; font-weight: bold;"></div>
-            <div class="input-wrap">
-                <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
-            </div>
+            <form id="chatForm" onsubmit="return false;">
+    <div class="input-wrap">
+        <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
+    </div>
+</form>
             <button id="sendBtn">GỬI TIN NHẮN</button>
 
             <details class="admin-login-card" id="loginDetails">
@@ -494,10 +503,24 @@ onSnapshot(qMessages, async snap => {
     };
 
     const sendMsg = async (text) => {
-        const mCheck = await getDoc(doc(db, "mute", deviceId));
-        if (mCheck.exists()) return alert("Bạn bị chặn!");
-        await addDoc(collection(db, "messages"), { name, role, text, deviceId, time: serverTimestamp() });
-    };
+    // 1. Kiểm tra chặn cá nhân
+    const mCheck = await getDoc(doc(db, "mute", deviceId));
+    if (mCheck.exists()) return alert("Bạn bị chặn!");
+
+    // 2. Kiểm tra khóa chat toàn server
+    // Cho phép 'admin' và 'kiemduyet' gửi tin nhắn kể cả khi đang khóa
+    if (isChatLocked && role === "member") {
+        return alert("Phòng chat đang khóa, bạn không thể gửi tin lúc này!");
+    }
+
+    await addDoc(collection(db, "messages"), { 
+        name, 
+        role, 
+        text, 
+        deviceId, 
+        time: serverTimestamp() 
+    });
+};
 
     document.getElementById('sendBtn').onclick = () => {
         const i = document.getElementById('msg');
@@ -614,6 +637,96 @@ function unlockAudio() {
 // chỉ cần 1 lần click bất kỳ
 document.addEventListener("click", unlockAudio, { once: true });
 document.addEventListener("touchstart", unlockAudio, { once: true });
+
+// --- LOGIC BẬT/TẮT CHAT TOÀN SERVER (ĐÃ CẬP NHẬT) ---
+const chatToggleButton = document.getElementById('adminChatToggle');
+let isChatLocked = false;
+
+onSnapshot(doc(db, "settings", "chatStatus"), (docSnap) => {
+    const data = docSnap.exists() ? docSnap.data() : { locked: false };
+    isChatLocked = data.locked;
+    
+    const msgInput = document.getElementById('msg');
+    const sendBtn = document.getElementById('sendBtn');
+    const notice = document.getElementById('notice');
+
+    if (isChatLocked) {
+        // Giao diện nút cho quản trị
+        chatToggleButton.innerText = "🔓 MỞ CHAT";
+        chatToggleButton.style.color = "#2ecc71";
+        chatToggleButton.style.borderColor = "#2ecc71";
+        
+        // Cả Kiểm duyệt và Member đều thấy dòng này
+        notice.innerText = "⚠️ Phòng chat hiện đang ở chế độ CHỈ XEM.";
+
+        if (role === "member") {
+            // Member bị khóa
+            msgInput.disabled = true;
+            msgInput.placeholder = "Hệ thống đang tạm khóa chat...";
+            sendBtn.style.background = "#ccc";
+            sendBtn.style.cursor = "not-allowed";
+        } else {
+            // Admin & Kiểm duyệt viên VẪN NHẮN ĐƯỢC
+            msgInput.disabled = false;
+            msgInput.placeholder = "Chat đang khóa (Bạn vẫn có quyền gửi)...";
+            sendBtn.style.background = "var(--primary-color)";
+            sendBtn.style.cursor = "pointer";
+        }
+    } else {
+        // Trạng thái mở chat bình thường
+        chatToggleButton.innerText = "🔒 KHÓA CHAT";
+        chatToggleButton.style.color = "#e74c3c";
+        chatToggleButton.style.borderColor = "#e74c3c";
+
+        msgInput.disabled = false;
+        msgInput.placeholder = "Nhập tin nhắn...";
+        sendBtn.style.background = "var(--primary-color)";
+        sendBtn.style.cursor = "pointer";
+        notice.innerText = "";
+    }
+});
+
+// Sự kiện nhấn nút cho Admin
+chatToggleButton.onclick = async () => {
+    if (role !== "admin") return;
+    await setDoc(doc(db, "settings", "chatStatus"), {
+        locked: !isChatLocked,
+        updatedBy: name
+    });
+    showToast(isChatLocked ? "✅ Đã mở chat" : "🔒 Đã khóa chat");
+};
+
+// Cập nhật hiển thị nút khi load trang (Sửa lại đoạn setTimeout cuối của bạn)
+setTimeout(() => {
+    if(role === "admin") {
+        chatToggleButton.style.display = "inline-block";
+    }
+}, 1100);
+
+// --- XỬ LÝ NHẤN ENTER ĐỂ GỬI TIN ---
+const msgInput = document.getElementById('msg');
+
+msgInput.addEventListener('keydown', (e) => {
+    // Kiểm tra nếu là phím Enter (keyCode 13) và không nhấn cùng phím Shift
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault(); // Ngăn việc xuống dòng trong input
+        const text = msgInput.value.trim();
+        if (text) {
+            sendMsg(text); // Gọi hàm gửi tin nhắn
+            msgInput.value = ""; // Xóa nội dung input sau khi gửi
+        }
+    }
+});
+
+// Hỗ trợ thêm cho các dòng điện thoại đời cũ (Sự kiện submit form)
+document.getElementById('chatForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = msgInput.value.trim();
+    if (text) {
+        sendMsg(text);
+        msgInput.value = "";
+    }
+});
 
 </script>
 </body>
