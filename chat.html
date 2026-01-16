@@ -374,23 +374,52 @@ let isInitialLoad = true; // Biến này để biết lúc nào là mới load x
        BOT PHẦN 1: LỆNH /INFO (LUÔN CHẠY RIÊNG)
        ==================================================================== */
     const handledInfo = new Set();
-    onSnapshot(qMessages, async snap => {
-        for (const c of snap.docChanges()) {
-            if (c.type !== "added") continue;
-            const m = c.doc.data();
-            const mid = c.doc.id;
-            if (handledInfo.has(mid) || m.deviceId === "bot") continue;
 
-            if (m.text && m.text.trim().toLowerCase() === "/info") {
-                handledInfo.add(mid);
-                await addDoc(collection(db, "messages"), {
-                    name: "🤖 Bot", role: "admin", deviceId: "bot", time: serverTimestamp(),
-                    text: `📌 INFO CÁC QUẢN TRỊ SERVER\n\n👤 Admin Chính:\n👉 FB: https://www.facebook.com/profile.php?id=61583009645768\n\n👤 Admin Phụ:\n👉 FB: https://www.facebook.com/thu.trang.1401207\n\n👤 Các QTV:\n👉 FB: https://www.facebook.com/MrSomeOne1\n👉 FB: https://www.facebook.com/profile.php?id=61582928121714\n
-                    👤 Các Support\n👉 FB: https://www.facebook.com/nguyen.chi.anh.853868 \n👉 FB: https://www.facebook.com/le.tuan.anh.347063\n👉 FB: https://www.facebook.com/profile.php?id=61574102743872\n👉 FB: https://www.facebook.com/profile.php?id=61578659525630\n\n❤️ Liên hệ để được hỗ trợ ❤️`
-                });
-            }
+onSnapshot(qMessages, async snap => {
+    for (const c of snap.docChanges()) {
+        if (c.type !== "added") continue;
+
+        const m = c.doc.data();
+        const mid = c.doc.id;
+
+        // Bỏ bot & trùng
+        if (m.deviceId === "bot") continue;
+        if (handledInfo.has(mid)) continue;
+
+        // 🔥 CHỈ CHẶN TIN CŨ KHI CÓ TIME
+        if (m.time && m.time.toMillis() < startTime) continue;
+
+        handledInfo.add(mid);
+
+        if (m.text?.trim().toLowerCase() === "/info") {
+            await addDoc(collection(db, "messages"), {
+                name: "🤖 Bot",
+                role: "admin",
+                deviceId: "bot",
+                time: serverTimestamp(),
+                text: `📌 INFO CÁC QUẢN TRỊ SERVER
+
+👤 Admin Chính:
+👉 FB: https://www.facebook.com/profile.php?id=61583009645768
+
+👤 Admin Phụ:
+👉 FB: https://www.facebook.com/thu.trang.1401207
+
+👤 Các QTV:
+👉 FB: https://www.facebook.com/MrSomeOne1
+👉 FB: https://www.facebook.com/profile.php?id=61582928121714
+
+👤 Các Support:
+👉 FB: https://www.facebook.com/nguyen.chi.anh.853868
+👉 FB: https://www.facebook.com/le.tuan.anh.347063
+👉 FB: https://www.facebook.com/profile.php?id=61574102743872
+👉 FB: https://www.facebook.com/profile.php?id=61578659525630
+
+❤️ Liên hệ để được hỗ trợ ❤️`
+            });
         }
-    });
+    }
+});
 
 /* ==================================================================== 
        BOT PHẦN 2: PHẢN HỒI MEMBER LẠ & TỰ ĐỘNG NHẮC SAU 5 PHÚT (FIX SPAM RELOAD)
