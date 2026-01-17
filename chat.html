@@ -232,12 +232,48 @@
     transition: color 0.2s;
 }
 
-/* Hiệu ứng khi di chuột vào link */
-.chat-link:hover {
-    color: #0056b3;
-    text-decoration: none; /* Vẫn giữ không gạch chân khi hover */
+/* ===== FIX INPUT + NÚT GỬI NHỎ GỌN ===== */
+.input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #f0f2f5;
+    border-radius: 25px;
 }
 
+#msg {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+}
+
+/* NÚT GỬI TRÒN NHỎ */
+#sendBtn.send-inline {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px;
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border-radius: 50%;
+    border: none;
+    background: #ff5ca8;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#sendBtn.send-inline:active {
+    transform: scale(0.9);
+}
     </style>
 </head>
 <body>
@@ -303,13 +339,12 @@
 
         <div class="input-area">
             <div id="notice" style="color:red; font-size: 11px; margin-bottom: 6px; text-align: center; font-weight: bold;"></div>
-            <form id="chatForm" onsubmit="return false;">
+<form id="chatForm" onsubmit="return false;">
     <div class="input-wrap">
         <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
+        <button id="sendBtn" class="send-inline">➤</button>
     </div>
 </form>
-            <button id="sendBtn">GỬI TIN NHẮN</button>
-
             <details class="admin-login-card" id="loginDetails">
                 <summary>▼ 🔐 ĐĂNG NHẬP ADMIN / KIỂM DUYỆT VIÊN</summary>
                 <div class="login-form-inner">
