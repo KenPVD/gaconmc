@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,94 +16,260 @@
         }
 
         body {
-            margin: 0; font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
             background: url("https://pomf2.lain.la/f/3qghdbbr.jpg") center/cover fixed;
-            height: 100vh; display: flex; justify-content: center; overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
         }
 
         #box {
-            width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px); display: flex; flex-direction: column;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3); position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         #toast {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.8); color: white; padding: 8px 16px;
-            border-radius: 20px; font-size: 13px; z-index: 10000;
-            display: none; animation: fadeInOut 2s ease forwards;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 10000;
+            display: none;
+            animation: fadeInOut 2s ease forwards;
         }
+
         @keyframes fadeInOut {
-            0% { opacity: 0; top: 10px; }
-            15% { opacity: 1; top: 20px; }
-            85% { opacity: 1; top: 20px; }
-            100% { opacity: 0; top: 10px; }
+            0% {
+                opacity: 0;
+                top: 10px;
+            }
+
+            15% {
+                opacity: 1;
+                top: 20px;
+            }
+
+            85% {
+                opacity: 1;
+                top: 20px;
+            }
+
+            100% {
+                opacity: 0;
+                top: 10px;
+            }
         }
 
         #messages {
-            flex: 1; overflow-y: auto; padding: 15px;
-            display: flex; flex-direction: column; gap: 12px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             background: rgba(240, 242, 245, 0.3);
         }
 
         .msg {
-            max-width: 80%; padding: 10px 14px; border-radius: 18px;
-            position: relative; animation: fadeIn 0.2s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .msg.me { align-self: flex-end; background: var(--my-msg-bg); border-bottom-right-radius: 4px; }
-        .msg.other, .msg.bot { align-self: flex-start; background: var(--other-msg-bg); border-bottom-left-radius: 4px; }
-        .msg.bot { border-left: 4px solid var(--primary-color); }
-        .bot .name, .bot .text { color: var(--primary-color); }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
 
-        .msg-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 10px; }
-        .name { font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .admin .name { color: var(--admin-color); }
-        .kiemduyet .name { color: var(--kd-color); }
-        .member .name { color: var(--member-color); }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        .text { font-size: 14px; color: #222; word-break: break-word; line-height: 1.5; white-space: pre-line; }
-        .msg-time { font-size: 9px; color: #999; margin-top: 5px; text-align: right; }
+        .msg.me {
+            align-self: flex-end;
+            background: var(--my-msg-bg);
+            border-bottom-right-radius: 4px;
+        }
 
-        .ctrls { display: flex; gap: 5px; }
+        .msg.other,
+        .msg.bot {
+            align-self: flex-start;
+            background: var(--other-msg-bg);
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg.bot {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .bot .name,
+        .bot .text {
+            color: var(--primary-color);
+        }
+
+        .msg-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            gap: 10px;
+        }
+
+        .name {
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .admin .name {
+            color: var(--admin-color);
+        }
+
+        .kiemduyet .name {
+            color: var(--kd-color);
+        }
+
+        .member .name {
+            color: var(--member-color);
+        }
+
+        .text {
+            font-size: 14px;
+            color: #222;
+            word-break: break-word;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+
+        .msg-time {
+            font-size: 9px;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .ctrls {
+            display: flex;
+            gap: 5px;
+        }
+
         .ctrls button {
-            border: none; background: rgba(0,0,0,0.06); border-radius: 5px;
-            padding: 3px 6px; font-size: 12px; cursor: pointer; transition: 0.2s;
+            border: none;
+            background: rgba(0, 0, 0, 0.06);
+            border-radius: 5px;
+            padding: 3px 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .input-area { padding: 15px; background: white; border-top: 1px solid #eee; }
+        .input-area {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
         .input-wrap {
-            display: flex; align-items: center; background: #f0f2f5;
-            border-radius: 25px; padding: 5px 15px; gap: 10px;
+            display: flex;
+            align-items: center;
+            background: #f0f2f5;
+            border-radius: 25px;
+            padding: 5px 15px;
+            gap: 10px;
         }
-        #msg { flex: 1; border: none; background: transparent; padding: 10px 0; outline: none; font-size: 14px; }
-        
+
+        #msg {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            outline: none;
+            font-size: 14px;
+        }
+
         #sendBtn {
-            width: 100%; margin-top: 10px; background: var(--primary-color);
-            color: white; border: none; padding: 12px; border-radius: 25px;
-            font-weight: bold; cursor: pointer; font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
         }
 
-        .header-btns { display: flex; align-items: center; gap: 5px; }
-        .sound-btn { 
-            font-size: 14px; border: 1px solid #ddd; background: white; 
-            border-radius: 5px; cursor: pointer; padding: 4px 8px;
+        .header-btns {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        #loading-screen { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { width: 35px; height: 35px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .sound-btn {
+            font-size: 14px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Khung Login Staff màu xanh dương nhạt */
         .admin-login-card {
             margin-top: 15px;
-            border: 1px solid #d1e3f8 !important; /* Viền xanh nhạt */
+            border: 1px solid #d1e3f8 !important;
+            /* Viền xanh nhạt */
             border-radius: 12px !important;
             background: #ffffff;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.1); /* Đổ bóng ánh xanh */
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.1);
+            /* Đổ bóng ánh xanh */
         }
 
         .admin-login-card summary {
@@ -110,17 +277,19 @@
             padding: 10px;
             text-align: center;
             cursor: pointer;
-            color: #3498db; /* Chữ màu xanh dương */
-            background: #f0f7ff; /* Nền xanh cực nhạt */
+            color: #3498db;
+            /* Chữ màu xanh dương */
+            background: #f0f7ff;
+            /* Nền xanh cực nhạt */
             list-style: none;
             font-weight: bold;
             transition: 0.3s;
             border-bottom: 1px solid #d1e3f8;
         }
 
-        .admin-login-card summary:hover { 
-            background: #e1effe; 
-            color: #2980b9; 
+        .admin-login-card summary:hover {
+            background: #e1effe;
+            color: #2980b9;
         }
 
         .login-form-inner {
@@ -149,7 +318,8 @@
 
         #staffLoginBtn {
             padding: 10px;
-            background: #3498db; /* Nút màu xanh chủ đạo */
+            background: #3498db;
+            /* Nút màu xanh chủ đạo */
             color: white;
             border: none;
             border-radius: 8px;
@@ -172,257 +342,343 @@
             transform: translateY(0);
         }
 
-        /* thông báo tài khoản bị khoá */
-        .mute-notice {
-    display: none;
+        /* hỗ trợ chữ để đẩy đăng nhập lên */
+        .admin-login-note {
+            background: #d9edfa;
+            border: 3px solid #fffb00;
+            color: #0077ff;
 
-    position: absolute;
-    left: 50%;
-    top: 69%;              /* đẩy xuống dưới khung trắng */
-    transform: translateX(-50%);
-    margin-top: 7px;
+            padding: 6px 16px;
+            border-radius: 14px;
 
-    padding: 5px 14px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #e74c3c;
-    text-align: center;
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 
-    background: rgba(231, 76, 60, 0.08);
-    border: 1px solid rgba(231, 76, 60, 0.4);
-    border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            /* 🔥 IN ĐẬM RÕ */
+            letter-spacing: 0.4px;
+            line-height: 1.6;
 
-    width: fit-content;
-    max-width: 90%;
-    white-space: nowrap;
+            text-align: center;
 
-    z-index: 50; /* nổi lên trên */
-}
+            margin-top: 10px;
+            margin-bottom: -2px;
 
-/* hỗ trợ chữ để đẩy đăng nhập lên */
-.admin-login-note {
-    background: #d9edfa;
-    border: 3px solid #fffb00;
-    color: #0077ff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
 
-    padding: 6px 16px;
-    border-radius: 14px;
+        /* Màu link xanh, không gạch chân */
+        .chat-link {
+            color: #0084ff;
+            text-decoration: none;
+            font-weight: 500;
+            word-break: break-all;
+            /* Tránh tràn khung nếu link quá dài */
+            transition: color 0.2s;
+        }
 
-    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        /* ===== FIX INPUT + NÚT GỬI NHỎ GỌN ===== */
+        .input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: #f0f2f5;
+            border-radius: 25px;
+        }
 
-    font-size: 16px;
-    font-weight: 800;          /* 🔥 IN ĐẬM RÕ */
-    letter-spacing: 0.4px;
-    line-height: 1.6;
+        #msg {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+        }
 
-    text-align: center;
+        /* NÚT GỬI TRÒN NHỎ */
+        #sendBtn.send-inline {
+            width: 34px !important;
+            height: 34px !important;
+            min-width: 34px;
+            padding: 0 !important;
+            margin: 0 !important;
 
-    margin-top: 10px;
-    margin-bottom: -2px;
+            border-radius: 50%;
+            border: none;
+            background: #ff5ca8;
+            color: white;
 
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-/* Màu link xanh, không gạch chân */
-.chat-link {
-    color: #0084ff; 
-    text-decoration: none; 
-    font-weight: 500;
-    word-break: break-all; /* Tránh tràn khung nếu link quá dài */
-    transition: color 0.2s;
-}
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-/* ===== FIX INPUT + NÚT GỬI NHỎ GỌN ===== */
-.input-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background: #f0f2f5;
-    border-radius: 25px;
-}
+        #sendBtn.send-inline:active {
+            transform: scale(0.9);
+        }
 
-#msg {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: 14px;
-}
+        /* ===== AVATAR GROUP ===== */
+        #groupAvatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
 
-/* NÚT GỬI TRÒN NHỎ */
-#sendBtn.send-inline {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px;
-    padding: 0 !important;
-    margin: 0 !important;
+            border: 2px solid #3498db;
+            /* mặc định Member */
+            background: #fff;
+        }
 
-    border-radius: 50%;
-    border: none;
-    background: #ff5ca8;
-    color: white;
+        /* ===== EMOJI BUTTON ===== */
+        .emoji-btn {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            border-radius: 50%;
+            border: none;
+            background: #ffe6f0;
+            color: #ff5ca8;
 
-    font-size: 14px;
-    cursor: pointer;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-#sendBtn.send-inline:active {
-    transform: scale(0.9);
-}
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .emoji-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* bảng emoji nổi ngay trên nút */
+        .emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 72px;
+            right: 55px;
+            /* canh ngay trên nút emoji */
+
+            background: white;
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+            font-size: 20px;
+            line-height: 1.6;
+            z-index: 999;
+        }
+
+        .emoji-picker span {
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .emoji-picker span:hover {
+            background: #ffe6f0;
+            transform: scale(1.2);
+        }
+
+        /* ===== INPUT BỊ CHẶN ===== */
+        .input-wrap.muted {
+            background: #ffecec;
+            border: 1px solid #e74c3c;
+        }
+
+        .input-wrap.muted #msg {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .input-wrap.muted #msg::placeholder {
+            color: #e74c3c;
+            opacity: 1;
+        }
+
+        .input-wrap.muted #sendBtn,
+        .input-wrap.muted .emoji-btn {
+            background: #ccc !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="nicknameModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
-    <div style="background:white; padding:30px; border-radius:20px; width:90%; max-width:360px; box-shadow:0 15px 35px rgba(0,0,0,0.2); text-align:center;">
-        <h2 style="margin:0 0 10px 0; color:#333; font-size:18px;">✨ Đặt biệt danh</h2>
-        <p id="targetInfo" style="font-size:12px; color:#777; margin-bottom:15px;"></p>
-        <input type="text" id="newNicknameInput" style="width:100%; padding:12px; border:2px solid #eee; border-radius:10px; margin-bottom:15px; outline:none; font-size:15px; box-sizing:border-box;">
-        <div style="display:flex; gap:10px;">
-            <button onclick="window.closeNicknameModal()" style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">Hủy</button>
-            <button id="confirmNicknameBtn" style="flex:1; padding:10px; border:none; border-radius:8px; background:#ff5ca8; color:white; cursor:pointer;">Xác nhận</button>
-        </div>
-    </div>
-</div>
-
-<div id="toast"></div>
-
-<div id="loading-screen">
-    <div class="spinner"></div>
-    <p style="font-size: 13px; color: #666; margin-top: 10px;">Đang tải dữ liệu...</p>
-</div>
-
-<div id="box">
-    <div id="chatBox" style="display:none; height: 100%; flex-direction: column;">
-        <div style="padding: 12px; background: white; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <span id="roleText" style="font-weight: bold; font-size: 14px; color: #333;"></span>
-                <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
-            </div>
-            
-            <div style="display:flex; flex-direction:column; align-items:flex-start;">
-    <span id="roleText" style="font-weight: bold; font-size: 14px; color: #333;"></span>
-
-    <!-- THÔNG BÁO BỊ CHẶN -->
-    <div id="muteNotice" class="mute-notice">
-        🚫 Tài khoản của bạn đang bị chặn
-    </div>
-
-    <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
-</div>
-
-            
-            <div class="header-btns">
-                <div class="header-btns">
-    
-    <button id="soundToggle" class="sound-btn">🔊</button>
-    
-    <button id="adminChatToggle" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #e74c3c; background: white; color: #e74c3c; cursor: pointer; font-weight: bold; margin-right: 5px;">🔒 KHÓA CHAT</button>
-    
-    <button id="toggleMuteBtn" style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #ddd; background: white; cursor: pointer;">🚫 DS Chặn</button>
-</div>
-                
+    <div id="nicknameModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+        <div
+            style="background:white; padding:30px; border-radius:20px; width:90%; max-width:360px; box-shadow:0 15px 35px rgba(0,0,0,0.2); text-align:center;">
+            <h2 style="margin:0 0 10px 0; color:#333; font-size:18px;">✨ Đặt biệt danh</h2>
+            <p id="targetInfo" style="font-size:12px; color:#777; margin-bottom:15px;"></p>
+            <input type="text" id="newNicknameInput"
+                style="width:100%; padding:12px; border:2px solid #eee; border-radius:10px; margin-bottom:15px; outline:none; font-size:15px; box-sizing:border-box;">
+            <div style="display:flex; gap:10px;">
+                <button onclick="window.closeNicknameModal()"
+                    style="flex:1; padding:10px; border:none; border-radius:8px; background:#eee; cursor:pointer;">Hủy</button>
+                <button id="confirmNicknameBtn"
+                    style="flex:1; padding:10px; border:none; border-radius:8px; background:#ff5ca8; color:white; cursor:pointer;">Xác
+                    nhận</button>
             </div>
         </div>
-
-        <div id="muteBox" style="display:none; padding: 10px; background: #fff5f8; border-bottom: 1px solid #ff5ca8;">
-            <b style="font-size: 12px; color: #ff5ca8;">Người dùng bị chặn:</b>
-            <div id="muteList" style="max-height: 80px; overflow-y: auto;"></div>
-        </div>
-
-        <div id="messages"></div>
-
-        <div class="input-area">
-            <div id="notice" style="color:red; font-size: 11px; margin-bottom: 6px; text-align: center; font-weight: bold;"></div>
-<form id="chatForm" onsubmit="return false;">
-    <div class="input-wrap">
-        <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
-        <button id="sendBtn" class="send-inline">➤</button>
     </div>
-</form>
-            <details class="admin-login-card" id="loginDetails">
-                <summary>▼ 🔐 ĐĂNG NHẬP ADMIN / KIỂM DUYỆT VIÊN</summary>
-                <div class="login-form-inner">
-                    <input id="staffUser" placeholder="Tên đăng nhập">
-                    <input id="staffPass" type="password" placeholder="Mật khẩu">
-                    <button id="staffLoginBtn">Đăng Nhập</button>
+
+    <div id="toast"></div>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p style="font-size: 13px; color: #666; margin-top: 10px;">Đang tải dữ liệu...</p>
+    </div>
+
+    <div id="box">
+        <div id="chatBox" style="display:none; height: 100%; flex-direction: column;">
+            <div
+                style="padding: 12px; background: white; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div id="accountInfo" style="display:flex; align-items:center; gap:8px;">
+                        <img id="groupAvatar" src="https://pomf2.lain.la/f/k7lr1rw.jpg">
+                        <span id="roleText" style="font-weight:bold; font-size:14px; color:#333;"></span>
+                    </div>
+                    <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
                 </div>
-            </details>
-            
-            <!-- 👇 DÒNG CHỮ MỚI -->
-            <div class="admin-login-note">
-            ⭐TICKER CHAT SERVER GCMC⭐
+
+                <div style="display:flex; flex-direction:column; align-items:flex-start;">
+
+                    <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
+                </div>
+
+
+                <div class="header-btns">
+                    <div class="header-btns">
+
+                        <button id="soundToggle" class="sound-btn">🔊</button>
+
+                        <button id="adminChatToggle"
+                            style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #e74c3c; background: white; color: #e74c3c; cursor: pointer; font-weight: bold; margin-right: 5px;">🔒
+                            KHÓA CHAT</button>
+
+                        <button id="toggleMuteBtn"
+                            style="display:none; font-size: 11px; padding: 4px 8px; border-radius: 5px; border: 1px solid #ddd; background: white; cursor: pointer;">🚫
+                            DS Chặn</button>
+                    </div>
+
+                </div>
             </div>
-        </details>
+
+            <div id="muteBox"
+                style="display:none; padding: 10px; background: #fff5f8; border-bottom: 1px solid #ff5ca8;">
+                <b style="font-size: 12px; color: #ff5ca8;">Người dùng bị chặn:</b>
+                <div id="muteList" style="max-height: 80px; overflow-y: auto;"></div>
+            </div>
+
+            <div id="messages"></div>
+
+            <div class="input-area">
+                <div id="notice"
+                    style="color:red; font-size: 11px; margin-bottom: 6px; text-align: center; font-weight: bold;">
+                </div>
+                <form id="chatForm" onsubmit="return false;">
+                    <div class="input-wrap">
+                        <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
+
+                        <!-- NÚT EMOJI -->
+                        <button id="emojiBtn" class="emoji-btn" type="button">😊</button>
+                        <!-- NÚT GỬI -->
+                        <button id="sendBtn" class="send-inline">➤</button>
+                    </div>
+                    <div id="emojiPicker" class="emoji-picker">
+                        <span>😀</span><span>😁</span><span>😂</span><span>🤣</span>
+                        <span>😊</span><span>😍</span><span>😘</span><span>😭</span>
+                        <span>😡</span><span>👍</span><span>👎</span><span>❤️</span>
+                        <span>🔥</span><span>🎮</span><span>🎧</span><span>⚽</span><span>🏆</span>
+                    </div>
+
+
+                </form>
+                <details class="admin-login-card" id="loginDetails">
+                    <summary>▼ 🔐 ĐĂNG NHẬP ADMIN / KIỂM DUYỆT VIÊN</summary>
+                    <div class="login-form-inner">
+                        <input id="staffUser" placeholder="Tên đăng nhập">
+                        <input id="staffPass" type="password" placeholder="Mật khẩu">
+                        <button id="staffLoginBtn">Đăng Nhập</button>
+                    </div>
+                </details>
+
+                <!-- 👇 DÒNG CHỮ MỚI -->
+                <div class="admin-login-note">
+                    ⭐TICKER CHAT SERVER GCMC⭐
+                </div>
+                </details>
+            </div>
         </div>
     </div>
-</div>
 
-<audio id="notifySound" src="boa.mp3" preload="auto"></audio>
+    <audio id="notifySound" src="boa.mp3" preload="auto"></audio>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, getDoc, setDoc, deleteDoc, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, getDoc, setDoc, deleteDoc, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOqWngNA4k7bMi0c7rfBbXAHfcB2g9LJM",
+            authDomain: "gaconmc.firebaseapp.com",
+            projectId: "gaconmc",
+        };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAOqWngNA4k7bMi0c7rfBbXAHfcB2g9LJM",
-        authDomain: "gaconmc.firebaseapp.com",
-        projectId: "gaconmc",
-    };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        let role = localStorage.getItem("userRole") || "member";
+        let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
+        let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
+        let isSoundEnabled = localStorage.getItem("soundOn") !== "false";
+        const startTime = Date.now();
 
-    let role = localStorage.getItem("userRole") || "member";
-    let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
-    let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
-    let isSoundEnabled = localStorage.getItem("soundOn") !== "false";
-    const startTime = Date.now();
+        const msgContainer = document.getElementById('messages');
+        const scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; };
+        let isInitialLoad = true; // Biến này để biết lúc nào là mới load xong 40 tin cũ
 
-    const msgContainer = document.getElementById('messages');
-const scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; };
-let isInitialLoad = true; // Biến này để biết lúc nào là mới load xong 40 tin cũ
+        localStorage.setItem("memberName", name);
+        localStorage.setItem("deviceId", deviceId);
 
-    localStorage.setItem("memberName", name);
-    localStorage.setItem("deviceId", deviceId);
+        window.showToast = (t) => {
+            const el = document.getElementById('toast');
+            el.innerText = t; el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 2000);
+        };
 
-    window.showToast = (t) => {
-        const el = document.getElementById('toast');
-        el.innerText = t; el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 2000);
-    };
-
-    const soundBtn = document.getElementById('soundToggle');
-    soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
-    soundBtn.onclick = () => {
-        isSoundEnabled = !isSoundEnabled;
-        localStorage.setItem("soundOn", isSoundEnabled);
+        const soundBtn = document.getElementById('soundToggle');
         soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
-    };
+        soundBtn.onclick = () => {
+            isSoundEnabled = !isSoundEnabled;
+            localStorage.setItem("soundOn", isSoundEnabled);
+            soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
+        };
 
-    const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(100));
+        const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(100));
 
-    // Lắng nghe tin nhắn để hiển thị UI
-    onSnapshot(qMessages, (snap) => {
-        snap.docChanges().forEach((change) => {
-            const data = change.doc.data();
-            const id = change.doc.id;
-            if (change.type === "added") {
-                const isMe = data.deviceId === deviceId;
-                const div = document.createElement("div");
-                div.className = `msg ${isMe ? 'me' : 'other'} ${data.role} ${data.deviceId === 'bot' ? 'bot' : ''}`;
-                div.id = "msg-" + id;
+        // Lắng nghe tin nhắn để hiển thị UI
+        onSnapshot(qMessages, (snap) => {
+            snap.docChanges().forEach((change) => {
+                const data = change.doc.data();
+                const id = change.doc.id;
+                if (change.type === "added") {
+                    const isMe = data.deviceId === deviceId;
+                    const div = document.createElement("div");
+                    div.className = `msg ${isMe ? 'me' : 'other'} ${data.role} ${data.deviceId === 'bot' ? 'bot' : ''}`;
+                    div.id = "msg-" + id;
 
-div.innerHTML = `
+                    div.innerHTML = `
     <div class="msg-head">
         <span class="name" id="name-${id}">${data.name}</span>
         <div class="ctrls">
-            <button onclick="copyTxt('${(data.text||'').replace(/'/g, "\\'")}')">📋</button>
+            <button onclick="copyTxt('${(data.text || '').replace(/'/g, "\\'")}')">📋</button>
             
             <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">✏️</button>
 
@@ -433,27 +689,28 @@ div.innerHTML = `
         </div>
     </div>
     <div class="text">${formatText(data.text || "")}</div>
-    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Vừa xong'}</div>
+    <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Vừa xong'}</div>
 `;
-                document.getElementById('messages').appendChild(div);
-                document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-                if (!isMe && isSoundEnabled && data.deviceId !== "bot" && data.time?.toMillis() > Date.now() - 5000) {
-                    document.getElementById('notifySound').play().catch(()=>{});
+                    document.getElementById('messages').appendChild(div);
+                    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+                    if (!isMe && isSoundEnabled && data.deviceId !== "bot" && data.time?.toMillis() > Date.now() - 5000) {
+                        document.getElementById('notifySound').play().catch(() => { });
+                    }
                 }
-            }
-            if (change.type === "removed") document.getElementById("msg-" + id)?.remove();
+                if (change.type === "removed") document.getElementById("msg-" + id)?.remove();
+            });
         });
-    });
 
-    import { runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* =========================================================
-   BOT COMMAND SYSTEM (ANTI SPAM – ANTI RELOAD – ANTI MULTI TAB)
-   ========================================================= */
+        /* =========================================================
+           BOT COMMAND SYSTEM (ANTI SPAM – ANTI RELOAD – ANTI MULTI TAB)
+           ========================================================= */
 
-// 📜 DANH SÁCH LỆNH (thêm lệnh mới chỉ cần thêm dòng)
-const BOT_COMMANDS = {
-  "/info": `📌 INFO CÁC QUẢN TRỊ SERVER
+        // 📜 DANH SÁCH LỆNH (thêm lệnh mới chỉ cần thêm dòng)
+        const BOT_COMMANDS = {
+            "/info": {
+                text: `📌 INFO CÁC QUẢN TRỊ SERVER
 
 👤 Admin Chính:
 👉 FB: https://www.facebook.com/profile.php?id=61583009645768
@@ -471,451 +728,537 @@ const BOT_COMMANDS = {
 👉 FB: https://www.facebook.com/profile.php?id=61574102743872
 👉 FB: https://www.facebook.com/profile.php?id=61578659525630
 
-❤️ Liên hệ để được hỗ trợ ❤️`
-};
+❤️ Liên hệ để được hỗ trợ ❤️`,
+                roles: ["member", "admin", "kiemduyet"]
+            },
 
-// 🛡️ chống spam & reload
-const handledCmd = new Set();   // mỗi tin xử lý 1 lần
-let lastCmdTime = 0;            // cooldown theo thiết bị
-const CMD_COOLDOWN = 5000;      // 5 giây
+            "/ip": {
+                text: `IP Sever hiện tại
+Pc: gaconmc.ddns.net:25516
+Pe: gaconmc.ddns.net
+Port: 25516
 
-onSnapshot(qMessages, async (snap) => {
-  for (const c of snap.docChanges()) {
-    if (c.type !== "added") continue;
+Link Bio Sever
+https://kenpvd.github.io/gaconmc/`,
+                roles: ["admin", "kiemduyet"] // 👈 CHỈ 2 ROLE NÀY
+            },
 
-    const m = c.doc.data();
-    const mid = c.doc.id;
+            "/luat": {
+                text: `LUẬT SEVER GÀ CON MC
+1. Không phá base phá máy farm của người khác
+2. Có lệnh bật tắt pvp, ai bật pvp mà bị băm bay giáp tự chịu
+3. Làm phiền người khác chơi gây khó chịu nhắc không nghe tempban lần 1 1h, lần 2 12h, lần 3 24h, lần 4 vĩnh viễn (Hoặc sau lần 1 nếu còn phá hơn Admin và QTV ban thẳng vĩnh viễn)
+4. Không dùng mod, hack, X-ray để gian lận
+5. Mời bạn bè, thành viên thì trước tiên phải mời vô box mess trước
+6. Không trộm cắp đồ trong rương và đồ ở ngoài (Các member cũng không nên để đồ quan trọng trong rương. Rất khó tìm thủ phạm, ko biết thủ phạm Ad không chịu trách nhiệm)
+7. Luật theo ý thức của mỗi người chơi
+Đọc Rõ Luật Trách Mất Lòng Nhau!`,
+                roles: ["member", "admin", "kiemduyet"]
+            },
+        };
 
-    // ❌ bỏ tin cũ, bot, tin đã xử lý
-    if (m.time && m.time.toMillis() < startTime) continue;
-    if (m.deviceId === "bot") continue;
-    if (handledCmd.has(mid)) continue;
+        // 🛡️ chống spam & reload
+        const handledCmd = new Set();   // mỗi tin xử lý 1 lần
+        let lastCmdTime = 0;            // cooldown theo thiết bị
+        const CMD_COOLDOWN = 5000;      // 5 giây
 
-    const cmd = m.text?.trim().toLowerCase();
-    if (!BOT_COMMANDS[cmd]) continue;
+        onSnapshot(qMessages, async (snap) => {
+            for (const c of snap.docChanges()) {
+                if (c.type !== "added") continue;
 
-    handledCmd.add(mid);
+                const m = c.doc.data();
+                const mid = c.doc.id;
 
-    const now = Date.now();
+                // ❌ bỏ tin cũ, bot, tin đã xử lý
+                if (m.time && m.time.toMillis() < startTime) continue;
+                if (m.deviceId === "bot") continue;
+                if (handledCmd.has(mid)) continue;
 
-    // 🔒 chỉ TAB gửi lệnh mới được bot trả lời + cooldown
-    if (m.deviceId !== deviceId) continue;
-    if (now - lastCmdTime < CMD_COOLDOWN) continue;
+                const cmd = m.text?.trim().toLowerCase();
+                const command = BOT_COMMANDS[cmd];
+                if (!command) continue;
 
-    lastCmdTime = now;
+                // ❌ Member dùng lệnh không đủ quyền
+                if (!command.roles.includes(m.role)) {
+                    if (m.deviceId === deviceId) {
+                        await addDoc(collection(db, "messages"), {
+                            name: "🤖 Bot",
+                            role: "admin",
+                            deviceId: "bot",
+                            time: serverTimestamp(),
+                            text: "⛔ Chỉ Admin và Kiểm Duyệt Viên mới được dùng lệnh này!"
+                        });
+                    }
+                    continue;
+                }
+                handledCmd.add(mid);
 
-    try {
-      await addDoc(collection(db, "messages"), {
-        name: "🤖 Bot",
-        role: "admin",
-        deviceId: "bot",
-        time: serverTimestamp(),
-        text: BOT_COMMANDS[cmd]
-      });
-    } catch (e) {
-      console.error("BOT CMD ERROR:", e);
-    }
-  }
-});
+                const now = Date.now();
 
-/* ==================================================================== 
-       BOT PHẦN 2: PHẢN HỒI MEMBER LẠ & TỰ ĐỘNG NHẮC SAU 5 PHÚT (FIX SPAM RELOAD)
-       ==================================================================== */
-    let lastBotReplyTime = 0; 
-    const processedAuto = new Set();
-    const BOT_COOLDOWN = 300000; // 5 phút
+                // 🔒 chỉ TAB gửi lệnh mới được bot trả lời + cooldown
+                if (m.deviceId !== deviceId) continue;
+                if (now - lastCmdTime < CMD_COOLDOWN) continue;
 
-    onSnapshot(qMessages, async snap => {
-        const docChanges = snap.docChanges().filter(c => c.type === "added");
-
-        for (const c of docChanges) {
-            const m = c.doc.data();
-            const mid = c.doc.id;
-            
-            // 1. CHẶN SPAM RELOAD: Chỉ xử lý tin nhắn gửi SAU KHI trang đã load xong
-            const mTime = m.time?.toMillis ? m.time.toMillis() : Date.now();
-            if (mTime < startTime) continue; 
-
-            // 2. Tránh xử lý trùng và bỏ qua Bot
-            if (processedAuto.has(mid) || m.deviceId === "bot") continue;
-            processedAuto.add(mid);
-
-            // 3. Nếu Staff nhắn tin -> Reset thời gian chờ
-            if (m.role === "admin" || m.role === "kiemduyet") {
-                lastBotReplyTime = Date.now(); 
-                continue;
-            }
-
-            // 4. LOGIC KÍCH HOẠT QUAN TRỌNG
-            const now = Date.now();
-            const isMemberLage = m.name && m.name.includes("Member-");
-            const isOver5Min = (now - lastBotReplyTime) > BOT_COOLDOWN;
-
-            /* ĐIỀU KIỆN CHỐNG SPAM KHI NHIỀU NGƯỜI CÙNG ONLINE:
-               Chỉ máy của người vừa gửi tin nhắn (m.deviceId === deviceId) 
-               mới được quyền ra lệnh cho Bot phản hồi.
-            */
-            if (isMemberLage && isOver5Min && m.deviceId === deviceId) {
-                lastBotReplyTime = now; 
+                lastCmdTime = now;
 
                 try {
-                    // GỬI TIN 1
                     await addDoc(collection(db, "messages"), {
                         name: "🤖 Bot",
                         role: "admin",
                         deviceId: "bot",
                         time: serverTimestamp(),
-                        text: "Hello👋 Nếu bạn nhắn mà không ai trả lời thì chắc các Kiểm Duyệt Viên đang bận á, bạn đợi 1 tí sẽ có người trả lời liền. Hoặc bạn có thể liên hệ với Support bên mình qua Facebook!"
-                    });
-
-                    await new Promise(res => setTimeout(res, 800)); // Đợi một chút
-
-                    // GỬI TIN 2
-                    await addDoc(collection(db, "messages"), {
-                        name: "🤖 Bot",
-                        role: "admin",
-                        deviceId: "bot",
-                        time: serverTimestamp(),
-                        text: "https://www.facebook.com/100069576183683"
+                        text: command.text
                     });
                 } catch (e) {
-                    console.error("Bot gửi tin lỗi:", e);
+                    console.error("BOT CMD ERROR:", e);
                 }
             }
-        }
-    });
+        });
 
-    // --- GLOBAL FUNCTIONS ---
-    window.copyTxt = (t) => {
-        navigator.clipboard.writeText(t).then(() => showToast("✅ Đã copy!"));
-    };
-    window.delMsg = async (id) => { if(confirm("Xóa?")) await deleteDoc(doc(db, "messages", id)); };
-    window.muteUser = async (tid, tname) => {
-        if (tid === "bot" || tid === deviceId) return;
-        if(confirm(`Chặn ${tname}?`)) await setDoc(doc(db, "mute", tid), { name: tname });
-    };
+        /* ==================================================================== 
+               BOT PHẦN 2: PHẢN HỒI MEMBER LẠ & TỰ ĐỘNG NHẮC SAU 5 PHÚT (FIX SPAM RELOAD)
+               ==================================================================== */
+        let lastBotReplyTime = 0;
+        const processedAuto = new Set();
+        const BOT_COOLDOWN = 300000; // 5 phút
 
-    const sendMsg = async (text) => {
-    // 1. Kiểm tra chặn cá nhân
-    const mCheck = await getDoc(doc(db, "mute", deviceId));
-    if (mCheck.exists()) return alert("Bạn bị chặn!");
+        onSnapshot(qMessages, async snap => {
+            const docChanges = snap.docChanges().filter(c => c.type === "added");
 
-    // 2. Kiểm tra khóa chat toàn server
-    // Cho phép 'admin' và 'kiemduyet' gửi tin nhắn kể cả khi đang khóa
-    if (isChatLocked && role === "member") {
-        return alert("Phòng chat đang khóa, bạn không thể gửi tin lúc này!");
-    }
+            for (const c of docChanges) {
+                const m = c.doc.data();
+                const mid = c.doc.id;
 
-    await addDoc(collection(db, "messages"), { 
-        name, 
-        role, 
-        text, 
-        deviceId, 
-        time: serverTimestamp() 
-    });
-};
+                // 1. CHẶN SPAM RELOAD: Chỉ xử lý tin nhắn gửi SAU KHI trang đã load xong
+                const mTime = m.time?.toMillis ? m.time.toMillis() : Date.now();
+                if (mTime < startTime) continue;
 
-    document.getElementById('sendBtn').onclick = () => {
-        const i = document.getElementById('msg');
-        if (i.value.trim()) { sendMsg(i.value.trim()); i.value = ""; }
-    };
+                // 2. Tránh xử lý trùng và bỏ qua Bot
+                if (processedAuto.has(mid) || m.deviceId === "bot") continue;
+                processedAuto.add(mid);
 
-    document.getElementById('staffLoginBtn').onclick = () => {
-    const u = document.getElementById('staffUser').value.trim();
-    const p = document.getElementById('staffPass').value.trim();
+                // 3. Nếu Staff nhắn tin -> Reset thời gian chờ
+                if (m.role === "admin" || m.role === "kiemduyet") {
+                    lastBotReplyTime = Date.now();
+                    continue;
+                }
 
-    const suffix = Math.floor(Math.random() * 10000); // số xxx
+                // 4. LOGIC KÍCH HOẠT QUAN TRỌNG
+                const now = Date.now();
+                const isMemberLage = m.name && m.name.includes("Member-");
+                const isOver5Min = (now - lastBotReplyTime) > BOT_COOLDOWN;
 
-    if (u === "admin1409" && p === "140907") {
-        role = "admin";
-        name = "Admin";
-    }
-    else if (u === "kiemduyet2007" && p === "678678") {
-        role = "kiemduyet";
-        name = "KiểmDuyệt-" + suffix;
-    }
-    else {
-        return alert("Sai tài khoản hoặc mật khẩu!");
-    }
+                /* ĐIỀU KIỆN CHỐNG SPAM KHI NHIỀU NGƯỜI CÙNG ONLINE:
+                   Chỉ máy của người vừa gửi tin nhắn (m.deviceId === deviceId) 
+                   mới được quyền ra lệnh cho Bot phản hồi.
+                */
+                if (isMemberLage && isOver5Min && m.deviceId === deviceId) {
+                    lastBotReplyTime = now;
 
-    localStorage.setItem("userRole", role);
-    localStorage.setItem("memberName", name);
-    location.reload();
-};
+                    try {
+                        // GỬI TIN 1
+                        await addDoc(collection(db, "messages"), {
+                            name: "🤖 Bot",
+                            role: "admin",
+                            deviceId: "bot",
+                            time: serverTimestamp(),
+                            text: "Hello👋 Nếu bạn nhắn mà không ai trả lời thì chắc các Kiểm Duyệt Viên đang bận á, bạn đợi 1 tí sẽ có người trả lời liền. Hoặc bạn có thể liên hệ với Support bên mình qua Facebook!"
+                        });
 
-    document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.reload(); };
+                        await new Promise(res => setTimeout(res, 800)); // Đợi một chút
 
-    setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('chatBox').style.display = 'flex';
-        document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
-        if(role !== "member") {
-            document.getElementById('logoutBtn').style.display = "inline-block";
-            document.getElementById('toggleMuteBtn').style.display = "inline-block";
-            document.getElementById('loginDetails').style.display = "none";
-        }
-    }, 1000);
-
-// --- XỬ LÝ NÚT DANH SÁCH CHẶN ---
-    const toggleMuteBtn = document.getElementById('toggleMuteBtn');
-    const muteBox = document.getElementById('muteBox');
-    const muteList = document.getElementById('muteList');
-
-    toggleMuteBtn.onclick = () => {
-        if (muteBox.style.display === "none") {
-            muteBox.style.display = "block";
-            loadMuteList(); // Gọi hàm tải danh sách khi mở
-        } else {
-            muteBox.style.display = "none";
-        }
-    };
-
-    // Hàm tải và hiển thị danh sách người bị chặn từ Firebase
-    async function loadMuteList() {
-        onSnapshot(collection(db, "mute"), (snap) => {
-            muteList.innerHTML = "";
-            if (snap.empty) {
-                muteList.innerHTML = "<div style='font-size:11px; color:#999;'>Chưa có ai bị chặn.</div>";
-                return;
+                        // GỬI TIN 2
+                        await addDoc(collection(db, "messages"), {
+                            name: "🤖 Bot",
+                            role: "admin",
+                            deviceId: "bot",
+                            time: serverTimestamp(),
+                            text: "https://www.facebook.com/100069576183683"
+                        });
+                    } catch (e) {
+                        console.error("Bot gửi tin lỗi:", e);
+                    }
+                }
             }
-            snap.forEach((docSnap) => {
-                const data = docSnap.data();
-                const id = docSnap.id;
-                const item = document.createElement("div");
-                item.style = "display:flex; justify-content:space-between; align-items:center; padding:5px; border-bottom:1px solid #eee; font-size:12px;";
-                item.innerHTML = `
+        });
+
+        // --- GLOBAL FUNCTIONS ---
+        window.copyTxt = (t) => {
+            navigator.clipboard.writeText(t).then(() => showToast("✅ Đã copy!"));
+        };
+        window.delMsg = async (id) => { if (confirm("Xóa?")) await deleteDoc(doc(db, "messages", id)); };
+        window.muteUser = async (tid, tname) => {
+            if (tid === "bot" || tid === deviceId) return;
+            if (confirm(`Chặn ${tname}?`)) await setDoc(doc(db, "mute", tid), { name: tname });
+        };
+
+        const sendMsg = async (text) => {
+            // 1. Kiểm tra chặn cá nhân
+            const mCheck = await getDoc(doc(db, "mute", deviceId));
+            if (mCheck.exists()) return alert("Bạn bị chặn!");
+
+            // 2. Kiểm tra khóa chat toàn server
+            // Cho phép 'admin' và 'kiemduyet' gửi tin nhắn kể cả khi đang khóa
+            if (isChatLocked && role === "member") {
+                return alert("Phòng chat đang khóa, bạn không thể gửi tin lúc này!");
+            }
+
+            await addDoc(collection(db, "messages"), {
+                name,
+                role,
+                text,
+                deviceId,
+                time: serverTimestamp()
+            });
+        };
+
+        document.getElementById('sendBtn').onclick = () => {
+            const input = document.getElementById('msg');
+            const text = input.value.trim();
+
+            if (text === "") {
+                // Không có chữ → gửi emoji mặc định
+                sendMsg("🐥"); // ← đổi emoji tùy bạn
+            } else {
+                // Có chữ → gửi bình thường
+                sendMsg(text);
+            }
+
+            input.value = "";
+        };
+        document.getElementById('staffLoginBtn').onclick = () => {
+            const u = document.getElementById('staffUser').value.trim();
+            const p = document.getElementById('staffPass').value.trim();
+
+            const suffix = Math.floor(Math.random() * 10000); // số xxx
+
+            if (u === "admin1409" && p === "140907") {
+                role = "admin";
+                name = "Admin";
+            }
+            else if (u === "kiemduyet2007" && p === "678678") {
+                role = "kiemduyet";
+                name = "KiemDuyetVien-" + suffix;
+            }
+            else {
+                return alert("Sai tài khoản hoặc mật khẩu!");
+            }
+
+            localStorage.setItem("userRole", role);
+            localStorage.setItem("memberName", name);
+            location.reload();
+        };
+        document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.reload(); };
+
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('chatBox').style.display = 'flex';
+            document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
+            if (role !== "member") {
+                document.getElementById('logoutBtn').style.display = "inline-block";
+                document.getElementById('toggleMuteBtn').style.display = "inline-block";
+                document.getElementById('loginDetails').style.display = "none";
+            }
+        }, 1000);
+        // --- XỬ LÝ TRẠNG THÁI BỊ CHẶN (HIỆN NGAY Ở Ô NHẬP) ---
+        const inputWrap = document.querySelector(".input-wrap");
+        const msgInputBlocked = document.getElementById("msg");
+        const sendBtnBlocked = document.getElementById("sendBtn");
+
+        let isMuted = false;
+
+        onSnapshot(doc(db, "mute", deviceId), (snap) => {
+            if (snap.exists()) {
+                isMuted = true;
+
+                inputWrap.classList.add("muted");
+                msgInputBlocked.disabled = true;
+                msgInputBlocked.value = "";
+                msgInputBlocked.placeholder = "🚫 Tài khoản của bạn đã bị chặn";
+                sendBtnBlocked.disabled = true;
+            } else {
+                isMuted = false;
+
+                inputWrap.classList.remove("muted");
+                msgInputBlocked.disabled = false;
+                msgInputBlocked.placeholder = "Nhập tin nhắn...";
+                sendBtnBlocked.disabled = false;
+            }
+        });
+        // --- XỬ LÝ NÚT DANH SÁCH CHẶN ---
+        const toggleMuteBtn = document.getElementById('toggleMuteBtn');
+        const muteBox = document.getElementById('muteBox');
+        const muteList = document.getElementById('muteList');
+
+        toggleMuteBtn.onclick = () => {
+            if (muteBox.style.display === "none") {
+                muteBox.style.display = "block";
+                loadMuteList(); // Gọi hàm tải danh sách khi mở
+            } else {
+                muteBox.style.display = "none";
+            }
+        };
+
+        // Hàm tải và hiển thị danh sách người bị chặn từ Firebase
+        async function loadMuteList() {
+            onSnapshot(collection(db, "mute"), (snap) => {
+                muteList.innerHTML = "";
+                if (snap.empty) {
+                    muteList.innerHTML = "<div style='font-size:11px; color:#999;'>Chưa có ai bị chặn.</div>";
+                    return;
+                }
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const item = document.createElement("div");
+                    item.style = "display:flex; justify-content:space-between; align-items:center; padding:5px; border-bottom:1px solid #eee; font-size:12px;";
+                    item.innerHTML = `
                     <span>👤 ${data.name || id}</span>
                     <button onclick="window.unmuteUser('${id}')" style="color:blue; border:none; background:none; cursor:pointer; font-size:11px;">Gỡ chặn</button>
                 `;
-                muteList.appendChild(item);
+                    muteList.appendChild(item);
+                });
             });
-        });
-    }
-
-    // Hàm gỡ chặn
-    window.unmuteUser = async (id) => {
-        if (confirm("Gỡ chặn người này?")) {
-            await deleteDoc(doc(db, "mute", id));
-            showToast("✅ Đã gỡ chặn!");
-        }
-    };
-
-setTimeout(() => {
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('chatBox').style.display = 'flex';
-    document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
-    
-    // Thêm dòng này vào đây
-    scrollToBottom(); 
-
-    if(role !== "member") {
-        document.getElementById('logoutBtn').style.display = "inline-block";
-        document.getElementById('toggleMuteBtn').style.display = "inline-block";
-        document.getElementById('loginDetails').style.display = "none";
-    }
-}, 1000);
-
-// --- HIỂN THỊ THÔNG BÁO KHI BỊ CHẶN ---
-const muteNotice = document.getElementById("muteNotice");
-
-onSnapshot(doc(db, "mute", deviceId), (snap) => {
-    if (snap.exists()) {
-        muteNotice.style.display = "block";
-    } else {
-        muteNotice.style.display = "none";
-    }
-});
-
-// sửa lỗi âm thanh thông báo ko hoạt động
-let audioUnlocked = false;
-const audio = document.getElementById("notifySound");
-
-function unlockAudio() {
-    if (audioUnlocked) return;
-    audio.play().then(() => {
-        audio.pause();
-        audio.currentTime = 0;
-        audioUnlocked = true;
-        console.log("🔓 Audio unlocked");
-    }).catch(()=>{});
-}
-
-// chỉ cần 1 lần click bất kỳ
-document.addEventListener("click", unlockAudio, { once: true });
-document.addEventListener("touchstart", unlockAudio, { once: true });
-
-// --- LOGIC BẬT/TẮT CHAT TOÀN SERVER (ĐÃ CẬP NHẬT) ---
-const chatToggleButton = document.getElementById('adminChatToggle');
-let isChatLocked = false;
-
-onSnapshot(doc(db, "settings", "chatStatus"), (docSnap) => {
-    const data = docSnap.exists() ? docSnap.data() : { locked: false };
-    isChatLocked = data.locked;
-    
-    const msgInput = document.getElementById('msg');
-    const sendBtn = document.getElementById('sendBtn');
-    const notice = document.getElementById('notice');
-
-    if (isChatLocked) {
-        // Giao diện nút cho quản trị
-        chatToggleButton.innerText = "🔓 MỞ CHAT";
-        chatToggleButton.style.color = "#2ecc71";
-        chatToggleButton.style.borderColor = "#2ecc71";
-        
-        // Cả Kiểm duyệt và Member đều thấy dòng này
-        notice.innerText = "⚠️ Phòng chat hiện đang ở chế độ CHỈ XEM.";
-
-        if (role === "member") {
-            // Member bị khóa
-            msgInput.disabled = true;
-            msgInput.placeholder = "Hệ thống đang tạm khóa chat...";
-            sendBtn.style.background = "#ccc";
-            sendBtn.style.cursor = "not-allowed";
-        } else {
-            // Admin & Kiểm duyệt viên VẪN NHẮN ĐƯỢC
-            msgInput.disabled = false;
-            msgInput.placeholder = "Chat đang khóa (Bạn vẫn có quyền gửi)...";
-            sendBtn.style.background = "var(--primary-color)";
-            sendBtn.style.cursor = "pointer";
-        }
-    } else {
-        // Trạng thái mở chat bình thường
-        chatToggleButton.innerText = "🔒 KHÓA CHAT";
-        chatToggleButton.style.color = "#e74c3c";
-        chatToggleButton.style.borderColor = "#e74c3c";
-
-        msgInput.disabled = false;
-        msgInput.placeholder = "Nhập tin nhắn...";
-        sendBtn.style.background = "var(--primary-color)";
-        sendBtn.style.cursor = "pointer";
-        notice.innerText = "";
-    }
-});
-
-// Sự kiện nhấn nút cho Admin
-chatToggleButton.onclick = async () => {
-    if (role !== "admin") return;
-    await setDoc(doc(db, "settings", "chatStatus"), {
-        locked: !isChatLocked,
-        updatedBy: name
-    });
-    showToast(isChatLocked ? "✅ Đã mở chat" : "🔒 Đã khóa chat");
-};
-
-// Cập nhật hiển thị nút khi load trang (Sửa lại đoạn setTimeout cuối của bạn)
-setTimeout(() => {
-    if(role === "admin") {
-        chatToggleButton.style.display = "inline-block";
-    }
-}, 1100);
-
-// --- XỬ LÝ NHẤN ENTER ĐỂ GỬI TIN ---
-const msgInput = document.getElementById('msg');
-
-msgInput.addEventListener('keydown', (e) => {
-    // Kiểm tra nếu là phím Enter (keyCode 13) và không nhấn cùng phím Shift
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault(); // Ngăn việc xuống dòng trong input
-        const text = msgInput.value.trim();
-        if (text) {
-            sendMsg(text); // Gọi hàm gửi tin nhắn
-            msgInput.value = ""; // Xóa nội dung input sau khi gửi
-        }
-    }
-});
-
-// Hỗ trợ thêm cho các dòng điện thoại đời cũ (Sự kiện submit form)
-document.getElementById('chatForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = msgInput.value.trim();
-    if (text) {
-        sendMsg(text);
-        msgInput.value = "";
-    }
-});
-
-// Hàm biến chữ thành link có thể bấm được
-const formatText = (text) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, (url) => {
-        // text-decoration: none để bỏ gạch chân
-        return `<a href="${url}" target="_blank" class="chat-link">${url}</a>`;
-    });
-};
-
-let currentMsgId = null; // Lưu ID tin nhắn cụ thể
-
-// --- LOGIC ĐỔI BIỆT DANH ---
-// 1. Hàm mở bảng
-window.setNickname = (msgId, targetDeviceId, targetRole, currentName) => {
-    let canEdit = (role === "admin") || (role === "kiemduyet" && targetRole !== "admin") || (targetDeviceId === deviceId);
-    if (!canEdit) return alert("⛔ Không có quyền!");
-
-    currentMsgId = msgId; // Lưu lại ID tin nhắn này
-    document.getElementById('targetInfo').innerText = `Đổi biệt danh: ${currentName}`;
-    document.getElementById('newNicknameInput').value = currentName;
-    document.getElementById('nicknameModal').style.display = 'flex';
-};
-
-// 2. Hàm đóng bảng
-window.closeNicknameModal = () => {
-    document.getElementById('nicknameModal').style.display = 'none';
-};
-
-// 3. Xử lý nút Xác nhận (Bản Fix lỗi Admin bị biến thành Member)
-document.getElementById('confirmNicknameBtn').onclick = async () => {
-    let newName = document.getElementById('newNicknameInput').value.trim();
-    if (!currentMsgId) return window.closeNicknameModal();
-
-    // Tạm thời đóng bảng để người dùng thấy chat
-    window.closeNicknameModal();
-    
-    try {
-        const msgRef = doc(db, "messages", currentMsgId);
-        const targetMsgDoc = await getDoc(msgRef);
-        
-        if (!targetMsgDoc.exists()) return;
-        const targetData = targetMsgDoc.data();
-
-        // --- LOGIC 1: CHẶN ĐỔI TÊN BOT ---
-        if (targetData.deviceId === "bot") {
-            showToast("❌ Không thể đổi tên hệ thống!");
-            return; 
         }
 
-        // --- LOGIC 2: NẾU TRỐNG THÌ TRẢ VỀ TÊN THEO CHỨC VỤ ---
-        if (newName === "") {
-            if (targetData.role === "admin") {
-                newName = "Admin";
-            } else if (targetData.role === "kiemduyet") {
-                newName = "KiểmDuyệt-" + Math.floor(1000 + Math.random() * 9000);
-            } else {
-                newName = "Member-" + Math.floor(1000 + Math.random() * 9000);
+        // Hàm gỡ chặn
+        window.unmuteUser = async (id) => {
+            if (confirm("Gỡ chặn người này?")) {
+                await deleteDoc(doc(db, "mute", id));
+                showToast("✅ Đã gỡ chặn!");
             }
-        }
+        };
 
-        showToast("⏳ Đang lưu...");
-        
-        // Cập nhật biệt danh vào Firebase
-        await setDoc(msgRef, { name: newName }, { merge: true });
-
-        // Nếu là chính mình thì lưu vào máy để lần sau nhắn tin dùng tên mới
-        if (targetData.deviceId === deviceId) {
-            localStorage.setItem("memberName", newName);
-        }
-        
-        showToast("✅ Đã đổi! Đang tải lại...");
-
-        // Reload trang để cập nhật UI
         setTimeout(() => {
-            location.reload();
-        }, 500);
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('chatBox').style.display = 'flex';
+            document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
 
-    } catch (e) {
-        console.error(e);
-        alert("Lỗi: " + e.message);
-    }
-};
-</script>
+            // Thêm dòng này vào đây
+            scrollToBottom();
+
+            if (role !== "member") {
+                document.getElementById('logoutBtn').style.display = "inline-block";
+                document.getElementById('toggleMuteBtn').style.display = "inline-block";
+                document.getElementById('loginDetails').style.display = "none";
+            }
+        }, 1000);
+
+        // sửa lỗi âm thanh thông báo ko hoạt động
+        let audioUnlocked = false;
+        const audio = document.getElementById("notifySound");
+
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            audio.play().then(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                audioUnlocked = true;
+                console.log("🔓 Audio unlocked");
+            }).catch(() => { });
+        }
+
+        // chỉ cần 1 lần click bất kỳ
+        document.addEventListener("click", unlockAudio, { once: true });
+        document.addEventListener("touchstart", unlockAudio, { once: true });
+
+        // --- LOGIC BẬT/TẮT CHAT TOÀN SERVER (ĐÃ CẬP NHẬT) ---
+        const chatToggleButton = document.getElementById('adminChatToggle');
+        let isChatLocked = false;
+
+        onSnapshot(doc(db, "settings", "chatStatus"), (docSnap) => {
+            const data = docSnap.exists() ? docSnap.data() : { locked: false };
+            isChatLocked = data.locked;
+
+            const msgInput = document.getElementById('msg');
+            const sendBtn = document.getElementById('sendBtn');
+            const notice = document.getElementById('notice');
+
+            if (isChatLocked) {
+                // Giao diện nút cho quản trị
+                chatToggleButton.innerText = "🔓 MỞ CHAT";
+                chatToggleButton.style.color = "#2ecc71";
+                chatToggleButton.style.borderColor = "#2ecc71";
+
+                // Cả Kiểm duyệt và Member đều thấy dòng này
+                notice.innerText = "⚠️ Phòng chat hiện đang ở chế độ CHỈ XEM.";
+
+                if (role === "member") {
+                    // Member bị khóa
+                    msgInput.disabled = true;
+                    msgInput.placeholder = "Hệ thống đang tạm khóa chat...";
+                    sendBtn.style.background = "#ccc";
+                    sendBtn.style.cursor = "not-allowed";
+                } else {
+                    // Admin & Kiểm duyệt viên VẪN NHẮN ĐƯỢC
+                    msgInput.disabled = false;
+                    msgInput.placeholder = "Chat đang khóa (Bạn vẫn có quyền gửi)...";
+                    sendBtn.style.background = "var(--primary-color)";
+                    sendBtn.style.cursor = "pointer";
+                }
+            } else {
+                // Trạng thái mở chat bình thường
+                chatToggleButton.innerText = "🔒 KHÓA CHAT";
+                chatToggleButton.style.color = "#e74c3c";
+                chatToggleButton.style.borderColor = "#e74c3c";
+
+                msgInput.disabled = false;
+                msgInput.placeholder = "Nhập tin nhắn...";
+                sendBtn.style.background = "var(--primary-color)";
+                sendBtn.style.cursor = "pointer";
+                notice.innerText = "";
+            }
+        });
+
+        // Sự kiện nhấn nút cho Admin
+        chatToggleButton.onclick = async () => {
+            if (role !== "admin") return;
+            await setDoc(doc(db, "settings", "chatStatus"), {
+                locked: !isChatLocked,
+                updatedBy: name
+            });
+            showToast(isChatLocked ? "✅ Đã mở chat" : "🔒 Đã khóa chat");
+        };
+
+        // Cập nhật hiển thị nút khi load trang (Sửa lại đoạn setTimeout cuối của bạn)
+        setTimeout(() => {
+            if (role === "admin") {
+                chatToggleButton.style.display = "inline-block";
+            }
+        }, 1100);
+
+        // --- XỬ LÝ NHẤN ENTER ĐỂ GỬI TIN ---
+        const msgInput = document.getElementById('msg');
+
+        msgInput.addEventListener('keydown', (e) => {
+            // Kiểm tra nếu là phím Enter (keyCode 13) và không nhấn cùng phím Shift
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Ngăn việc xuống dòng trong input
+                const text = msgInput.value.trim();
+                if (text) {
+                    sendMsg(text); // Gọi hàm gửi tin nhắn
+                    msgInput.value = ""; // Xóa nội dung input sau khi gửi
+                }
+            }
+        });
+
+        // Hỗ trợ thêm cho các dòng điện thoại đời cũ (Sự kiện submit form)
+        document.getElementById('chatForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = msgInput.value.trim();
+            if (text) {
+                sendMsg(text);
+                msgInput.value = "";
+            }
+        });
+
+        // Hàm biến chữ thành link có thể bấm được
+        const formatText = (text) => {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, (url) => {
+                // text-decoration: none để bỏ gạch chân
+                return `<a href="${url}" target="_blank" class="chat-link">${url}</a>`;
+            });
+        };
+
+        let currentMsgId = null; // Lưu ID tin nhắn cụ thể
+
+        // --- LOGIC ĐỔI BIỆT DANH ---
+        // 1. Hàm mở bảng
+        window.setNickname = (msgId, targetDeviceId, targetRole, currentName) => {
+            // ❌ Bị chặn thì cấm đổi biệt danh (chỉ áp dụng cho chính mình)
+            if (isMuted && targetDeviceId === deviceId) {
+                showToast("🚫 Bạn đang bị chặn, không thể đổi biệt danh!");
+                return;
+            }
+            let canEdit = (role === "admin") || (role === "kiemduyet" && targetRole !== "admin") || (targetDeviceId === deviceId);
+            if (!canEdit) return alert("⛔ Không có quyền!");
+
+            currentMsgId = msgId; // Lưu lại ID tin nhắn này
+            document.getElementById('targetInfo').innerText = `Đổi biệt danh: ${currentName}`;
+            document.getElementById('newNicknameInput').value = currentName;
+            document.getElementById('nicknameModal').style.display = 'flex';
+        };
+
+        // 2. Hàm đóng bảng
+        window.closeNicknameModal = () => {
+            document.getElementById('nicknameModal').style.display = 'none';
+        };
+
+        // 3. Xử lý nút Xác nhận (Bản Fix lỗi Admin bị biến thành Member)
+        document.getElementById('confirmNicknameBtn').onclick = async () => {
+            let newName = document.getElementById('newNicknameInput').value.trim();
+            if (!currentMsgId) return window.closeNicknameModal();
+
+            // Tạm thời đóng bảng để người dùng thấy chat
+            window.closeNicknameModal();
+
+            try {
+                const msgRef = doc(db, "messages", currentMsgId);
+                const targetMsgDoc = await getDoc(msgRef);
+
+                if (!targetMsgDoc.exists()) return;
+                const targetData = targetMsgDoc.data();
+
+                // --- LOGIC 1: CHẶN ĐỔI TÊN BOT ---
+                if (targetData.deviceId === "bot") {
+                    showToast("❌ Không thể đổi tên hệ thống!");
+                    return;
+                }
+
+                // --- LOGIC 2: NẾU TRỐNG THÌ TRẢ VỀ TÊN THEO CHỨC VỤ ---
+                if (newName === "") {
+                    if (targetData.role === "admin") {
+                        newName = "Admin";
+                    } else if (targetData.role === "kiemduyet") {
+                        newName = "KiểmDuyệt-" + Math.floor(1000 + Math.random() * 9000);
+                    } else {
+                        newName = "Member-" + Math.floor(1000 + Math.random() * 9000);
+                    }
+                }
+
+                showToast("⏳ Đang lưu...");
+
+                // Cập nhật biệt danh vào Firebase
+                await setDoc(msgRef, { name: newName }, { merge: true });
+
+                // Nếu là chính mình thì lưu vào máy để lần sau nhắn tin dùng tên mới
+                if (targetData.deviceId === deviceId) {
+                    localStorage.setItem("memberName", newName);
+                }
+
+                showToast("✅ Đã đổi! Đang tải lại...");
+
+                // Reload trang để cập nhật UI
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+
+            } catch (e) {
+                console.error(e);
+                alert("Lỗi: " + e.message);
+            }
+        };
+        // ICON
+        const emojiBtn = document.getElementById("emojiBtn");
+        const emojiPicker = document.getElementById("emojiPicker");
+        const msgInput2 = document.getElementById("msg");
+
+        // Bật / tắt bảng emoji
+        emojiBtn.onclick = (e) => {
+            e.stopPropagation();
+            emojiPicker.style.display =
+                emojiPicker.style.display === "block" ? "none" : "block";
+        };
+        // Click ngoài thì đóng
+        document.addEventListener("click", () => {
+            emojiPicker.style.display = "none";
+        });
+        emojiPicker.onclick = (e) => {
+            if (!e.target || e.target.tagName !== "SPAN") return;
+            msgInput2.value += e.target.innerText;
+            msgInput2.focus();
+        };
+    </script>
 </body>
 </html>
