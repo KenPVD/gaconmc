@@ -553,7 +553,8 @@
                         <img id="groupAvatar" src="https://pomf2.lain.la/f/k7lr1rw.jpg">
                         <span id="roleText" style="font-weight:bold; font-size:14px; color:#333;"></span>
                     </div>
-                    <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
+                    <button id="logoutBtn" style="display:none">Đăng xuất</button>
+                    <!-- CHỈ ADMIN MỚI THẤY -->
                 </div>
 
                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
@@ -651,12 +652,11 @@
         const db = getFirestore(app);
 
         let replyData = null; // 👈 BẮT BUỘC – FIX REPLY
-        let role = localStorage.getItem("userRole") || "member";
+        let role = (localStorage.getItem("userRole") || "member").toLowerCase();
         let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
         let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
         let isSoundEnabled = localStorage.getItem("soundOn") !== "false";
         const startTime = Date.now();
-
         const msgContainer = document.getElementById('messages');
         const scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; };
 
@@ -748,9 +748,8 @@ ${(role === "admin" || role === "kiemduyet") ? `
      <b>${data.reply.name}</b>: ${data.reply.text}
   </div>
 ` : ""}
-    <div class="text ${data.deleted ? 'deleted-msg' : ''}">
-    ${data.deleted ? '🚫 Tin nhắn của bạn đã bị xóa' : formatText(data.text || "")}
-</div>
+    <div class="text ${data.deleted ? 'deleted-msg' : ''}">${data.deleted ? '🚫 Tin nhắn của bạn đã bị xóa' : formatText(data.text || "")}</div>
+
     <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Vừa xong'}</div>
 `;
                     document.getElementById('messages').appendChild(div);
@@ -814,6 +813,10 @@ https://kenpvd.github.io/gaconmc/`,
 Đọc Rõ Luật Trách Mất Lòng Nhau!`,
                 roles: ["member", "admin", "kiemduyet"]
             },
+            "/logoutall": {
+                text: "🚨 Admin đã yêu cầu đăng xuất TOÀN BỘ Admin & Kiểm Duyệt!",
+                roles: ["admin"] // ❗ CHỈ ADMIN
+            }
         };
 
         // 🛡️ chống spam & reload
@@ -836,24 +839,33 @@ https://kenpvd.github.io/gaconmc/`,
                 const cmd = m.text?.trim().toLowerCase();
                 const command = BOT_COMMANDS[cmd];
                 if (!command) continue;
+                if (cmd === "/logoutall") {
+                    // ❗ CHỈ client GỬI TIN này mới xử lý
+                    if (m.role !== "admin") continue;
+                    if (m.deviceId !== deviceId) continue;
 
-                // ❌ Member dùng lệnh không đủ quyền
-                if (!command.roles.includes(m.role)) {
-                    if (m.deviceId === deviceId) {
-                        await addDoc(collection(db, "messages"), {
-                            name: "🤖 Bot",
-                            role: "admin",
-                            deviceId: "bot",
-                            time: serverTimestamp(),
-                            text: "⛔ Chỉ Admin và Kiểm Duyệt Viên mới được dùng lệnh này!"
-                        });
-                    }
+                    const ref = doc(db, "settings", "logoutAll");
+                    const snap = await getDoc(ref);
+                    const ver = snap.exists() ? (snap.data().ver || 0) : 0;
+
+                    await setDoc(ref, {
+                        ver: ver + 1,
+                        by: m.name,
+                        time: serverTimestamp()
+                    });
+
+                    await addDoc(collection(db, "messages"), {
+                        name: "🤖 Bot",
+                        role: "admin",
+                        deviceId: "bot",
+                        time: serverTimestamp(),
+                        text: "🚨 Admin đã đăng xuất TOÀN BỘ Admin & Kiểm Duyệt!"
+                    });
+
                     continue;
                 }
                 handledCmd.add(mid);
-
                 const now = Date.now();
-
                 // 🔒 chỉ TAB gửi lệnh mới được bot trả lời + cooldown
                 if (m.deviceId !== deviceId) continue;
                 if (now - lastCmdTime < CMD_COOLDOWN) continue;
@@ -1040,6 +1052,10 @@ https://kenpvd.github.io/gaconmc/`,
                 document.getElementById('logoutBtn').style.display = "inline-block";
                 document.getElementById('toggleMuteBtn').style.display = "inline-block";
                 document.getElementById('loginDetails').style.display = "none";
+            }
+            // 👑 CHỈ ADMIN MỚI THẤY ĐĂNG XUẤT ALL
+            if (role === "admin") {
+                logoutAllBtn.style.display = "inline-block";
             }
         }, 1000);
         // --- XỬ LÝ TRẠNG THÁI BỊ CHẶN (HIỆN NGAY Ở Ô NHẬP) ---
@@ -1356,6 +1372,31 @@ https://kenpvd.github.io/gaconmc/`,
                 el.style.boxShadow = "";
             }, 1500);
         };
+        // ================= LOGOUT ALL SYSTEM =================
+        let lastLogoutVer = Number(localStorage.getItem("lastLogoutVer") || 0);
+
+        onSnapshot(doc(db, "settings", "logoutAll"), (snap) => {
+            if (!snap.exists()) return;
+            const data = snap.data();
+
+            if (!data.ver) return;
+            if (data.ver <= lastLogoutVer) return;
+
+            lastLogoutVer = data.ver;
+            localStorage.setItem("lastLogoutVer", lastLogoutVer);
+
+            if (role === "admin" || role === "kiemduyet") {
+                showToast("🚨 Hệ thống yêu cầu đăng xuất!");
+
+                setTimeout(() => {
+                    localStorage.removeItem("userRole");
+                    localStorage.removeItem("memberName");
+                    localStorage.removeItem("isLoggedIn");
+                    location.reload();
+                }, 800);
+            }
+        });
     </script>
 </body>
+
 </html>
