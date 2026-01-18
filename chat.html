@@ -721,10 +721,16 @@
             <button onclick="setReply('${id}', '${data.name}', '${(data.text || "").replace(/'/g, "\\'")}')">↩️</button>
             <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">✏️</button>
 
-            ${(role === "admin" || role === "kiemduyet") ? `
-                <button onclick="window.delMsg('${id}')" style="color:red">❌</button>
-                <button onclick="window.muteUser('${data.deviceId}','${data.name}')" style="color:orange">🚫</button>
-            ` : ''}
+            ${(
+                            role === "admin" ||
+                            role === "kiemduyet" ||
+                            (role === "member" && data.deviceId === deviceId)
+                        ) ? `
+    <button onclick="window.delMsg('${id}')" style="color:red">❌</button>
+` : ''}
+${(role === "admin" || role === "kiemduyet") ? `
+    <button onclick="window.muteUser('${data.deviceId}','${data.name}')" style="color:orange">🚫</button>
+` : ''}
         </div>
     </div>
     ${data.reply ? `
@@ -871,7 +877,7 @@ https://kenpvd.github.io/gaconmc/`,
         /* ==================================================================== 
                BOT PHẦN 2: PHẢN HỒI MEMBER LẠ & TỰ ĐỘNG NHẮC SAU 5 PHÚT (FIX SPAM RELOAD)
                ==================================================================== */
-        let lastBotReplyTime = 0;
+        let lastBotReplyTime = Number(localStorage.getItem("lastBotReplyTime") || 0);
         const processedAuto = new Set();
         const BOT_COOLDOWN = 300000; // 5 phút
 
@@ -893,20 +899,28 @@ https://kenpvd.github.io/gaconmc/`,
                 // 3. Nếu Staff nhắn tin -> Reset thời gian chờ
                 if (m.role === "admin" || m.role === "kiemduyet") {
                     lastBotReplyTime = Date.now();
+                    localStorage.setItem("lastBotReplyTime", lastBotReplyTime); // ⭐ FIX
                     continue;
                 }
-
                 // 4. LOGIC KÍCH HOẠT QUAN TRỌNG
                 const now = Date.now();
                 const isMemberLage = m.name && m.name.includes("Member-");
                 const isOver5Min = (now - lastBotReplyTime) > BOT_COOLDOWN;
 
+                // ❌ NẾU LÀ LỆNH (bắt đầu bằng /) → KHÔNG AUTO REP
+                if (m.text && m.text.trim().startsWith("/")) {
+                    lastBotReplyTime = Date.now();
+                    localStorage.setItem("lastBotReplyTime", lastBotReplyTime); // ⭐ FIX
+                    continue;
+                }
                 /* ĐIỀU KIỆN CHỐNG SPAM KHI NHIỀU NGƯỜI CÙNG ONLINE:
                    Chỉ máy của người vừa gửi tin nhắn (m.deviceId === deviceId) 
                    mới được quyền ra lệnh cho Bot phản hồi.
                 */
-                if (isMemberLage && isOver5Min && m.deviceId === deviceId) {
+                const isCommand = m.text && m.text.trim().startsWith("/");
+                if (isMemberLage && isOver5Min && m.deviceId === deviceId && !isCommand) {
                     lastBotReplyTime = now;
+                    localStorage.setItem("lastBotReplyTime", lastBotReplyTime); // ⭐ FIX
 
                     try {
                         // GỬI TIN 1
