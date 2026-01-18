@@ -792,9 +792,9 @@ ${(role === "admin" || role === "kiemduyet") ? `
 
             "/ip": {
                 text: `IP Sever hiện tại
-Pc: gaconmc.ddns.net:25516
+Pc: gaconmc.ddns.net:25026
 Pe: gaconmc.ddns.net
-Port: 25516
+Port: 25026
 
 Link Bio Sever
 https://kenpvd.github.io/gaconmc/`,
@@ -839,6 +839,21 @@ https://kenpvd.github.io/gaconmc/`,
                 const cmd = m.text?.trim().toLowerCase();
                 const command = BOT_COMMANDS[cmd];
                 if (!command) continue;
+
+                // ❌ CHẶN ROLE KHÔNG ĐƯỢC PHÉP
+                if (!command.roles.includes(m.role)) {
+                    // chỉ bot gửi cảnh báo 1 lần cho người gõ
+                    if (m.deviceId === deviceId) {
+                        await addDoc(collection(db, "messages"), {
+                            name: "🤖 Bot",
+                            role: "admin",
+                            deviceId: "bot",
+                            time: serverTimestamp(),
+                            text: "⛔ Lệnh này chỉ dành cho Admin / Kiểm duyệt."
+                        });
+                    }
+                    continue;
+                }
                 if (cmd === "/logoutall") {
                     // ❗ CHỈ client GỬI TIN này mới xử lý
                     if (m.role !== "admin") continue;
