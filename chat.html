@@ -188,15 +188,6 @@
             border-top: 1px solid #eee;
         }
 
-        .input-wrap {
-            display: flex;
-            align-items: center;
-            background: #f0f2f5;
-            border-radius: 25px;
-            padding: 5px 15px;
-            gap: 10px;
-        }
-
         #msg {
             flex: 1;
             border: none;
@@ -381,12 +372,20 @@
         .input-wrap {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 10px;
-            background: #f0f2f5;
-            border-radius: 25px;
+            gap: 6px;
+            padding: 6px;
+            background: #fff;
+            border-top: 1px solid #eee;
         }
-
+        /* trạng thái bị mute / khóa */
+        .input-wrap.muted {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .input-wrap input:disabled {
+            background: #f3f3f3;
+            cursor: not-allowed;
+        }
         #msg {
             flex: 1;
             border: none;
@@ -557,8 +556,6 @@
                 </div>
 
                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
-
-                    <button id="logoutBtn" style="display:none; font-size: 10px; margin-left: 5px;">Đăng xuất</button>
                 </div>
 
 
@@ -661,7 +658,6 @@
 
         const msgContainer = document.getElementById('messages');
         const scrollToBottom = () => { msgContainer.scrollTop = msgContainer.scrollHeight; };
-        let isInitialLoad = true; // Biến này để biết lúc nào là mới load xong 40 tin cũ
 
         localStorage.setItem("memberName", name);
         localStorage.setItem("deviceId", deviceId);
@@ -759,9 +755,6 @@
                 if (change.type === "removed") document.getElementById("msg-" + id)?.remove();
             });
         });
-
-        import { runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
         /* =========================================================
            BOT COMMAND SYSTEM (ANTI SPAM – ANTI RELOAD – ANTI MULTI TAB)
            ========================================================= */
@@ -1026,6 +1019,8 @@ https://kenpvd.github.io/gaconmc/`,
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('chatBox').style.display = 'flex';
             document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
+            // Thêm dòng này vào đây
+            scrollToBottom();
             if (role !== "member") {
                 document.getElementById('logoutBtn').style.display = "inline-block";
                 document.getElementById('toggleMuteBtn').style.display = "inline-block";
@@ -1283,7 +1278,6 @@ https://kenpvd.github.io/gaconmc/`,
                 }
 
                 showToast("✅ Đã đổi biệt danh!");
-                await setDoc(msgRef, { name: newName }, { merge: true });
                 // nếu là chính mình → cập nhật tên dùng cho tin sau
                 if (targetData.deviceId === deviceId) {
                     name = newName;
@@ -1349,4 +1343,5 @@ https://kenpvd.github.io/gaconmc/`,
         };
     </script>
 </body>
+
 </html>
