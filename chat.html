@@ -507,6 +507,13 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
+
+        /* ===== Xoá tin nhắn ===== */
+        .deleted-msg {
+            color: #999;
+            font-style: italic;
+            font-size: 13px;
+        }
     </style>
 </head>
 
@@ -584,6 +591,17 @@
                 <div id="notice"
                     style="color:red; font-size: 11px; margin-bottom: 6px; text-align: center; font-weight: bold;">
                 </div>
+                <div id="replyBox" style="display:none;
+     background:#f0f2f5;
+     padding:6px 10px;
+     border-left:4px solid #ff5ca8;
+     margin-bottom:6px;
+     border-radius:6px;
+     font-size:12px;">
+                    <span id="replyText"></span>
+                    <button onclick="clearReply()"
+                        style="float:right;border:none;background:none;cursor:pointer">✖</button>
+                </div>
                 <form id="chatForm" onsubmit="return false;">
                     <div class="input-wrap">
                         <input id="msg" placeholder="Nhập tin nhắn..." autocomplete="off">
@@ -634,6 +652,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        let replyData = null; // 👈 BẮT BUỘC – FIX REPLY
         let role = localStorage.getItem("userRole") || "member";
         let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
         let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
@@ -668,18 +687,41 @@
             snap.docChanges().forEach((change) => {
                 const data = change.doc.data();
                 const id = change.doc.id;
+                // 🔥 FIX XOÁ TIN REALTIME (KHÔNG CẦN RELOAD)
+                if (change.type === "modified") {
+                    const el = document.getElementById("msg-" + id);
+                    if (!el) return;
+
+                    // ✅ UPDATE TEXT
+                    const textBox = el.querySelector(".text");
+                    if (textBox) {
+                        if (data.deleted) {
+                            textBox.innerHTML = "🚫 Tin nhắn của bạn đã xóa";
+                            textBox.classList.add("deleted-msg");
+                        } else {
+                            textBox.innerHTML = formatText(data.text || "");
+                            textBox.classList.remove("deleted-msg");
+                        }
+                    }
+
+                    // ✅ UPDATE NAME REALTIME
+                    const nameBox = el.querySelector(".name");
+                    if (nameBox && data.name) {
+                        nameBox.innerText = data.name;
+                    }
+                }
                 if (change.type === "added") {
                     const isMe = data.deviceId === deviceId;
                     const div = document.createElement("div");
-                    div.className = `msg ${isMe ? 'me' : 'other'} ${data.role} ${data.deviceId === 'bot' ? 'bot' : ''}`;
+                    div.className = `msg ${isMe ? 'me' : 'other'} ${data.role}`;
                     div.id = "msg-" + id;
-
+                    div.dataset.id = id; // ⭐ THÊM DÒNG NÀY
                     div.innerHTML = `
     <div class="msg-head">
         <span class="name" id="name-${id}">${data.name}</span>
         <div class="ctrls">
             <button onclick="copyTxt('${(data.text || '').replace(/'/g, "\\'")}')">📋</button>
-            
+            <button onclick="setReply('${id}', '${data.name}', '${(data.text || "").replace(/'/g, "\\'")}')">↩️</button>
             <button onclick="window.setNickname('${id}', '${data.deviceId}', '${data.role}', '${data.name}')">✏️</button>
 
             ${(role === "admin" || role === "kiemduyet") ? `
@@ -688,7 +730,24 @@
             ` : ''}
         </div>
     </div>
-    <div class="text">${formatText(data.text || "")}</div>
+    ${data.reply ? `
+  <div
+     class="reply-preview"
+     onclick="scrollToMsg('${data.reply.msgId}')"
+     style="
+       background:#eee;
+       padding:6px;
+       border-left:3px solid #ff5ca8;
+       border-radius:6px;
+       font-size:12px;
+       margin-bottom:4px;
+       cursor:pointer;">
+     <b>${data.reply.name}</b>: ${data.reply.text}
+  </div>
+` : ""}
+    <div class="text ${data.deleted ? 'deleted-msg' : ''}">
+    ${data.deleted ? '🚫 Tin nhắn của bạn đã bị xóa' : formatText(data.text || "")}
+</div>
     <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Vừa xong'}</div>
 `;
                     document.getElementById('messages').appendChild(div);
@@ -882,11 +941,22 @@ https://kenpvd.github.io/gaconmc/`,
             }
         });
 
-        // --- GLOBAL FUNCTIONS ---
+        // --- copy ---
         window.copyTxt = (t) => {
             navigator.clipboard.writeText(t).then(() => showToast("✅ Đã copy!"));
         };
-        window.delMsg = async (id) => { if (confirm("Xóa?")) await deleteDoc(doc(db, "messages", id)); };
+        // --- xoá tin nhắn ---
+        window.delMsg = async (id) => {
+            if (!confirm("Xóa tin nhắn này?")) return;
+            await setDoc(
+                doc(db, "messages", id),
+                {
+                    text: "🚫 Tin nhắn của bạn đã bị xóa",
+                    deleted: true
+                },
+                { merge: true }
+            );
+        };
         window.muteUser = async (tid, tname) => {
             if (tid === "bot" || tid === deviceId) return;
             if (confirm(`Chặn ${tname}?`)) await setDoc(doc(db, "mute", tid), { name: tname });
@@ -908,8 +978,10 @@ https://kenpvd.github.io/gaconmc/`,
                 role,
                 text,
                 deviceId,
+                reply: replyData,
                 time: serverTimestamp()
             });
+            clearReply(); // 👈 GỬI XONG LÀ CLEAR
         };
 
         document.getElementById('sendBtn').onclick = () => {
@@ -1029,21 +1101,6 @@ https://kenpvd.github.io/gaconmc/`,
             }
         };
 
-        setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('chatBox').style.display = 'flex';
-            document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
-
-            // Thêm dòng này vào đây
-            scrollToBottom();
-
-            if (role !== "member") {
-                document.getElementById('logoutBtn').style.display = "inline-block";
-                document.getElementById('toggleMuteBtn').style.display = "inline-block";
-                document.getElementById('loginDetails').style.display = "none";
-            }
-        }, 1000);
-
         // sửa lỗi âm thanh thông báo ko hoạt động
         let audioUnlocked = false;
         const audio = document.getElementById("notifySound");
@@ -1102,14 +1159,15 @@ https://kenpvd.github.io/gaconmc/`,
                 chatToggleButton.style.color = "#e74c3c";
                 chatToggleButton.style.borderColor = "#e74c3c";
 
-                msgInput.disabled = false;
-                msgInput.placeholder = "Nhập tin nhắn...";
-                sendBtn.style.background = "var(--primary-color)";
-                sendBtn.style.cursor = "pointer";
-                notice.innerText = "";
+                if (!isMuted) {
+                    msgInput.disabled = false;
+                    msgInput.placeholder = "Nhập tin nhắn...";
+                    sendBtn.style.background = "var(--primary-color)";
+                    sendBtn.style.cursor = "pointer";
+                    notice.innerText = "";
+                }
             }
         });
-
         // Sự kiện nhấn nút cho Admin
         chatToggleButton.onclick = async () => {
             if (role !== "admin") return;
@@ -1117,9 +1175,8 @@ https://kenpvd.github.io/gaconmc/`,
                 locked: !isChatLocked,
                 updatedBy: name
             });
-            showToast(isChatLocked ? "✅ Đã mở chat" : "🔒 Đã khóa chat");
+            showToast(isChatLocked ? "🔒 Đã khóa chat" : "✅ Đã mở chat");
         };
-
         // Cập nhật hiển thị nút khi load trang (Sửa lại đoạn setTimeout cuối của bạn)
         setTimeout(() => {
             if (role === "admin") {
@@ -1141,7 +1198,6 @@ https://kenpvd.github.io/gaconmc/`,
                 }
             }
         });
-
         // Hỗ trợ thêm cho các dòng điện thoại đời cũ (Sự kiện submit form)
         document.getElementById('chatForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -1211,12 +1267,11 @@ https://kenpvd.github.io/gaconmc/`,
                     if (targetData.role === "admin") {
                         newName = "Admin";
                     } else if (targetData.role === "kiemduyet") {
-                        newName = "KiểmDuyệt-" + Math.floor(1000 + Math.random() * 9000);
+                        newName = "KiemDuyetVien-" + Math.floor(1000 + Math.random() * 9000);
                     } else {
                         newName = "Member-" + Math.floor(1000 + Math.random() * 9000);
                     }
                 }
-
                 showToast("⏳ Đang lưu...");
 
                 // Cập nhật biệt danh vào Firebase
@@ -1227,12 +1282,15 @@ https://kenpvd.github.io/gaconmc/`,
                     localStorage.setItem("memberName", newName);
                 }
 
-                showToast("✅ Đã đổi! Đang tải lại...");
-
-                // Reload trang để cập nhật UI
-                setTimeout(() => {
-                    location.reload();
-                }, 500);
+                showToast("✅ Đã đổi biệt danh!");
+                await setDoc(msgRef, { name: newName }, { merge: true });
+                // nếu là chính mình → cập nhật tên dùng cho tin sau
+                if (targetData.deviceId === deviceId) {
+                    name = newName;
+                    localStorage.setItem("memberName", newName);
+                    // cập nhật trên header
+                    document.getElementById('roleText').innerText = "🟢│Tài Khoản: " + name;
+                }
 
             } catch (e) {
                 console.error(e);
@@ -1258,6 +1316,36 @@ https://kenpvd.github.io/gaconmc/`,
             if (!e.target || e.target.tagName !== "SPAN") return;
             msgInput2.value += e.target.innerText;
             msgInput2.focus();
+        };
+        // Reply nè
+        window.setReply = (id, name, text) => {
+            replyData = { msgId: id, name, text };
+            document.getElementById("replyText").innerText =
+                `Bạn đang trả lời ${name}: ${text.slice(0, 40)}`;
+            document.getElementById("replyBox").style.display = "block";
+        };
+
+        window.clearReply = () => {
+            replyData = null;
+            document.getElementById("replyBox").style.display = "none";
+        };
+        window.scrollToMsg = (msgId) => {
+            const el = document.getElementById("msg-" + msgId);
+            if (!el) {
+                showToast("⚠️ Tin nhắn gốc không tồn tại hoặc đã bị xóa");
+                return;
+            }
+
+            el.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            // highlight nhẹ để dễ thấy
+            el.style.boxShadow = "0 0 0 3px rgba(255,92,168,0.6)";
+            setTimeout(() => {
+                el.style.boxShadow = "";
+            }, 1500);
         };
     </script>
 </body>
