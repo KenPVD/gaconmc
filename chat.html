@@ -693,7 +693,7 @@
                     const textBox = el.querySelector(".text");
                     if (textBox) {
                         if (data.deleted) {
-                            textBox.innerHTML = "🚫 Tin nhắn của bạn đã xóa";
+                            textBox.innerHTML = "🚫 Tin nhắn đã bị xóa";
                             textBox.classList.add("deleted-msg");
                         } else {
                             textBox.innerHTML = formatText(data.text || "");
