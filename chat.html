@@ -710,7 +710,7 @@
                 if (change.type === "added") {
                     const isMe = data.deviceId === deviceId;
                     const div = document.createElement("div");
-                    div.className = `msg ${isMe ? 'me' : 'other'} ${data.role}`;
+                    div.className = `msg ${isMe ? 'me' : 'other'} ${data.role} ${data.deviceId === 'bot' ? 'bot' : ''}`;
                     div.id = "msg-" + id;
                     div.dataset.id = id; // ⭐ THÊM DÒNG NÀY
                     div.innerHTML = `
