@@ -617,7 +617,6 @@
                         <span>🔥</span><span>🎮</span><span>🎧</span><span>⚽</span><span>🏆</span>
                     </div>
 
-
                 </form>
                 <details class="admin-login-card" id="loginDetails">
                     <summary>▼ 🔐 ĐĂNG NHẬP ADMIN / KIỂM DUYỆT VIÊN</summary>
@@ -639,6 +638,26 @@
 
     <audio id="notifySound" src="boa.mp3" preload="auto"></audio>
     <script type="module">
+        // ====== ANTI SWEAR ======
+        const BAD_WORDS = ["địt", "đéo", "lồn", "cặc", "buồi", "dm", "đm", "cl"];
+
+        function containsBadWord(text) {
+            if (!text) return false;
+            return BAD_WORDS.some(w => text.toLowerCase().includes(w));
+        }
+
+        // đếm số lần tục (theo máy)
+        let swearCount = Number(localStorage.getItem("swearCount")) || 0;
+        // ===== CHỐNG SPAM =====
+        const SPAM_LIMIT = 10;        // số tin liên tục
+        const SPAM_TIME = 5000;       // trong 5 giây
+        const SPAM_BLOCK_TIME = 60;   // khóa 60 giây
+
+        let spamCount = 0;
+        let lastMsgTime = 0;
+        let spamBlockedUntil = Number(localStorage.getItem("spamBlockedUntil") || 0);
+        let spamTimer = null;
+
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, getDoc, setDoc, deleteDoc, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -652,6 +671,8 @@
         const db = getFirestore(app);
 
         let replyData = null; // 👈 BẮT BUỘC – FIX REPLY
+        // ===== CẤU HÌNH GIỚI HẠN KÝ TỰ =====
+        const MAX_MESSAGE_LENGTH = 30 // 👈 CHỈNH SỐ NÀY LÀ ĐỦ
         let role = (localStorage.getItem("userRole") || "member").toLowerCase();
         let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
         let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
@@ -668,6 +689,38 @@
             el.innerText = t; el.style.display = 'block';
             setTimeout(() => el.style.display = 'none', 2000);
         };
+        // ===== HÀM KHÓA SPAM =====
+        const blockSpam = () => {
+            spamBlockedUntil = Date.now() + SPAM_BLOCK_TIME * 1000;
+            localStorage.setItem("spamBlockedUntil", spamBlockedUntil);
+            const input = document.getElementById("msg");
+            const wrap = document.querySelector(".input-wrap");
+
+            input.disabled = true;
+            wrap.classList.add("muted");
+
+            showToast("⛔ Bạn vi phạm spam tin nhắn! Khóa 60s.");
+
+            spamTimer = setInterval(() => {
+                const remain = Math.ceil((spamBlockedUntil - Date.now()) / 1000);
+
+                if (remain <= 0) {
+                    clearInterval(spamTimer);
+                    spamTimer = null;
+
+                    spamCount = 0;
+                    spamBlockedUntil = 0;
+                    localStorage.removeItem("spamBlockedUntil");
+
+                    input.disabled = false;
+                    wrap.classList.remove("muted");
+                    input.placeholder = "Nhập tin nhắn...";
+                    return;
+                }
+
+                input.placeholder = `⏳ Bị khóa do spam (${remain}s)`;
+            }, 1000);
+        };
 
         const soundBtn = document.getElementById('soundToggle');
         soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
@@ -677,7 +730,7 @@
             soundBtn.innerText = isSoundEnabled ? "🔊" : "🔇";
         };
 
-        const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(100));
+        const qMessages = query(collection(db, "messages"), orderBy("time"), limitToLast(200));
 
         // Lắng nghe tin nhắn để hiển thị UI
         onSnapshot(qMessages, (snap) => {
@@ -998,17 +1051,59 @@ https://kenpvd.github.io/gaconmc/`,
         };
 
         const sendMsg = async (text) => {
+            async function botWarnSwear(count, replyMsgId, replyName, replyText) {
+                await addDoc(collection(db, "messages"), {
+                    name: "🤖 BOT",
+                    role: "admin",
+                    deviceId: "bot",
+                    text: `⚠️ Cảnh báo ngôn từ không phù hợp (${count}/3)`,
+                    reply: {
+                        msgId: replyMsgId,
+                        name: replyName,
+                        text: replyText.slice(0, 50)
+                    },
+                    time: serverTimestamp()
+                });
+            }
+            // 🤖 Bot thì bỏ qua giới hạn
+            if (role !== "bot") {
+                if (text.length > MAX_MESSAGE_LENGTH) {
+                    showToast(`⛔ Tin nhắn tối đa ${MAX_MESSAGE_LENGTH} ký tự!`);
+                    return;
+                }
+            }
+
             // 1. Kiểm tra chặn cá nhân
             const mCheck = await getDoc(doc(db, "mute", deviceId));
             if (mCheck.exists()) return alert("Bạn bị chặn!");
+            const now = Date.now();
+
+            // ⛔ ĐANG BỊ KHÓA DO SPAM
+            if (spamBlockedUntil > now) {
+                showToast("⛔ Bạn đang bị khóa do spam!");
+                return;
+            }
+
+            // 📈 ĐẾM SPAM
+            if (now - lastMsgTime < SPAM_TIME) {
+                spamCount++;
+            } else {
+                spamCount = 1;
+            }
+
+            lastMsgTime = now;
+
+            if (spamCount >= SPAM_LIMIT) {
+                blockSpam();
+                return;
+            }
 
             // 2. Kiểm tra khóa chat toàn server
-            // Cho phép 'admin' và 'kiemduyet' gửi tin nhắn kể cả khi đang khóa
             if (isChatLocked && role === "member") {
                 return alert("Phòng chat đang khóa, bạn không thể gửi tin lúc này!");
             }
 
-            await addDoc(collection(db, "messages"), {
+            const userMsgRef = await addDoc(collection(db, "messages"), {
                 name,
                 role,
                 text,
@@ -1016,7 +1111,36 @@ https://kenpvd.github.io/gaconmc/`,
                 reply: replyData,
                 time: serverTimestamp()
             });
-            clearReply(); // 👈 GỬI XONG LÀ CLEAR
+
+            // 🚫 CHECK TỤC (SAU KHI ĐÃ GỬI)
+            if (containsBadWord(text)) {
+                swearCount++;
+                localStorage.setItem("swearCount", swearCount);
+
+                await botWarnSwear(
+                    swearCount,
+                    userMsgRef.id,
+                    name,
+                    text
+                );
+
+                if (swearCount >= 3) {
+                    spamBlockedUntil = Date.now() + 60000;
+                    localStorage.setItem("spamBlockedUntil", spamBlockedUntil);
+
+                    swearCount = 0;
+                    localStorage.setItem("swearCount", 0);
+
+                    blockSpam();
+                    return;
+                }
+            } else {
+                // nói bình thường → reset
+                swearCount = 0;
+                localStorage.setItem("swearCount", 0);
+            }
+
+            clearReply();
         };
 
         document.getElementById('sendBtn').onclick = () => {
@@ -1409,5 +1533,4 @@ https://kenpvd.github.io/gaconmc/`,
         });
     </script>
 </body>
-
 </html>
