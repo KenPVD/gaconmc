@@ -1400,16 +1400,12 @@ https://kenpvd.github.io/gaconmc/`,
             lastLogoutVer = data.ver;
             localStorage.setItem("lastLogoutVer", lastLogoutVer);
 
-            if (role === "admin" || role === "kiemduyet") {
-                showToast("🚨 Hệ thống yêu cầu đăng xuất!");
+            showToast("🚨 Hệ thống yêu cầu đăng xuất!");
 
-                setTimeout(() => {
-                    localStorage.removeItem("userRole");
-                    localStorage.removeItem("memberName");
-                    localStorage.removeItem("isLoggedIn");
-                    location.reload();
-                }, 800);
-            }
+            setTimeout(() => {
+                localStorage.clear(); // ❗ XÓA HẾT – KHỎI SÓT
+                location.reload();
+            }, 800);
         });
     </script>
 </body>
