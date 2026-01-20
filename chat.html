@@ -514,6 +514,46 @@
             font-style: italic;
             font-size: 13px;
         }
+
+        /* ===== Đăng xuất all ===== */
+        .auth-buttons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .btn-small {
+            padding: 0 10px;
+            font-size: 11px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            height: 26px;
+            /* Chiều cao nhỏ gọn */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        /* Nền đỏ cho nút Đăng Xuất ALL */
+        .btn-danger {
+            background: #e74c3c !important;
+            /* Màu đỏ chủ đạo */
+            border-color: #c0392b !important;
+            color: white !important;
+            /* Chữ trắng cho nổi bật */
+            font-weight: bold;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b !important;
+            /* Đỏ đậm hơn khi di chuột */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -553,10 +593,12 @@
                         <img id="groupAvatar" src="https://pomf2.lain.la/f/k7lr1rw.jpg">
                         <span id="roleText" style="font-weight:bold; font-size:14px; color:#333;"></span>
                     </div>
-                    <button id="logoutBtn" style="display:none">Đăng xuất</button>
-                    <!-- CHỈ ADMIN MỚI THẤY -->
+                    <button id="logoutBtn" style="display:none;">Đăng xuất</button>
+                    <button id="logoutAllBtn" onclick="forceLogoutAll()" class="btn-small btn-danger"
+                        style="display:none;">
+                        Đăng Xuất ALL
+                    </button>
                 </div>
-
                 <div style="display:flex; flex-direction:column; align-items:flex-start;">
                 </div>
 
@@ -638,13 +680,14 @@
 
     <audio id="notifySound" src="boa.mp3" preload="auto"></audio>
     <script type="module">
-        // ====== ANTI SWEAR ======
-        const BAD_WORDS = ["địt", "đéo", "lồn", "cặc", "buồi", "dm", "đm", "cl"];
-
-        function containsBadWord(text) {
-            if (!text) return false;
-            return BAD_WORDS.some(w => text.toLowerCase().includes(w));
+        if (!window.mySessionId) {
+            window.mySessionId = "SID-" + Math.random().toString(36).substring(2, 9);
         }
+        // Biến chặn reload liên tục
+        let hasExecutedLogout = false;
+        // Chờ 3 giây để Firebase ổn định dữ liệu cũ sau khi load trang
+        let isSystemReady = false;
+        setTimeout(() => { isSystemReady = true; }, 3000);
 
         // đếm số lần tục (theo máy)
         let swearCount = Number(localStorage.getItem("swearCount")) || 0;
@@ -845,9 +888,9 @@ ${(role === "admin" || role === "kiemduyet") ? `
 
             "/ip": {
                 text: `IP Sever hiện tại
-Pc: gaconmc.ddns.net:25026
+Pc: gaconmc.ddns.net:25516
 Pe: gaconmc.ddns.net
-Port: 25026
+Port: 25516
 
 Link Bio Sever
 https://kenpvd.github.io/gaconmc/`,
@@ -866,10 +909,16 @@ https://kenpvd.github.io/gaconmc/`,
 Đọc Rõ Luật Trách Mất Lòng Nhau!`,
                 roles: ["member", "admin", "kiemduyet"]
             },
-            "/logoutall": {
-                text: "🚨 Admin đã yêu cầu đăng xuất TOÀN BỘ Admin & Kiểm Duyệt!",
-                roles: ["admin"] // ❗ CHỈ ADMIN
-            }
+            "/box": {
+                text: `Box Messenger Server GaConMC
+1. Box Tổng
+Link: https://m.me/ch/AbbrvNspO3NhH-8P/
+2. Box Nhánh 1
+Link: https://m.me/j/AbYRiUyr7kWrkuPX/
+3. Box Nhánh 2
+Link: https://m.me/j/Aba4r6huoc4Nmi_L/`,
+                roles: ["member", "admin", "kiemduyet"]
+            },
         };
 
         // 🛡️ chống spam & reload
@@ -893,47 +942,23 @@ https://kenpvd.github.io/gaconmc/`,
                 const command = BOT_COMMANDS[cmd];
                 if (!command) continue;
 
-                // ❌ CHẶN ROLE KHÔNG ĐƯỢC PHÉP
+                // ❌ Member dùng lệnh không đủ quyền
                 if (!command.roles.includes(m.role)) {
-                    // chỉ bot gửi cảnh báo 1 lần cho người gõ
                     if (m.deviceId === deviceId) {
                         await addDoc(collection(db, "messages"), {
                             name: "🤖 Bot",
                             role: "admin",
                             deviceId: "bot",
                             time: serverTimestamp(),
-                            text: "⛔ Lệnh này chỉ dành cho Admin / Kiểm duyệt."
+                            text: "⛔ Chỉ Admin và Kiểm Duyệt Viên mới được dùng lệnh này!"
                         });
                     }
                     continue;
                 }
-                if (cmd === "/logoutall") {
-                    // ❗ CHỈ client GỬI TIN này mới xử lý
-                    if (m.role !== "admin") continue;
-                    if (m.deviceId !== deviceId) continue;
-
-                    const ref = doc(db, "settings", "logoutAll");
-                    const snap = await getDoc(ref);
-                    const ver = snap.exists() ? (snap.data().ver || 0) : 0;
-
-                    await setDoc(ref, {
-                        ver: ver + 1,
-                        by: m.name,
-                        time: serverTimestamp()
-                    });
-
-                    await addDoc(collection(db, "messages"), {
-                        name: "🤖 Bot",
-                        role: "admin",
-                        deviceId: "bot",
-                        time: serverTimestamp(),
-                        text: "🚨 Admin đã đăng xuất TOÀN BỘ Admin & Kiểm Duyệt!"
-                    });
-
-                    continue;
-                }
                 handledCmd.add(mid);
+
                 const now = Date.now();
+
                 // 🔒 chỉ TAB gửi lệnh mới được bot trả lời + cooldown
                 if (m.deviceId !== deviceId) continue;
                 if (now - lastCmdTime < CMD_COOLDOWN) continue;
@@ -953,7 +978,6 @@ https://kenpvd.github.io/gaconmc/`,
                 }
             }
         });
-
         /* ==================================================================== 
                BOT PHẦN 2: PHẢN HỒI MEMBER LẠ & TỰ ĐỘNG NHẮC SAU 5 PHÚT (FIX SPAM RELOAD)
                ==================================================================== */
@@ -1177,9 +1201,16 @@ https://kenpvd.github.io/gaconmc/`,
 
             localStorage.setItem("userRole", role);
             localStorage.setItem("memberName", name);
+            // THÊM DÒNG NÀY:
+            localStorage.setItem("loginTimestamp", Date.now());
             location.reload();
         };
-        document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.reload(); };
+        logoutBtn.onclick = () => {
+            localStorage.setItem("manualLogout", "1"); // ⭐ đánh dấu logout thường
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("memberName");
+            location.reload();
+        };
 
         setTimeout(() => {
             document.getElementById('loading-screen').style.display = 'none';
@@ -1493,6 +1524,7 @@ https://kenpvd.github.io/gaconmc/`,
             replyData = null;
             document.getElementById("replyBox").style.display = "none";
         };
+        // --- CUỘN ĐẾN TIN NHẮN GỐC ---
         window.scrollToMsg = (msgId) => {
             const el = document.getElementById("msg-" + msgId);
             if (!el) {
@@ -1510,27 +1542,58 @@ https://kenpvd.github.io/gaconmc/`,
             setTimeout(() => {
                 el.style.boxShadow = "";
             }, 1500);
+        }; // <--- ĐÓNG NGOẶC Ở ĐÂY
+
+        /* ========================================================= 
+   HỆ THỐNG ĐĂNG XUẤT TỪ XA - PHIÊN BẢN RELOAD CƯỠNG CHẾ
+   ========================================================= */
+
+        // 1. Hàm phát lệnh
+        window.forceLogoutAll = async function () {
+            if (!confirm("⚠️ Hệ thống sẽ ép tất cả Admin/KTV reload và thoát quyền. Tiếp tục?")) return;
+
+            try {
+                const logoutRef = doc(db, "settings", "authStatus");
+                await setDoc(logoutRef, {
+                    cmdTime: serverTimestamp(),
+                    adminSession: window.mySessionId,
+                    sender: localStorage.getItem("memberName") || "Admin"
+                });
+                showToast("🚀 Đang ép tất cả máy khác thoát...");
+            } catch (e) {
+                console.error(e);
+            }
         };
-        // ================= LOGOUT ALL SYSTEM =================
-        let lastLogoutVer = Number(localStorage.getItem("lastLogoutVer") || 0);
 
-        onSnapshot(doc(db, "settings", "logoutAll"), (snap) => {
-            if (!snap.exists()) return;
-            const data = snap.data();
+        // 2. Lắng nghe và tự động quét sạch
+        onSnapshot(doc(db, "settings", "authStatus"), (snap) => {
+            // 1. Chỉ chạy khi hệ thống đã sẵn sàng và chưa thực hiện logout lần nào trong phiên này
+            if (!isSystemReady || hasExecutedLogout) return;
 
-            if (!data.ver) return;
-            if (data.ver <= lastLogoutVer) return;
+            if (snap.exists()) {
+                const data = snap.data();
+                const myRole = localStorage.getItem("userRole") || "member";
 
-            lastLogoutVer = data.ver;
-            localStorage.setItem("lastLogoutVer", lastLogoutVer);
+                // 2. Điều kiện: Khác phiên làm việc và là quản trị viên
+                if (data.adminSession !== window.mySessionId && myRole !== "member") {
 
-            showToast("🚨 Hệ thống yêu cầu đăng xuất!");
+                    hasExecutedLogout = true; // Đánh dấu đã xử lý để tránh vòng lặp
 
-            setTimeout(() => {
-                localStorage.clear(); // ❗ XÓA HẾT – KHỎI SÓT
-                location.reload();
-            }, 800);
+                    // 3. Xóa sạch dữ liệu ngay lập tức
+                    localStorage.clear();
+                    sessionStorage.clear();
+
+                    // 4. Reload cưỡng chế (Dùng setTimeout 500ms để đảm bảo xóa sạch Storage trước khi load)
+                    showToast("⚠️ Admin đã kết thúc phiên làm việc. Đang tải lại...");
+
+                    setTimeout(() => {
+                        // Thêm timestamp vào URL để tránh trình duyệt lấy trang cũ từ Cache
+                        window.location.replace(window.location.origin + window.location.pathname + "?v=" + Date.now());
+                    }, 500);
+                }
+            }
         });
     </script>
 </body>
+
 </html>
