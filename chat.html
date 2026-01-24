@@ -789,7 +789,7 @@
                     const textBox = el.querySelector(".text");
                     if (textBox) {
                         if (data.deleted) {
-                            textBox.innerHTML = "🚫 Tin nhắn đã bị xóa";
+                            textBox.innerHTML = "🚫 Nội dung tin nhắn đã bị xoá";
                             textBox.classList.add("deleted-msg");
                         } else {
                             textBox.innerHTML = formatText(data.text || "");
@@ -844,7 +844,7 @@ ${(role === "admin" || role === "kiemduyet") ? `
      <b>${data.reply.name}</b>: ${data.reply.text}
   </div>
 ` : ""}
-    <div class="text ${data.deleted ? 'deleted-msg' : ''}">${data.deleted ? '🚫 Tin nhắn của bạn đã bị xóa' : formatText(data.text || "")}</div>
+    <div class="text ${data.deleted ? 'deleted-msg' : ''}">${data.deleted ? '🚫 Nội dung tin nhắn đã bị xoá' : formatText(data.text || "")}</div>
 
     <div class="msg-time">${data.time ? new Date(data.time.toMillis()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Vừa xong'}</div>
 `;
@@ -1063,7 +1063,7 @@ Link: https://m.me/j/Aba4r6huoc4Nmi_L/`,
             await setDoc(
                 doc(db, "messages", id),
                 {
-                    text: "🚫 Tin nhắn của bạn đã bị xóa",
+                    text: "🚫 Nội dung tin nhắn đã bị xoá",
                     deleted: true
                 },
                 { merge: true }
