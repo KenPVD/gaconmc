@@ -715,7 +715,7 @@
 
         let replyData = null; // 👈 BẮT BUỘC – FIX REPLY
         // ===== CẤU HÌNH GIỚI HẠN KÝ TỰ =====
-        const MAX_MESSAGE_LENGTH = 30 // 👈 CHỈNH SỐ NÀY LÀ ĐỦ
+        const MAX_MESSAGE_LENGTH = 50 // 👈 CHỈNH SỐ NÀY LÀ ĐỦ
         let role = (localStorage.getItem("userRole") || "member").toLowerCase();
         let name = localStorage.getItem("memberName") || "Member-" + Math.floor(Math.random() * 10000);
         let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
@@ -888,9 +888,9 @@ ${(role === "admin" || role === "kiemduyet") ? `
 
             "/ip": {
                 text: `IP Sever hiện tại
-Pc: gaconmc.ddns.net:25026
+Pc: gaconmc.ddns.net:25793
 Pe: gaconmc.ddns.net
-Port: 25026
+Port: 25793
 
 Link Bio Sever
 https://kenpvd.github.io/gaconmc/`,
