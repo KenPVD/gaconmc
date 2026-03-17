@@ -596,22 +596,45 @@ ${serial}`;
     }, 3000);
 }
 const music = document.getElementById("bgMusic");
-
-// cố gắng autoplay
-music.play().catch(() => {
-    // nếu bị chặn → chạy khi user click lần đầu
-    document.addEventListener("click", () => {
-        music.play();
-    }, { once: true });
-});
-music.volume = 0.4;
 const avatar = document.querySelector(".music-avatar");
 
-music.play().catch(() => {
-    document.addEventListener("click", () => music.play(), { once: true });
+// lưu trạng thái đã từng phát
+let hasPlayed = localStorage.getItem("played");
+
+// cố autoplay
+function tryPlay() {
+    music.play().then(() => {
+        localStorage.setItem("played", "true");
+    }).catch(() => {
+        // nếu bị chặn → chờ user chạm
+        document.addEventListener("touchstart", playOnce, { once: true });
+        document.addEventListener("click", playOnce, { once: true });
+    });
+}
+
+function playOnce() {
+    music.play();
+    localStorage.setItem("played", "true");
+}
+
+// khi load lại trang
+window.addEventListener("load", () => {
+    if (hasPlayed) {
+        tryPlay();
+    }
 });
 
-// quay khi phát, dừng khi pause (nếu sau này có)
+// khi quay lại tab
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+        music.play().catch(()=>{});
+    }
+});
+
+// volume
+music.volume = 0.4;
+
+// quay avatar
 music.onplay = () => avatar.style.animationPlayState = "running";
 music.onpause = () => avatar.style.animationPlayState = "paused";
 </script>
