@@ -261,6 +261,65 @@
     margin-bottom: 20px;
     filter: drop-shadow(0 0 15px #a855f7);
 }
+.popup{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.popup.show{
+    opacity: 1;
+    pointer-events: all;
+}
+
+.popup-box{
+    background: #eee;
+    color: #333;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    width: 320px;
+
+    transform: scale(0.8);
+    transition: 0.3s;
+}
+
+.popup.show .popup-box{
+    transform: scale(1);
+}
+
+.popup .icon{
+    font-size: 50px;
+    color: #22c55e;
+    margin-bottom: 15px;
+}
+
+.popup h2{
+    margin-bottom: 10px;
+}
+
+.popup button{
+    margin-top: 20px;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    background: #6d5dfc;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.popup button:hover{
+    opacity: 0.8;
+}
     </style>
 </head>
 <body>
@@ -371,7 +430,7 @@
     <div class="donate-box">
         <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 15px;">ỦNG HỘ MÁY CHỦ</h2>
         <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 30px;">Mọi khoản đóng góp của bạn đều được dùng để duy trì và nâng cấp cấu hình máy chủ ngày một tốt hơn.</p>
-        <a href="https://shop.gaconmc.vn" class="btn-donate"><i class="fa fa-shopping-cart"></i> GHÉ THĂM CỬA HÀNG</a>
+        <a href="donate.html" class="btn-donate"><i class="fa fa-shopping-cart"></i> GHÉ THĂM CỬA HÀNG</a>
         <p style="margin-top: 20px; font-size: 12px; color: var(--gold);">* Nhận ngay rank và vật phẩm giá trị sau khi donate.</p>
     </div>
 </section>
@@ -447,9 +506,14 @@
     function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
 
     function copyIP() {
-        navigator.clipboard.writeText("gaconmc.ddns.net:25793");
-        alert("Đã sao chép địa chỉ IP: gaconmc.ddns.net:25793");
-    }
+    navigator.clipboard.writeText("gaconmc.ddns.net:25793");
+
+    document.getElementById("popup").classList.add("show");
+}
+
+function closePopup(){
+    document.getElementById("popup").classList.remove("show");
+}
 
     const staff = {
     t1: [
@@ -549,6 +613,20 @@ let loading = setInterval(() => {
 
 }, 200);
 </script>
+<div id="popup" class="popup">
+  <div class="popup-box">
+    <i class="fa fa-check-circle icon"></i>
+    <h2>Copy IP Thành Công</h2>
 
+    <p>Và Code Mở Đầu Dành Cho Member Mới</p>
+
+    <p>Nhập Code: <b style="color:green;">HELLO</b></p>
+    <p>Nhận món quà nho nhỏ</p>
+
+    <p>Cách nhập: <b style="color:green;">/redeem HELLO</b></p>
+
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
 </body>
 </html>
