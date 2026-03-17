@@ -361,6 +361,7 @@
     overflow: hidden;
     border: 2px solid #ff4fd8;
     animation: spin 5s linear infinite;
+    animation-play-state: paused; /* 👈 QUAN TRỌNG */
 }
 
 .music-avatar img {
@@ -595,50 +596,32 @@ ${serial}`;
         isSending = false;
     }, 3000);
 }
-const music = document.getElementById("bgMusic");
-const avatar = document.querySelector(".music-avatar");
+document.addEventListener("DOMContentLoaded", () => {
+    const music = document.getElementById("bgMusic");
+    const avatar = document.querySelector(".music-avatar");
 
-// lưu trạng thái đã từng phát
-let hasPlayed = localStorage.getItem("played");
+    if (!music) return;
 
-// cố autoplay
-function tryPlay() {
-    music.play().then(() => {
-        localStorage.setItem("played", "true");
-    }).catch(() => {
-        // nếu bị chặn → chờ user chạm
-        document.addEventListener("touchstart", playOnce, { once: true });
-        document.addEventListener("click", playOnce, { once: true });
-    });
-}
+    music.muted = true;
 
-function playOnce() {
-    music.play();
-    localStorage.setItem("played", "true");
-}
-
-// khi load lại trang
-window.addEventListener("load", () => {
-    if (hasPlayed) {
-        tryPlay();
-    }
-});
-
-// khi quay lại tab
-document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
+    function startMusic() {
+        music.muted = false;
         music.play().catch(()=>{});
     }
+
+    document.addEventListener("click", startMusic, { once: true });
+    document.addEventListener("touchstart", startMusic, { once: true });
+
+    music.play().catch(()=>{});
+    music.volume = 0.4;
+
+    if (avatar) {
+        music.onplay = () => avatar.style.animationPlayState = "running";
+        music.onpause = () => avatar.style.animationPlayState = "paused";
+    }
 });
-
-// volume
-music.volume = 0.4;
-
-// quay avatar
-music.onplay = () => avatar.style.animationPlayState = "running";
-music.onpause = () => avatar.style.animationPlayState = "paused";
 </script>
-<audio id="bgMusic" autoplay loop>
+<audio id="bgMusic" autoplay loop muted>
     <source src="nenqr.mp3" type="audio/mpeg">
 </audio>
 <div class="music-player">
