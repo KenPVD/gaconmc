@@ -2,112 +2,197 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI phân tích doanh thu</title>
 <link rel="icon" type="image/png" href="https://i.ibb.co/qMwK7h1n/xgame.png">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    body { 
-        font-family: Arial, sans-serif; 
-        background: url("https://i.ibb.co/h1tS5qs0/25ecc83e-010d-4d31-8011-d02e7bd20c52.jpg") center/cover no-repeat fixed;
-        margin: 0; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        height: 100vh; 
+    :root {
+        --bg-dark: #050505;
+        --cyan-neon: #00f2fe;
+        --cyan-glow: rgba(0, 242, 254, 0.5);
+        --text-white: #ffffff;
     }
-    
-    .chat { 
-        width: 650px; 
-        height: 90vh; 
-        background: rgba(255, 255, 255, 0.9); 
-        border-radius: 15px; 
-        display: flex; 
-        flex-direction: column; 
-        overflow: hidden; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        backdrop-filter: blur(5px);
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { 
+        font-family: 'Inter', sans-serif; 
+        background-color: var(--bg-dark);
+        height: 100vh;
+        display: flex; justify-content: center; align-items: center; 
+        overflow: hidden; position: relative;
+    }
+
+    /* CANVAS NỀN CODE RƠI */
+    #matrix {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        z-index: 0;
+        opacity: 0.15; /* Chỉnh độ đậm nhạt của code nền ở đây */
+    }
+
+    .chat-container { 
+        width: 95%; max-width: 850px; height: 90vh; 
+        background: rgba(10, 10, 15, 0.85); 
+        border: 2px solid var(--cyan-neon);
+        border-radius: 8px;
+        display: flex; flex-direction: column; 
+        box-shadow: 0 0 25px var(--cyan-glow);
+        backdrop-filter: blur(8px);
+        position: relative; z-index: 10;
     }
 
     .chat-header { 
-        text-align: center; 
-        font-size: 20px; 
-        font-weight: bold; 
-        color: white; 
-        background: linear-gradient(90deg,#00c6ff,#0072ff); 
-        padding: 15px; 
+        padding: 15px 25px;
+        background: rgba(0, 0, 0, 0.9);
+        border-bottom: 2px solid var(--cyan-neon);
+        display: flex; align-items: center; gap: 15px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .avt {
+        width: 45px; height: 45px;
+        border: 2px solid var(--cyan-neon);
+        box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .header-info b {
+        color: var(--cyan-neon);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 15px;
+        text-shadow: 0 0 8px var(--cyan-neon);
+    }
+
+    .status {
+        font-size: 11px; color: #00ff00;
+        display: flex; align-items: center; gap: 5px;
+        font-family: 'Fira Code', monospace;
+        margin-top: 3px;
     }
 
     .messages { 
-        flex: 1; 
-        overflow-y: auto; 
-        padding: 15px; 
-        background: rgba(248, 250, 252, 0.4); 
+        flex: 1; overflow-y: auto; padding: 25px;
+        background: rgba(0,0,0,0.1);
     }
 
     .msg { 
-        margin-bottom: 15px; 
-        padding: 12px; 
-        border-radius: 8px; 
-        max-width: 95%; 
-        white-space: pre-wrap; 
-        line-height: 1.5; 
+        margin-bottom: 20px; padding: 14px 18px; 
+        max-width: 85%; line-height: 1.6; font-size: 15px;
+        border-radius: 4px;
     }
 
-    .user { background: #3b82f6; color: white; margin-left: auto; font-size: 12px; }
+    /* USER MSG: KHÔNG CÒN CHỮ ĐEN */
+    .user { 
+        background: rgba(0, 242, 254, 0.15);
+        color: var(--text-white); 
+        margin-left: auto; 
+        border: 1px solid var(--cyan-neon);
+        font-weight: 700;
+        text-shadow: 0 0 5px var(--cyan-glow);
+    }
 
+    /* BOT MSG: CHỮ CYAN NHẠT */
     .bot { 
-        background: #ffffff; 
-        color: #1e293b; 
-        border: 1px solid #e2e8f0; 
-        font-family: "Courier New", Courier, monospace; 
-        font-size: 14px; 
-        font-weight: bold; 
+        background: rgba(20, 20, 30, 0.8);
+        color: #d1faff; 
+        margin-right: auto;
+        font-family: 'Fira Code', monospace;
+        border-left: 4px solid var(--cyan-neon);
+        white-space: pre-wrap;
     }
 
-    .input { display: flex; border-top: 1px solid #ddd; background: white; }
+    .input-area { 
+        padding: 20px; background: rgba(0, 0, 0, 0.9);
+        border-top: 1px solid var(--cyan-neon);
+        border-radius: 0 0 8px 8px;
+    }
 
-    textarea { flex: 1; border: none; padding: 15px; resize: none; height: 70px; outline: none; }
+    .input-box {
+        display: flex; background: #111;
+        border: 1px solid #333; border-radius: 6px; padding: 8px;
+    }
 
-    button { width: 80px; border: none; background: #22c55e; color: white; font-weight: bold; cursor: pointer; }
+    .input-box:focus-within { border-color: var(--cyan-neon); box-shadow: 0 0 12px var(--cyan-glow); }
 
-    .chat-header{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-color:white;
-background:linear-gradient(90deg,#00c6ff,#0072ff);
-padding:12px;
-letter-spacing:2px;
-}
+    textarea { 
+        flex: 1; background: transparent; border: none;
+        color: var(--text-white); padding: 10px;
+        height: 50px; resize: none; outline: none; font-size: 15px;
+        font-family: 'Fira Code', monospace;
+    }
+    textarea::placeholder { color: rgba(0, 242, 254, 0.4); }
 
-.avt{
-width:55px;
-height:35px;
-border-radius:12px;
-object-fit:cover;
-border:2px solid white;
-box-shadow:0 0 6px rgba(0,0,0,0.3);
-}
+    .send-btn { 
+        width: 50px; background: transparent; border: none;
+        color: var(--cyan-neon); cursor: pointer;
+        display: flex; justify-content: center; align-items: center;
+    }
+
+    /* Tùy chỉnh thanh cuộn */
+    .messages::-webkit-scrollbar { width: 5px; }
+    .messages::-webkit-scrollbar-thumb { background: var(--cyan-neon); border-radius: 10px; }
 </style>
 </head>
 <body>
 
-<div class="chat">
+<canvas id="matrix"></canvas>
+
+<div class="chat-container">
     <div class="chat-header">
-<img class="avt" src="https://i.ibb.co/qMwK7h1n/xgame.png">
-<span>🤖 AI CỦA VIỆT ĐẠI :)))</span>
-</div>
-    <div id="messages" class="messages"></div>
-    <div class="input">
-        <textarea id="input" placeholder="Dán báo cáo doanh thu vào đây..."></textarea>
-        <button onclick="send()">GỬI</button>
+        <img class="avt" src="https://i.ibb.co/qMwK7h1n/xgame.png" alt="X-Game">
+        <div class="header-info">
+            <b>AI QUÁN NET XGAME</b>
+            <div class="status">● ĐANG TRỰC TUYẾN</div>
+        </div>
+    </div>
+    
+    <div id="messages" class="messages">
+        <div class="msg bot">> Kích Hoạt AI Thành Công✅
+> Phiên Bản: v2 Nâng Cấp Giao Diện
+> Nhập dữ liệu báo cáo hoặc dùng /kiemsoban</div>
+    </div>
+    
+    <div class="input-area">
+        <div class="input-box">
+            <textarea id="input" placeholder="Nhập doanh thu tại đây..."></textarea>
+            <button class="send-btn" onclick="send()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
     </div>
 </div>
 
 <script>
+// --- CANVAS MATRIX EFFECT ---
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const codes = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/{}[];:+-*";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#00f2fe";
+    ctx.font = fontSize + "px 'Fira Code'";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = codes.charAt(Math.floor(Math.random() * codes.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+    }
+}
+setInterval(drawMatrix, 50);
+
+// --- LOGIC XỬ LÝ CHAT GỐC CỦA BẠN (GIỮ NGUYÊN) ---
 let tienDichVu=0;
 let tienDoAn=0;
 let chenhlech=0;
@@ -710,7 +795,6 @@ addMsg(result,"bot");
 
 input.value="";
 }
-
 </script>
 </body>
 </html>
