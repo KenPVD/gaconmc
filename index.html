@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GACONMC | Minecraft Network</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/wZZCHcQS/image.png">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -18,582 +20,930 @@
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
 
         body {
-    background: #000;
-    color: white;
-    overflow-x: hidden;
-}
+            background: #000;
+            color: white;
+            overflow-x: hidden;
+        }
 
 
         /* --- NAVBAR --- */
         .nav {
-            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 1000;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1000;
         }
-        .logo { font-weight: 800; font-size: 24px; color: var(--primary); text-decoration: none; }
-        .menu { display: flex; gap: 15px; }
-        .menu-item { font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-decoration: none; color: white; opacity: 0.7; transition: 0.3s; }
-        .menu-item:hover { opacity: 1; color: var(--primary); }
-        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; }
+
+        .logo {
+            font-weight: 800;
+            font-size: 24px;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-item {
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: white;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .menu-item:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
 
         /* Mobile Menu */
         .mobile-menu {
-            position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-            background: rgba(10, 10, 11, 0.98); backdrop-filter: blur(20px);
-            display: flex; flex-direction: column; padding: 60px 40px; gap: 20px;
-            transition: 0.5s ease; z-index: 999; border-left: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background: rgba(10, 10, 11, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            padding: 60px 40px;
+            gap: 20px;
+            transition: 0.5s ease;
+            z-index: 999;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .mobile-menu.active { right: 0; }
+
+        .mobile-menu.active {
+            right: 0;
+        }
 
         /* --- SECTIONS --- */
-        .section { padding: 100px 8%; text-align: center; }
-        .section-title { font-size: 32px; font-weight: 800; margin-bottom: 50px; text-transform: uppercase; letter-spacing: 2px; }
-        .section-title span { color: var(--primary); }
+        .section {
+            padding: 100px 8%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
 
         /* --- HERO --- */
         .hero {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    background: url('https://i.ibb.co/N2kSZM2r/nenn.jpg') center/cover no-repeat;
-    position: relative;
-}
-.hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-
-    background: radial-gradient(circle,
-        rgba(0,0,0,0.4) 0%,
-        rgba(0,0,0,0.8) 100%
-    );
-
-    z-index: 0;
-}
-
-.hero-card {
-    position: relative;
-    z-index: 1;
-}
-        .hero-card { 
-            background: rgba(255,255,255,0.02); padding: 60px; border-radius: 40px; 
-            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); text-align: center;
+            background: url('https://i.ibb.co/N2kSZM2r/nenn.jpg') center/cover no-repeat;
+            position: relative;
         }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            background: radial-gradient(circle,
+                    rgba(0, 0, 0, 0.4) 0%,
+                    rgba(0, 0, 0, 0.8) 100%);
+
+            z-index: 0;
+        }
+
+        .server-uptime {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: linear-gradient(135deg,
+                    rgba(56, 189, 248, 0.2),
+                    rgba(125, 211, 252, 0.2));
+
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            padding: 8px 18px;
+            border-radius: 50px;
+
+            font-size: 13px;
+            font-weight: 600;
+            color: #e0f2fe;
+
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+
+            position: relative;
+            overflow: hidden;
+
+            /* 🔥 THÊM CÁI NÀY */
+            transition:
+                transform 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+                box-shadow 0.25s ease,
+                background-color 0.25s ease;
+        }
+
+        .server-uptime:hover {
+            transform: scale(1.08);
+            /* 👈 PHÓNG TO */
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.9);
+            background-color: rgba(56, 189, 248, 0.15);
+        }
+
+        .hero-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 60px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
         .ip-box {
-            background: rgba(255,255,255,0.05); border: 1px dashed var(--primary);
-            padding: 12px 30px; border-radius: 50px; display: inline-flex; align-items: center; gap: 10px;
-            cursor: pointer; transition: 0.3s; margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed var(--primary);
+            padding: 12px 30px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 20px 0;
         }
-        .ip-box:hover { background: rgba(168,85,247,0.2); transform: scale(1.05); }
+
+        .ip-box:hover {
+            background: rgba(168, 85, 247, 0.2);
+            transform: scale(1.05);
+        }
 
         /* --- CARDS & GRIDS --- */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card {
-            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
-            padding: 30px; border-radius: 24px; transition: var(--transition); text-align: left;
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
         }
-        .card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.05); border-color: var(--primary); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 30px;
+            border-radius: 24px;
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
 
         /* --- STAFF --- */
-        .staff-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 40px; }
-        .staff-card {
-            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
-            padding: 25px; border-radius: 24px; transition: var(--transition); text-align: center;
+        .staff-row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
         }
-        .staff-card:hover { transform: translateY(-15px); background: rgba(168, 85, 247, 0.15); border-color: var(--primary); }
-        .staff-avatar { border-radius: 15px; margin-bottom: 10px; }
-        .tier-1 .staff-card { border: 2px solid var(--gold); width: 260px; }
+
+        .staff-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 25px;
+            border-radius: 24px;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-15px);
+            background: rgba(168, 85, 247, 0.15);
+            border-color: var(--primary);
+        }
+
+        .staff-avatar {
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .tier-1 .staff-card {
+            border: 2px solid var(--gold);
+            width: 260px;
+        }
 
         /* --- DONATE --- */
         .donate-box {
             background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(99, 102, 241, 0.2));
-            padding: 50px; border-radius: 30px; border: 1px solid var(--primary);
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid var(--primary);
         }
+
         .btn-donate {
-            background: var(--primary); color: white; padding: 15px 40px; border-radius: 50px;
-            text-decoration: none; font-weight: 800; display: inline-block; margin-top: 20px;
-            transition: 0.3s; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.4);
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.4);
         }
-        .btn-donate:hover { transform: scale(1.1); box-shadow: 0 15px 30px rgba(168, 85, 247, 0.6); }
+
+        .btn-donate:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(168, 85, 247, 0.6);
+        }
 
         /* --- DISCORD SECTION --- */
         .discord-cta {
-            background: #5865F2; padding: 40px; border-radius: 24px; display: flex; 
-            justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+            background: #5865F2;
+            padding: 40px;
+            border-radius: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         /* --- FOOTER --- */
         .footer-end {
-            background: rgba(5, 5, 5, 0.9); padding: 80px 8% 40px;
-            text-align: center; border-top: 1px solid rgba(255,255,255,0.05);
+            background: rgba(5, 5, 5, 0.9);
+            padding: 80px 8% 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .footer-socials { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
         .social-icon {
-            width: 45px; height: 45px; background: rgba(255,255,255,0.05);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: white; text-decoration: none; transition: 0.3s; font-size: 18px;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 18px;
         }
-        .social-icon:hover { background: var(--primary); transform: translateY(-5px); }
+
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-5px);
+        }
 
         /* Responsive */
         @media (max-width: 1000px) {
-            .nav .menu { display: none; }
-            .mobile-toggle { display: block; }
+            .nav .menu {
+                display: none;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
         }
+
         .server-status {
-    margin-top: 15px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,0.05);
-    padding: 10px 20px;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.1);
-    font-size: 14px;
-    animation: fadeInUp 1s ease;
-}
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            animation: fadeInUp 1s ease;
+        }
 
-.loading {
-    width: 12px;
-    height: 12px;
-    border: 2px solid #fff;
-    border-top: 2px solid var(--primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
+        .loading {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #fff;
+            border-top: 2px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
 
-.online-dot {
-    width: 8px;
-    height: 8px;
-    background: #22c55e;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #22c55e;
-}
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+        }
 
-.offline-dot {
-    width: 8px;
-    height: 8px;
-    background: red;
-    border-radius: 50%;
-}
+        .offline-dot {
+            width: 8px;
+            height: 8px;
+            background: red;
+            border-radius: 50%;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-.bg-fixed {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: -3;
-}
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-/* lớp glow mờ */
-.bg-fixed::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
 
-    background:
-        radial-gradient(circle at 20% 30%, rgba(168,85,247,0.25), transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(99,102,241,0.25), transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05), transparent 60%);
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    filter: blur(80px);
-    animation: glowMove 12s ease-in-out infinite alternate;
-}
+        .bg-fixed {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: -3;
+        }
 
-/* chuyển động nhẹ */
-@keyframes glowMove {
-    0% { transform: scale(1) translate(0,0); }
-    100% { transform: scale(1.2) translate(-30px, 20px); }
-}
-.dust {
-    position: fixed;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-}
+        /* lớp glow mờ */
+        .bg-fixed::before {
+            content: "";
+            position: absolute;
+            inset: 0;
 
-.dust span {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: white;
-    border-radius: 50%;
-    opacity: 0.2;
-    filter: blur(1px);
-    animation: dustMove linear infinite;
-}
+            background:
+                radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.25), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.25), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 60%);
 
-@keyframes dustMove {
-    from {
-        transform: translateY(100vh);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(-10vh);
-        opacity: 0.6;
-    }
-}
-/* ===== LOADING ===== */
-#loader{
-    position: fixed;
-    inset: 0;
-    background: #000;
-    z-index: 999999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+            filter: blur(80px);
+            animation: glowMove 12s ease-in-out infinite alternate;
+        }
 
-.loader-content{
-    text-align: center;
-    color: white;
-}
+        /* chuyển động nhẹ */
+        @keyframes glowMove {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
 
-.loader-content h2{
-    font-size: 26px;
-    letter-spacing: 3px;
-}
+            100% {
+                transform: scale(1.2) translate(-30px, 20px);
+            }
+        }
 
-.loader-content span{
-    color: #a855f7;
-}
+        .dust {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
 
-.progress{
-    width: 250px;
-    height: 6px;
-    background: #222;
-    border-radius: 10px;
-    margin: 20px auto;
-    overflow: hidden;
-}
+        .dust span {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.2;
+            filter: blur(1px);
+            animation: dustMove linear infinite;
+        }
 
-.progress-bar{
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg,#9333ea,#a855f7);
-    transition: width 0.2s;
-}
+        @keyframes dustMove {
+            from {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
 
-#percent{
-    font-size: 13px;
-    opacity: 0.6;
-}   
-.loader-content img{
-    width: 100px;
-    margin-bottom: 20px;
-    filter: drop-shadow(0 0 15px #a855f7);
-}
-.popup{
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+            to {
+                transform: translateY(-10vh);
+                opacity: 0.6;
+            }
+        }
 
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-}
+        /* ===== LOADING ===== */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.popup.show{
-    opacity: 1;
-    pointer-events: all;
-}
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
 
-.popup-box{
-    background: #eee;
-    color: #333;
-    padding: 40px;
-    border-radius: 12px;
-    text-align: center;
-    width: 320px;
+        .loader-content h2 {
+            font-size: 26px;
+            letter-spacing: 3px;
+        }
 
-    transform: scale(0.8);
-    transition: 0.3s;
-}
+        .loader-content span {
+            color: #a855f7;
+        }
 
-.popup.show .popup-box{
-    transform: scale(1);
-}
+        .progress {
+            width: 250px;
+            height: 6px;
+            background: #222;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
 
-.popup .icon{
-    font-size: 50px;
-    color: #22c55e;
-    margin-bottom: 15px;
-}
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #9333ea, #a855f7);
+            transition: width 0.2s;
+        }
 
-.popup h2{
-    margin-bottom: 10px;
-}
+        #percent {
+            font-size: 13px;
+            opacity: 0.6;
+        }
 
-.popup button{
-    margin-top: 20px;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 8px;
-    background: #6d5dfc;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .loader-content img {
+            width: 100px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px #a855f7);
+        }
 
-.popup button:hover{
-    opacity: 0.8;
-}
+        .popup {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .popup.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup-box {
+            background: #eee;
+            color: #333;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            width: 320px;
+
+            transform: scale(0.8);
+            transition: 0.3s;
+        }
+
+        .popup.show .popup-box {
+            transform: scale(1);
+        }
+
+        .popup .icon {
+            font-size: 50px;
+            color: #22c55e;
+            margin-bottom: 15px;
+        }
+
+        .popup h2 {
+            margin-bottom: 10px;
+        }
+
+        .popup button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #6d5dfc;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .popup button:hover {
+            opacity: 0.8;
+        }
+
+        .server-uptime {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            background: linear-gradient(135deg,
+                    rgba(56, 189, 248, 0.2),
+                    rgba(125, 211, 252, 0.2));
+
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            padding: 8px 18px;
+            border-radius: 50px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            color: #e0f2fe;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        }
+
+        /* hover phóng to */
+        .hero-card {
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .server-uptime {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* chữ ngày */
+        .server-uptime::after {
+            content: "06/06/2025";
+            position: absolute;
+            inset: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 700;
+            color: #38bdf8;
+
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        /* hover thì hiện ngày */
+        .server-uptime:hover::after {
+            opacity: 1;
+        }
+
+        /* hover thì ẩn text cũ */
+        .server-uptime:hover span {
+            opacity: 0;
+            filter: blur(3px);
+        }
+
+        /* ===== TIM PARTICLE ===== */
+        .heart-particle {
+            position: fixed;
+            width: 14px;
+            height: 14px;
+            background: #ff4d6d;
+            transform: rotate(45deg);
+            z-index: 9999;
+            animation: explode 0.8s forwards;
+        }
+
+        .heart-particle::before,
+        .heart-particle::after {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: #ff4d6d;
+            border-radius: 50%;
+        }
+
+        .heart-particle::before {
+            top: -7px;
+            left: 0;
+        }
+
+        .heart-particle::after {
+            left: -7px;
+            top: 0;
+        }
+
+        /* animation nổ */
+        @keyframes explode {
+            to {
+                transform: translate(var(--x), var(--y)) scale(0.3) rotate(45deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div id="loader">
-    <div class="loader-content">
-        <img src="https://i.ibb.co/wZZCHcQS/image.png" class="logo">
+        <div class="loader-content">
+            <img src="https://i.ibb.co/wZZCHcQS/image.png" class="logo">
 
-        <h2>GACONMC<span></span></h2>
-        <p>Đang tải dữ liệu...</p>
+            <h2>GACONMC<span></span></h2>
+            <p>Đang tải dữ liệu...</p>
 
-        <div class="progress">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
 
-        <div id="percent">0%</div>
-    </div>
-</div>
-<div class="bg-fixed"></div>
-<div class="dust" id="dust"></div>
-<nav class="nav">
-    <a href="#" class="logo">GACONMC</a>
-    <div class="menu">
-        <a href="#hero" class="menu-item">Trang chủ</a>
-        <a href="#modes" class="menu-item">Máy chủ</a>
-        <a href="#video" class="menu-item">Discord</a>
-        <a href="#rules" class="menu-item">Luật lệ</a>
-        <a href="#staff" class="menu-item">Nhân viên</a>
-        <a href="#reviews" class="menu-item">Đánh giá</a>
-        <a href="#donate" class="menu-item">Donate</a>
-        <a href="#video" class="menu-item">Trailer</a>
-    </div>
-    <div class="mobile-toggle" onclick="toggleMenu()"><i class="fa fa-bars"></i></div>
-</nav>
-
-<div class="mobile-menu" id="mobileMenu">
-    <i class="fa fa-times" style="font-size: 30px; align-self: flex-end;" onclick="toggleMenu()"></i>
-    <a href="#hero" class="menu-item" onclick="toggleMenu()">Trang chủ</a>
-    <a href="#modes" class="menu-item" onclick="toggleMenu()">Máy chủ</a>
-    <a href="#video" class="menu-item" onclick="toggleMenu()">Discord</a>
-    <a href="#rules" class="menu-item" onclick="toggleMenu()">Luật lệ</a>
-    <a href="#staff" class="menu-item" onclick="toggleMenu()">Nhân viên</a>
-    <a href="#reviews" class="menu-item" onclick="toggleMenu()">Đánh giá</a>
-    <a href="#donate" class="menu-item" onclick="toggleMenu()">Donate</a>
-    <a href="#video" class="menu-item" onclick="toggleMenu()">Trailer</a>
-</div>
-
-<div class="hero" id="hero">
-    <div class="hero-card">
-        <img src="https://i.ibb.co/wZZCHcQS/image.png" width="100">
-        <h1 class="title">GÀ CON MC</h1>
-        <div class="server-status" id="serverStatus">
-    <div class="loading"></div>
-    <span>Đang tải dữ liệu server...</span>
-</div>
-        <div class="ip-box" onclick="copyIP()">
-            <div style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;"></div>
-            <span id="ip-text" style="font-weight: 800;">gaconmc.ddns.net:25793</span>
-        </div>
-        <p style="opacity: 0.6;">Địa chỉ máy chủ thân thiện cho mọi lứa tuổi</p>
-    </div>
-</div>
-
-<section class="section" id="modes">
-    <h2 class="section-title">CHẾ ĐỘ <span>CHƠI</span></h2>
-    <div class="grid-container">
-        <div class="card" style="border-left: 5px solid #4338ca;">
-            <i class="fa fa-shield-halved" style="font-size: 30px; color: #4338ca; margin-bottom: 15px;"></i>
-            <h3>Survival Chill</h3>
-            <p style="font-size: 14px; opacity: 0.7; margin-top: 10px;">Xây dựng, kết nối, khám phá, vui vẻ.</p>
+            <div id="percent">0%</div>
         </div>
     </div>
-</section>
+    <div class="bg-fixed"></div>
+    <div class="dust" id="dust"></div>
+    <nav class="nav">
+        <a href="#" class="logo">GACONMC</a>
+        <div class="menu">
+            <a href="#hero" class="menu-item">Trang chủ</a>
+            <a href="#modes" class="menu-item">Máy chủ</a>
+            <a href="#video" class="menu-item">Discord</a>
+            <a href="#rules" class="menu-item">Luật lệ</a>
+            <a href="#staff" class="menu-item">Nhân viên</a>
+            <a href="#reviews" class="menu-item">Đánh giá</a>
+            <a href="#donate" class="menu-item">Donate</a>
+            <a href="#video" class="menu-item">Trailer</a>
+        </div>
+        <div class="mobile-toggle" onclick="toggleMenu()"><i class="fa fa-bars"></i></div>
+    </nav>
 
-<section class="section" id="rules" style="background: rgba(255,255,255,0.02);">
-    <h2 class="section-title">LUẬT LỆ <span>MÁY CHỦ</span></h2>
-    <div class="grid-container">
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">01. Văn Hoá</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Đây là Box của Sever Gà Con MC không phải Box cộng đồng. Các hành vi lôi kéo member hay gạ gẫm sang sever thì sẽ bị kick không tha bao gồm cả Support và QTV.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">02. Vi Phạm</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Khi bị kick thì đừng có mà lí do này kia => Vì Admin hoặc Support và QTV đã có đủ bằng chứng nên đừng ú ớ.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">03. Kiểm Điểm</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Nếu đã bị kick nhưng mà có hối lỗi sẽ tha thứ nhưng nếu cứng đầu thì cứ mà ngồi cay đi.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">04. Không 18+</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Gửi hình ảnh hoặc tin nhắn liên quan tới 18+ hoặc một số từ khiếm nhả hay sinh lí sẽ bị cảnh cáo nếu không nghe sẽ bị kick.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">05. Gây Lộn</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Không gây war hay khiêu khích member khác.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">06. Nhanh Gọn</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Các Admin, QTV, Support không rãnh 24/24 đâu nên có gì ib riêng kèm nội dung muốn nói.</p>
-        </div>
-        <div class="card">
-            <h4 style="color: var(--primary); margin-bottom: 10px;">07. Gây Phiền</h4>
-            <p style="font-size: 14px; opacity: 0.8;">Không tag all ( Chỉ Quản Trị Viên Được Tag ) Lưu Ý : Phạm vi bao gồm cả quản trị box nếu tag all không vì điều gì cũng sẽ bị kick khỏi box và đình chỉ</p>
-        </div>
-    </div>
-</section>
-
-<section class="section" id="donate">
-    <div class="donate-box">
-        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 15px;">ỦNG HỘ MÁY CHỦ</h2>
-        <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 30px;">Mọi khoản đóng góp của bạn đều được dùng để duy trì và nâng cấp cấu hình máy chủ ngày một tốt hơn.</p>
-        <a href="https://gaconmc.vercel.app" class="btn-donate"><i class="fa fa-shopping-cart"></i> GHÉ THĂM CỬA HÀNG</a>
-        <p style="margin-top: 20px; font-size: 12px; color: var(--gold);">* Nhận ngay danh hiệu và tính năng phụ trợ giá trị sau khi ủng hộ nhé ạ.</p>
-    </div>
-</section>
-
-<section class="section" id="staff">
-    <h2 class="section-title">ĐỘI NGŨ <span>NHÂN VIÊN</span></h2>
-    <div class="staff-row tier-1" id="t1"></div>
-    <div class="staff-row tier-2" id="t2"></div>
-    <div class="staff-row tier-3" id="t3"></div>
-</section>
-
-<section class="section" id="reviews" style="background: rgba(255,255,255,0.02);">
-    <h2 class="section-title">NGƯỜI CHƠI <span>ĐÁNH GIÁ</span></h2>
-    <div class="grid-container">
-        <div class="card">
-            <div style="color: var(--gold); margin-bottom: 10px;"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-            <p style="font-style: italic; font-size: 14px; opacity: 0.8;">"Aduuu Sever xịn vcl chơi là mê, mê là phải chơi"</p>
-            <div style="margin-top: 15px; font-weight: 800; font-size: 13px;">— Player_Minecraft99</div>
-        </div>
-        <div class="card">
-            <div style="color: var(--gold); margin-bottom: 10px;"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
-            <p style="font-style: italic; font-size: 14px; opacity: 0.8;">"Admin sever đẹp zaiii oãii lònn nhìn mà muốn cưới moẹ luôn"</p>
-            <div style="margin-top: 15px; font-weight: 800; font-size: 13px;">— GamerVN_2026</div>
-        </div>
-    </div>
-</section>
-
-<section class="section" id="video">
-    <div class="discord-cta" style="margin-bottom: 50px;">
-        <div style="text-align: left;">
-            <h2 style="font-size: 24px;"><i class="fab fa-discord"></i> THAM GIA DISCORD</h2>
-            <p style="opacity: 0.8;">Cập nhật tin tức nhanh nhất và giao lưu cùng cộng đồng.</p>
-        </div>
-        <a href="https://discord.gg/gg4gBWQ4" class="btn-donate" style="background: white; color: #5865F2; margin: 0;">THAM GIA NGAY</a>
+    <div class="mobile-menu" id="mobileMenu">
+        <i class="fa fa-times" style="font-size: 30px; align-self: flex-end;" onclick="toggleMenu()"></i>
+        <a href="#hero" class="menu-item" onclick="toggleMenu()">Trang chủ</a>
+        <a href="#modes" class="menu-item" onclick="toggleMenu()">Máy chủ</a>
+        <a href="#video" class="menu-item" onclick="toggleMenu()">Discord</a>
+        <a href="#rules" class="menu-item" onclick="toggleMenu()">Luật lệ</a>
+        <a href="#staff" class="menu-item" onclick="toggleMenu()">Nhân viên</a>
+        <a href="#reviews" class="menu-item" onclick="toggleMenu()">Đánh giá</a>
+        <a href="#donate" class="menu-item" onclick="toggleMenu()">Donate</a>
+        <a href="#video" class="menu-item" onclick="toggleMenu()">Trailer</a>
     </div>
 
-    <h2 class="section-title">Video <span>Giới Thiệu</span></h2>
+    <div class="hero" id="hero">
+        <div class="hero-card">
+            <img src="https://i.ibb.co/wZZCHcQS/image.png" width="100">
+            <h1 class="title">GÀ CON MC</h1>
+            <div class="uptime-row">
+                <div class="server-uptime">
+                    <i class="fa fa-clock"></i>
+                    <span id="uptimeText">Server đã mở: 0h 0m 0s</span>
+                </div>
+            </div>
 
-<div style="
+            <div class="info-row">
+                <div class="server-status" id="serverStatus">
+                    <div class="loading"></div>
+                    <span>Đang tải dữ liệu server...</span>
+                </div>
+
+                <div class="ip-box" onclick="copyIP()">
+                    <div
+                        style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;">
+                    </div>
+                    <span id="ip-text" style="font-weight: 800;">gaconmc.ddns.net:25793</span>
+                </div>
+            </div>
+            <p style="opacity: 0.6;">Địa chỉ máy chủ thân thiện cho mọi lứa tuổi</p>
+        </div>
+    </div>
+
+    <section class="section" id="modes">
+        <h2 class="section-title">CHẾ ĐỘ <span>CHƠI</span></h2>
+        <div class="grid-container">
+            <div class="card" style="border-left: 5px solid #4338ca;">
+                <i class="fa fa-shield-halved" style="font-size: 30px; color: #4338ca; margin-bottom: 15px;"></i>
+                <h3>Survival Chill</h3>
+                <p style="font-size: 14px; opacity: 0.7; margin-top: 10px;">Xây dựng, kết nối, khám phá, vui vẻ.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="rules" style="background: rgba(255,255,255,0.02);">
+        <h2 class="section-title">LUẬT LỆ <span>MÁY CHỦ</span></h2>
+        <div class="grid-container">
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">01. Văn Hoá</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Đây là Box của Sever Gà Con MC không phải Box cộng đồng. Các
+                    hành vi lôi kéo member hay gạ gẫm sang sever thì sẽ bị kick không tha bao gồm cả Support và QTV.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">02. Vi Phạm</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Khi bị kick thì đừng có mà lí do này kia => Vì Admin hoặc
+                    Support và QTV đã có đủ bằng chứng nên đừng ú ớ.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">03. Kiểm Điểm</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Nếu đã bị kick nhưng mà có hối lỗi sẽ tha thứ nhưng nếu cứng
+                    đầu thì cứ mà ngồi cay đi.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">04. Không 18+</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Gửi hình ảnh hoặc tin nhắn liên quan tới 18+ hoặc một số từ
+                    khiếm nhả hay sinh lí sẽ bị cảnh cáo nếu không nghe sẽ bị kick.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">05. Gây Lộn</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Không gây war hay khiêu khích member khác.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">06. Nhanh Gọn</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Các Admin, QTV, Support không rãnh 24/24 đâu nên có gì ib
+                    riêng kèm nội dung muốn nói.</p>
+            </div>
+            <div class="card">
+                <h4 style="color: var(--primary); margin-bottom: 10px;">07. Gây Phiền</h4>
+                <p style="font-size: 14px; opacity: 0.8;">Không tag all ( Chỉ Quản Trị Viên Được Tag ) Lưu Ý : Phạm vi
+                    bao gồm cả quản trị box nếu tag all không vì điều gì cũng sẽ bị kick khỏi box và đình chỉ</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="donate">
+        <div class="donate-box">
+            <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 15px;">ỦNG HỘ MÁY CHỦ</h2>
+            <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 30px;">Mọi khoản đóng góp của bạn đều được dùng để
+                duy trì và nâng cấp cấu hình máy chủ ngày một tốt hơn.</p>
+            <a href="https://gaconmc.vercel.app" class="btn-donate"><i class="fa fa-shopping-cart"></i> GHÉ THĂM CỬA
+                HÀNG</a>
+            <p style="margin-top: 20px; font-size: 12px; color: var(--gold);">* Nhận ngay danh hiệu và tính năng phụ trợ
+                giá trị sau khi ủng hộ nhé ạ.</p>
+        </div>
+    </section>
+
+    <section class="section" id="staff">
+        <h2 class="section-title">ĐỘI NGŨ <span>NHÂN VIÊN</span></h2>
+        <div class="staff-row tier-1" id="t1"></div>
+        <div class="staff-row tier-2" id="t2"></div>
+        <div class="staff-row tier-3" id="t3"></div>
+    </section>
+
+    <section class="section" id="reviews" style="background: rgba(255,255,255,0.02);">
+        <h2 class="section-title">NGƯỜI CHƠI <span>ĐÁNH GIÁ</span></h2>
+        <div class="grid-container">
+            <div class="card">
+                <div style="color: var(--gold); margin-bottom: 10px;"><i class="fa fa-star"></i><i
+                        class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                        class="fa fa-star"></i></div>
+                <p style="font-style: italic; font-size: 14px; opacity: 0.8;">"Aduuu Sever xịn vcl chơi là mê, mê là
+                    phải chơi"</p>
+                <div style="margin-top: 15px; font-weight: 800; font-size: 13px;">— Player_Minecraft99</div>
+            </div>
+            <div class="card">
+                <div style="color: var(--gold); margin-bottom: 10px;"><i class="fa fa-star"></i><i
+                        class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                        class="fa fa-star"></i></div>
+                <p style="font-style: italic; font-size: 14px; opacity: 0.8;">"Admin sever đẹp zaiii oãii lònn nhìn mà
+                    muốn cưới moẹ luôn"</p>
+                <div style="margin-top: 15px; font-weight: 800; font-size: 13px;">— GamerVN_2026</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="video">
+        <div class="discord-cta" style="margin-bottom: 50px;">
+            <div style="text-align: left;">
+                <h2 style="font-size: 24px;"><i class="fab fa-discord"></i> THAM GIA DISCORD</h2>
+                <p style="opacity: 0.8;">Cập nhật tin tức nhanh nhất và giao lưu cùng cộng đồng.</p>
+            </div>
+            <a href="https://discord.gg/gg4gBWQ4" class="btn-donate"
+                style="background: white; color: #5865F2; margin: 0;">THAM GIA NGAY</a>
+        </div>
+
+        <h2 class="section-title">Video <span>Giới Thiệu</span></h2>
+
+        <div style="
     max-width: 600px;
     margin: 0 auto;
     border-radius: 20px;
     overflow: hidden;
 ">
 
-    <video controls autoplay loop muted playsinline style="width:100%;">
-    <source src="gaconmc.mp4" type="video/mp4">
-    Trình duyệt không hỗ trợ video
-</video>
+            <video controls autoplay loop muted playsinline style="width:100%;">
+                <source src="gaconmc.mp4" type="video/mp4">
+                Trình duyệt không hỗ trợ video
+            </video>
 
-</div>
-    </div>
-</section>
+        </div>
+        </div>
+    </section>
 
-<footer class="footer-end">
-    <img src="https://i.ibb.co/wZZCHcQS/image.png" style="width: 60px; margin-bottom: 20px;">
-    <h2 style="font-weight: 800; letter-spacing: 2px;">GACONMC</h2>
-    
-    <div class="footer-socials" style="margin-top: 25px;">
-        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
-        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
-    </div>
+    <footer class="footer-end">
+        <img src="https://i.ibb.co/wZZCHcQS/image.png" style="width: 60px; margin-bottom: 20px;">
+        <h2 style="font-weight: 800; letter-spacing: 2px;">GACONMC</h2>
 
-    <div class="copyright">
-        © 2026 GACONMC. BẢN QUYỀN CỦA KEN.<br>
-        <span style="font-size: 10px; opacity: 0.5;">ĐÂY KHÔNG PHẢI LÀ SẢN PHẨM CHÍNH THỨC CỦA MINECRAFT.</span>
-    </div>
-</footer>
+        <div class="footer-socials" style="margin-top: 25px;">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-tiktok"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+        </div>
 
-<script>
-    function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+        <div class="copyright">
+            © 2026 GACONMC. BẢN QUYỀN CỦA KEN.<br>
+            <span style="font-size: 10px; opacity: 0.5;">ĐÂY KHÔNG PHẢI LÀ SẢN PHẨM CHÍNH THỨC CỦA MINECRAFT.</span>
+        </div>
+    </footer>
 
-    function copyIP() {
-    navigator.clipboard.writeText("gaconmc.ddns.net:25793");
+    <script>
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
 
-    document.getElementById("popup").classList.add("show");
-}
+        function copyIP() {
+            navigator.clipboard.writeText("gaconmc.ddns.net:25793");
 
-function closePopup(){
-    document.getElementById("popup").classList.remove("show");
-}
+            document.getElementById("popup").classList.add("show");
+        }
 
-    const staff = {
-    t1: [
-    {n: "Kenxautrai07", r: "Ăn_Rồi_Ngủ", m: "Không Phải Admin", a: "https://i.ibb.co/8gqJHJbf/kenn.jpg", fb: "https://www.facebook.com/profile.php?id=61583406227766"},
-    {n: "ChuChang", r: "Cân_Cả_Sever", m: "Admin", a: "https://i.ibb.co/nNvdNtvj/image.png", fb: "https://www.facebook.com/thu.trang.1401207"}
-],
+        function closePopup() {
+            document.getElementById("popup").classList.remove("show");
+        }
 
-t2: [
-    {n: "TranMinhNhat", r: "QTV_Moder", a: "", fb: "https://www.facebook.com/aparttimelearner"},
-    {n: "Bot", r: "QTV_Mã_Số: 100", a: "https://i.ibb.co/Q3d0cLTR/image.png", fb: "https://www.facebook.com/lam.van.may.2024"},
-    {n: "Hduong", r: "QTV_Mã_Số: 105", a: "https://i.ibb.co/zTcPm28V/image.png", fb: "https://www.facebook.com/le.tuan.anh.347063"},
-    {n: "MyAn", r: "QTV_Mã_Số: 103", a: "https://i.ibb.co/LDW7s1HD/myan.jpg", fb: "https://www.facebook.com/profile.php?id=61584222822935"},
-    {n: "Khanhbucu ", r: "QTV_Mã_Số: 107", a: "https://i.ibb.co/7tzmPtCw/image.png", fb: "https://www.facebook.com/profile.php?id=61574102743872"},
-    {n: "Tomxirum", r: "QTV_Mã_Số: 111", a: "https://i.ibb.co/0VRmBhxb/image.png", fb: "https://www.facebook.com/minh.nhat.973947"}
-],
+        const staff = {
+            t1: [
+                { n: "Kenxautrai07", r: "Ăn_Rồi_Ngủ", m: "Không Phải Admin", a: "https://i.ibb.co/8gqJHJbf/kenn.jpg", fb: "https://www.facebook.com/profile.php?id=61583406227766" },
+                { n: "ChuChang", r: "Cân_Cả_Sever", m: "Admin", a: "https://i.ibb.co/nNvdNtvj/image.png", fb: "https://www.facebook.com/thu.trang.1401207" }
+            ],
 
-t3: [
-    {n: "Vanthanh", r: "Support_Mã_Số: 208", a: "https://i.ibb.co/9HP5jBwQ/image.png", fb: "https://www.facebook.com/profile.php?id=61578342866527"},
-    {n: "Kazu", r: "Support_Mã_Số: 206", a: "https://i.ibb.co/5X0J35MY/yinn.jpg", fb: "https://www.facebook.com/profile.php?id=61578659525630"},
-    {n: "Zluvy_x", r: "Support_Mã_Số: 204", a: "https://i.ibb.co/XgvmdYD/image.png", fb: "https://www.facebook.com/danh.huynhcong.71868"},
-    {n: "Candyy_white", r: "Support_Mã_Số: 209", a: "https://i.ibb.co/jvJXg6s8/image.png", fb: "https://www.facebook.com/truc.linh.hoang.147930"}
-]
-};
+            t2: [
+                { n: "TranMinhNhat", r: "QTV_Moder", a: "", fb: "https://www.facebook.com/aparttimelearner" },
+                { n: "Bot", r: "QTV_Mã_Số: 100", a: "https://i.ibb.co/Q3d0cLTR/image.png", fb: "https://www.facebook.com/lam.van.may.2024" },
+                { n: "Hduong", r: "QTV_Mã_Số: 105", a: "https://i.ibb.co/zTcPm28V/image.png", fb: "https://www.facebook.com/le.tuan.anh.347063" },
+                { n: "MyAn", r: "QTV_Mã_Số: 103", a: "https://i.ibb.co/LDW7s1HD/myan.jpg", fb: "https://www.facebook.com/profile.php?id=61584222822935" },
+                { n: "Khanhbucu ", r: "QTV_Mã_Số: 107", a: "https://i.ibb.co/7tzmPtCw/image.png", fb: "https://www.facebook.com/profile.php?id=61574102743872" },
+                { n: "Tomxirum", r: "QTV_Mã_Số: 111", a: "https://i.ibb.co/0VRmBhxb/image.png", fb: "https://www.facebook.com/minh.nhat.973947" }
+            ],
 
-    function render(id, data) {
-    const row = document.getElementById(id);
+            t3: [
+                { n: "Vanthanh", r: "Support_Mã_Số: 208", a: "https://i.ibb.co/9HP5jBwQ/image.png", fb: "https://www.facebook.com/profile.php?id=61578342866527" },
+                { n: "Kazu", r: "Support_Mã_Số: 206", a: "https://i.ibb.co/5X0J35MY/yinn.jpg", fb: "https://www.facebook.com/profile.php?id=61578659525630" },
+                { n: "Zluvy_x", r: "Support_Mã_Số: 204", a: "https://i.ibb.co/XgvmdYD/image.png", fb: "https://www.facebook.com/danh.huynhcong.71868" },
+                { n: "Candyy_white", r: "Support_Mã_Số: 209", a: "https://i.ibb.co/jvJXg6s8/image.png", fb: "https://www.facebook.com/truc.linh.hoang.147930" }
+            ]
+        };
 
-    data.forEach(s => {
+        function render(id, data) {
+            const row = document.getElementById(id);
 
-        // 👉 Nếu không có ảnh thì dùng Steve
-        const avatar = s.a && s.a.trim() !== ""
-            ? s.a
-            : "https://mc-heads.net/avatar/Steve";
+            data.forEach(s => {
 
-        row.innerHTML += `
+                // 👉 Nếu không có ảnh thì dùng Steve
+                const avatar = s.a && s.a.trim() !== ""
+                    ? s.a
+                    : "https://mc-heads.net/avatar/Steve";
+
+                row.innerHTML += `
     <a href="${s.fb || '#'}" target="_blank" style="text-decoration:none; color:white;">
         <div class="staff-card">
             <img class="staff-avatar" src="${avatar}" width="60">
@@ -603,88 +953,150 @@ t3: [
         </div>
     </a>
 `;
-    });
-}
-    render("t1", staff.t1); render("t2", staff.t2); render("t3", staff.t3);
-    async function loadServer() {
-    const box = document.getElementById("serverStatus");
+            });
+        }
+        render("t1", staff.t1); render("t2", staff.t2); render("t3", staff.t3);
+        async function loadServer() {
+            const box = document.getElementById("serverStatus");
 
-    try {
-        const res = await fetch("https://api.mcstatus.io/v2/status/java/160.25.232.39:25793");
-        const data = await res.json();
+            try {
+                const res = await fetch("https://api.mcstatus.io/v2/status/java/160.25.232.39:25793");
+                const data = await res.json();
 
-        if (data.online) {
-            box.innerHTML = `
+                if (data.online) {
+                    box.innerHTML = `
                 <div class="online-dot"></div>
                 <span>Online: ${data.players.online}/${data.players.max}</span>
             `;
-        } else {
-            box.innerHTML = `
+                } else {
+                    box.innerHTML = `
                 <div class="offline-dot"></div>
                 <span>Server Offline</span>
             `;
+                }
+
+            } catch (e) {
+                box.innerHTML = "Lỗi kết nối server";
+            }
         }
 
-    } catch (e) {
-        box.innerHTML = "Lỗi kết nối server";
-    }
-}
+        loadServer();
+        // ===== LOADING =====
+        let progress = 0;
+        let bar = document.getElementById("progressBar");
+        let percent = document.getElementById("percent");
 
-loadServer();
-// ===== LOADING =====
-let progress = 0;
-let bar = document.getElementById("progressBar");
-let percent = document.getElementById("percent");
+        let loading = setInterval(() => {
+            progress += Math.random() * 20;
 
-let loading = setInterval(() => {
-    progress += Math.random() * 20;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loading);
 
-    if(progress >= 100){
-        progress = 100;
-        clearInterval(loading);
+                setTimeout(() => {
+                    const loader = document.getElementById("loader");
+                    loader.style.opacity = "0";
+                    loader.style.transition = "0.5s";
 
-        setTimeout(() => {
-            const loader = document.getElementById("loader");
-            loader.style.opacity = "0";
-            loader.style.transition = "0.5s";
+                    setTimeout(() => {
+                        loader.style.display = "none";
+                    }, 500);
+                }, 300);
+            }
 
-            setTimeout(()=>{
-                loader.style.display = "none";
-            },500);
-        }, 300);
-    }
+            bar.style.width = progress + "%";
+            percent.innerText = Math.floor(progress) + "%";
 
-    bar.style.width = progress + "%";
-    percent.innerText = Math.floor(progress) + "%";
+        }, 200);
+        const dust = document.getElementById("dust");
 
-}, 200);
-const dust = document.getElementById("dust");
+        for (let i = 0; i < 80; i++) {
+            let s = document.createElement("span");
 
-for (let i = 0; i < 80; i++) {
-    let s = document.createElement("span");
+            s.style.left = Math.random() * 100 + "vw";
+            s.style.top = Math.random() * 100 + "vh";
+            s.style.animationDuration = (10 + Math.random() * 20) + "s";
+            s.style.opacity = Math.random() * 0.5;
 
-    s.style.left = Math.random() * 100 + "vw";
-    s.style.top = Math.random() * 100 + "vh";
-    s.style.animationDuration = (10 + Math.random() * 20) + "s";
-    s.style.opacity = Math.random() * 0.5;
+            dust.appendChild(s);
+        }
+        // ===== UPTIME XỊN (NGÀY - GIỜ - PHÚT - GIÂY - NĂM) =====
 
-    dust.appendChild(s);
-}
-</script>
-<div id="popup" class="popup">
-  <div class="popup-box">
-    <i class="fa fa-check-circle icon"></i>
-    <h2>Copy IP Thành Công</h2>
+        // 👉 Ngày server mở: 6/6/2025
+        const startTime = new Date(2025, 5, 6, 0, 0, 0).getTime();
 
-    <p>Và Code Mở Đầu Dành Cho Member Mới</p>
+        function updateUptime() {
+            const now = Date.now();
+            let diff = Math.floor((now - startTime) / 1000);
 
-    <p>Nhập Code: <b style="color:green;">HELLO</b></p>
-    <p>Nhận món quà nho nhỏ</p>
+            if (diff < 0 || isNaN(diff)) diff = 0;
 
-    <p>Cách nhập: <b style="color:green;">/redeem HELLO</b></p>
+            const years = Math.floor(diff / (365 * 24 * 3600));
+            diff %= (365 * 24 * 3600);
 
-    <button onclick="closePopup()">OK</button>
-  </div>
-</div>
+            const days = Math.floor(diff / (24 * 3600));
+            diff %= (24 * 3600);
+
+            const hours = Math.floor(diff / 3600);
+            diff %= 3600;
+
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
+
+            let text = "Server đã mở: ";
+
+            if (years > 0) text += years + " năm ";
+            if (days > 0) text += days + " ngày ";
+
+            text += `${hours}h ${minutes}m ${seconds}s`;
+
+            document.getElementById("uptimeText").innerText = text;
+        }
+
+        setInterval(updateUptime, 1000);
+        updateUptime();
+        const card = document.querySelector(".hero-card");
+
+        card.addEventListener("click", (e) => {
+
+            const rect = card.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                let heart = document.createElement("div");
+                heart.className = "heart-particle";
+
+                // random hướng bay
+                let x = (Math.random() - 0.5) * 300;
+                let y = (Math.random() - 0.5) * 300;
+
+                heart.style.left = centerX + "px";
+                heart.style.top = centerY + "px";
+                heart.style.setProperty("--x", x + "px");
+                heart.style.setProperty("--y", y + "px");
+
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 800);
+            }
+        });
+    </script>
+    <div id="popup" class="popup">
+        <div class="popup-box">
+            <i class="fa fa-check-circle icon"></i>
+            <h2>Copy IP Thành Công</h2>
+
+            <p>Và Code Mở Đầu Dành Cho Member Mới</p>
+
+            <p>Nhập Code: <b style="color:green;">HELLO</b></p>
+            <p>Nhận món quà nho nhỏ</p>
+
+            <p>Cách nhập: <b style="color:green;">/redeem HELLO</b></p>
+
+            <button onclick="closePopup()">OK</button>
+        </div>
+    </div>
 </body>
+
 </html>
