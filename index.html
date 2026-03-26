@@ -647,28 +647,6 @@
             filter: blur(3px);
         }
 
-        @media (max-width: 768px) {
-
-            /* ❌ tắt bụi (nặng nhất) */
-            .dust {
-                display: none;
-            }
-
-            /* ❌ giảm blur nền */
-            .bg-fixed::before {
-                filter: blur(40px);
-            }
-
-            /* ❌ bỏ blur card */
-            .hero-card {
-                backdrop-filter: none;
-            }
-
-            /* ❌ giảm shadow */
-            .server-uptime {
-                box-shadow: none;
-            }
-        }
     </style>
 </head>
 
@@ -994,7 +972,7 @@
         }, 200);
         const dust = document.getElementById("dust");
 
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 80; i++) {
             let s = document.createElement("span");
 
             s.style.left = Math.random() * 100 + "vw";
@@ -1004,57 +982,41 @@
 
             dust.appendChild(s);
         }
-        // ===== UPTIME FULL FIX =====
+        // ===== UPTIME XỊN (NGÀY - GIỜ - PHÚT - GIÂY - NĂM) =====
 
-        window.addEventListener("DOMContentLoaded", () => {
+        // 👉 Ngày server mở: 6/6/2025
+        const startTime = new Date(2025, 5, 6, 0, 0, 0).getTime();
 
-            // 👉 NGÀY MỞ SERVER
-            const startTime = new Date("2025-06-06T00:00:00").getTime();
+        function updateUptime() {
+            const now = Date.now();
+            let diff = Math.floor((now - startTime) / 1000);
 
-            let lastSecond = -1;
+            if (diff < 0 || isNaN(diff)) diff = 0;
 
-            function updateUptime() {
-                const el = document.getElementById("uptimeText");
-                if (!el) return;
+            const years = Math.floor(diff / (365 * 24 * 3600));
+            diff %= (365 * 24 * 3600);
 
-                const now = Date.now();
-                let diff = Math.floor((now - startTime) / 1000);
+            const days = Math.floor(diff / (24 * 3600));
+            diff %= (24 * 3600);
 
-                // ❌ nếu âm thì set = 0
-                if (diff < 0 || isNaN(diff)) diff = 0;
+            const hours = Math.floor(diff / 3600);
+            diff %= 3600;
 
-                if (diff === lastSecond) return;
-                lastSecond = diff;
+            const minutes = Math.floor(diff / 60);
+            const seconds = diff % 60;
 
-                const years = Math.floor(diff / (365 * 24 * 3600));
-                diff %= (365 * 24 * 3600);
+            let text = "Server đã mở: ";
 
-                const days = Math.floor(diff / (24 * 3600));
-                diff %= (24 * 3600);
+            if (years > 0) text += years + " năm ";
+            if (days > 0) text += days + " ngày ";
 
-                const hours = Math.floor(diff / 3600);
-                diff %= 3600;
+            text += `${hours}h ${minutes}m ${seconds}s`;
 
-                const minutes = Math.floor(diff / 60);
-                const seconds = diff % 60;
+            document.getElementById("uptimeText").innerText = text;
+        }
 
-                let text = "Server đã mở: ";
-
-                if (years > 0) text += years + " năm ";
-                if (days > 0) text += days + " ngày ";
-
-                text += `${hours}h ${minutes}m ${seconds}s`;
-
-                el.innerText = text;
-            }
-
-            function loop() {
-                updateUptime();
-                requestAnimationFrame(loop);
-            }
-
-            loop();
-        });
+        setInterval(updateUptime, 1000);
+        updateUptime();
     </script>
     <div id="popup" class="popup">
         <div class="popup-box">
