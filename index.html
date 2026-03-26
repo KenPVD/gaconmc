@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GACONMC | Minecraft Network</title>
+    <title>GACONMC | Server Minecraft</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/wZZCHcQS/image.png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
         rel="stylesheet">
@@ -647,44 +647,6 @@
             filter: blur(3px);
         }
 
-        /* ===== TIM PARTICLE ===== */
-        .heart-particle {
-            position: fixed;
-            width: 14px;
-            height: 14px;
-            background: #ff4d6d;
-            transform: rotate(45deg);
-            z-index: 9999;
-            animation: explode 0.8s forwards;
-        }
-
-        .heart-particle::before,
-        .heart-particle::after {
-            content: "";
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background: #ff4d6d;
-            border-radius: 50%;
-        }
-
-        .heart-particle::before {
-            top: -7px;
-            left: 0;
-        }
-
-        .heart-particle::after {
-            left: -7px;
-            top: 0;
-        }
-
-        /* animation nổ */
-        @keyframes explode {
-            to {
-                transform: translate(var(--x), var(--y)) scale(0.3) rotate(45deg);
-                opacity: 0;
-            }
-        }
     </style>
 </head>
 
@@ -1055,32 +1017,6 @@
 
         setInterval(updateUptime, 1000);
         updateUptime();
-        const card = document.querySelector(".hero-card");
-
-        card.addEventListener("click", (e) => {
-
-            const rect = card.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            for (let i = 0; i < 20; i++) {
-                let heart = document.createElement("div");
-                heart.className = "heart-particle";
-
-                // random hướng bay
-                let x = (Math.random() - 0.5) * 300;
-                let y = (Math.random() - 0.5) * 300;
-
-                heart.style.left = centerX + "px";
-                heart.style.top = centerY + "px";
-                heart.style.setProperty("--x", x + "px");
-                heart.style.setProperty("--y", y + "px");
-
-                document.body.appendChild(heart);
-
-                setTimeout(() => heart.remove(), 800);
-            }
-        });
     </script>
     <div id="popup" class="popup">
         <div class="popup-box">
