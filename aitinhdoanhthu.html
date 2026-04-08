@@ -208,10 +208,10 @@ let soDuTruoc = 0;
 let tienMomo = 0;
 
 let kiemItems=[
-{name:"🥤 Nước 18k",gia:18000},
+{name:"🥤 Nước 20k",gia:20000},
 {name:"🥤 Nước 15k",gia:15000},
-{name:"🥤 Nước 12k",gia:12000},
-{name:"🥤 Nước 10k",gia:10000,type:"nuoc10"},
+{name:"🥤 Nước 14k",gia:14000},
+{name:"🥤 Nước 12k",gia:12000,type:"nuoc10"},
 {name:"🍦 Kem",gia:15000},
 {name:"🍜 Tổng mỳ",gia:10000,type:"my"},
 {name:"🍙 Kimbap",gia:20000},
@@ -283,9 +283,9 @@ let gia=Math.round(tien/soLuong);
 
 
 // ===== NƯỚC =====
-if(/STING|PEPSI|COCA|MIRINDA|SPRITE|AQUA|REVIVE|RIVIVE|ROCK|OLONG|O LONG|TRA|TRÀ|COZY|SUA|SỮA|NUTRI|TRAU|HUC|HÚC/i.test(ten)){
+if(/STING|PEPSI|COCA|MIRINDA|SPRITE|AQUA|REVIVE|RIVIVE|ROCK|OLONG|O LONG|TRA|TRÀ|COZY|SUA|SỮA|NUTRI|TRAU|HUC|HÚC|BO HUC|BÒ HÚC/i.test(ten)){
   
-if(gia<=10000){
+if(gia<=12000){ // nước 12k (từ 10k)
 
 nuoc10+=soLuong;
 tien10+=tien;
@@ -293,7 +293,7 @@ tien10+=tien;
 // chỉ tính combo cho sting vàng, pepsi, aqua
 if(/STING VANG|PEPSI|AQUA/i.test(ten)){
 
-let chaiTinhTien = Math.round(tien/10000);
+let chaiTinhTien = Math.round(tien/12000);
 let chaiCombo = soLuong - chaiTinhTien;
 
 if(chaiCombo>0){
@@ -303,7 +303,7 @@ comboNuoc10 += chaiCombo;
 }
 
 }
-else if(gia<=12000){nuoc12+=soLuong;tien12+=tien;}
+else if(gia<=14000){nuoc12+=soLuong;tien12+=tien;}
 else if(gia<=15000){nuoc15+=soLuong;tien15+=tien;}
 else{nuoc18+=soLuong;tien18+=tien;}
 
@@ -412,10 +412,10 @@ kiemTra=`⚠️ Phát hiện AI tính sai doanh thu
 
 return `${kiemTra}📊 PHÂN TÍCH DOANH THU
 ----------------------------
-🥤 Nước 10k : ${nuoc10} món - ${tien10.toLocaleString()} đ
-🥤 Nước 12k : ${nuoc12} món - ${tien12.toLocaleString()} đ
+🥤 Nước 12k : ${nuoc10} món - ${tien10.toLocaleString()} đ
+🥤 Nước 14k : ${nuoc12} món - ${tien12.toLocaleString()} đ
 🥤 Nước 15k : ${nuoc15} món - ${tien15.toLocaleString()} đ
-🥤 Nước 18k : ${nuoc18} món - ${tien18.toLocaleString()} đ
+🥤 Nước 20k : ${nuoc18} món - ${tien18.toLocaleString()} đ
 
 🍜 Mỳ nước  : ${myNuoc} món - ${tienMyNuoc.toLocaleString()} đ
 🍜 Mỳ xào   : ${myXao} món - ${tienMyXao.toLocaleString()} đ
@@ -742,12 +742,12 @@ if(tongNuoc10Tam>0){
 let combo=so;
 let tinhTien=tongNuoc10Tam-combo;
 
-let tien=tinhTien*10000;
+let tien=tinhTien*12000;
 
 tongTien += tien;
 tienDoAn += tien;
 
-addMsg(`🥤 Nước 10k tính tiền: ${tinhTien} → ${tien.toLocaleString()} đ`,"bot");
+addMsg(`🥤 Nước 12k tính tiền: ${tinhTien} → ${tien.toLocaleString()} đ`,"bot");
 
 tongNuoc10Tam=0;
 
@@ -796,10 +796,10 @@ if(item.type==="nuoc10"){
 tongNuoc10Tam=so;
 dangNhapComboNuoc10=true;
 
-addMsg(`🥤 Nước 10k tổng: ${so}`,"bot");
+addMsg(`🥤 Nước 12k tổng: ${so}`,"bot");
 
 setTimeout(()=>{
-addMsg("🎁 Nước 10k combo 0đ: nhập số lượng","bot");
+addMsg("🎁 Nước 12k combo 0đ: nhập số lượng","bot");
 },300);
 
 kiemStep++;
@@ -890,11 +890,11 @@ if(dangNhapComboNuoc10){
 let combo=so;
 let tinhTien=tongNuoc10Tam-combo;
 
-let tien=tinhTien*10000;
+let tien=tinhTien*12000;
 
 tongTien+=tien;
 
-addMsg(`🥤 Nước 10k tính tiền: ${tinhTien} → ${tien.toLocaleString()} đ`,"bot");
+addMsg(`🥤 Nước 12k tính tiền: ${tinhTien} → ${tien.toLocaleString()} đ`,"bot");
 
 dangNhapComboNuoc10=false;
 tongNuoc10Tam=0;
