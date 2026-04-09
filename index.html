@@ -711,6 +711,14 @@
         .link-out:hover {
             color: #7dd3fc;
         }
+
+        @media (max-width: 768px) {
+            .mobile-menu .link-out {
+                color: #38bdf8 !important;
+                font-weight: 700;
+                text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+            }
+        }
     </style>
 </head>
 
@@ -765,9 +773,9 @@
         <a href="#modes" class="menu-item" onclick="toggleMenu()">Máy chủ</a>
         <a href="#video" class="menu-item" onclick="toggleMenu()">Discord</a>
         <a href="#rules" class="menu-item" onclick="toggleMenu()">Luật lệ</a>
-        <a href="https://gaconmc.vercel.app/" class="menu-item" onclick="toggleMenu()">Donate</a>
-        <a href="https://quydinh.vercel.app/" class="menu-item" onclick="toggleMenu()">Quy định</a>
-        <a href="https://cachthamgia.vercel.app/" class="menu-item" onclick="toggleMenu()">Thông số</a>
+        <a href="https://gaconmc.vercel.app/" class="menu-item link-out">Donate<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://quydinh.vercel.app/" class="menu-item link-out">Quy định<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://cachthamgia.vercel.app/" class="menu-item link-out">Thông số<i class="fa fa-up-right-from-square"></i></a>
         <a href="#staff" class="menu-item" onclick="toggleMenu()">Nhân viên</a>
         <a href="#reviews" class="menu-item" onclick="toggleMenu()">Đánh giá</a>
         <!-- <a href="#donate" class="menu-item" onclick="toggleMenu()">Donate</a> -->
