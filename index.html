@@ -818,7 +818,7 @@
                     <div
                         style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; box-shadow: 0 0 10px #22c55e;">
                     </div>
-                    <span id="ip-text" style="font-weight: 800;">gaconmc.ddns.net:25793</span>
+                    <span id="ip-text" style="font-weight: 800;">gaconmc.ddns.net:19033</span>
                 </div>
             </div>
             <p style="opacity: 0.6;">Địa chỉ máy chủ thân thiện cho mọi lứa tuổi</p>
@@ -965,7 +965,7 @@
         function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
 
         function copyIP() {
-            navigator.clipboard.writeText("gaconmc.ddns.net:25793");
+            navigator.clipboard.writeText("gaconmc.ddns.net:19033");
 
             document.getElementById("popup").classList.add("show");
         }
@@ -1024,7 +1024,7 @@
             const box = document.getElementById("serverStatus");
 
             try {
-                const res = await fetch("https://api.mcstatus.io/v2/status/java/160.25.232.39:25793");
+                const res = await fetch("https://api.mcstatus.io/v2/status/java/185.207.166.16:19033");
                 const data = await res.json();
 
                 if (data.online) {
