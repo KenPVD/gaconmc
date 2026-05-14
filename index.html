@@ -547,14 +547,31 @@
         }
 
         .popup-box {
-            background: #eee;
-            color: #333;
+
+            background:
+                linear-gradient(135deg,
+                    rgba(20, 20, 25, 0.98),
+                    rgba(35, 35, 45, 0.98));
+
+            color: white;
+
             padding: 40px;
-            border-radius: 12px;
+
+            border-radius: 24px;
+
             text-align: center;
-            width: 320px;
+
+            width: 340px;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            box-shadow:
+                0 0 40px rgba(168, 85, 247, 0.35);
+
+            backdrop-filter: blur(14px);
 
             transform: scale(0.8);
+
             transition: 0.3s;
         }
 
@@ -584,7 +601,11 @@
         }
 
         .popup button:hover {
-            opacity: 0.8;
+
+            transform: scale(1.08);
+
+            box-shadow:
+                0 0 30px rgba(168, 85, 247, 0.7);
         }
 
         .server-uptime {
@@ -746,7 +767,7 @@
             <!-- <a href="#modes" class="menu-item">Máy chủ</a> -->
 
             <!-- <a href="#rules" class="menu-item">Luật lệ</a> -->
-            
+
             <a href="https://discord.com/channels/1392510100240859216/1489522592732811434" class="menu-item link-out">
                 Dịch vụ <i class="fa fa-up-right-from-square"></i>
             </a>
@@ -785,12 +806,18 @@
         <!-- <a href="#modes" class="menu-item" onclick="toggleMenu()">Máy chủ</a> -->
         <a href="#video" class="menu-item" onclick="toggleMenu()">Discord</a>
         <!-- <a href="#rules" class="menu-item" onclick="toggleMenu()">Luật lệ</a> -->
-        <a href="https://discord.com/channels/1392510100240859216/1489522592732811434" class="menu-item link-out">Dịch vụ<i class="fa fa-up-right-from-square"></i></a>
-        <a href="https://discord.com/channels/1392510100240859216/1489564467304861757" class="menu-item link-out">Bảo mật<i class="fa fa-up-right-from-square"></i></a>
-        <a href="https://discord.com/channels/1392510100240859216/1489992038903713983" class="menu-item link-out">Quảng bá<i class="fa fa-up-right-from-square"></i></a>
-        <a href="https://gaconmc.vercel.app/" class="menu-item link-out">Donate<i class="fa fa-up-right-from-square"></i></a>
-        <a href="https://quydinh.vercel.app/" class="menu-item link-out">Quy định<i class="fa fa-up-right-from-square"></i></a>
-        <a href="https://cachthamgia.vercel.app/" class="menu-item link-out">Ip Server<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://discord.com/channels/1392510100240859216/1489522592732811434" class="menu-item link-out">Dịch
+            vụ<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://discord.com/channels/1392510100240859216/1489564467304861757" class="menu-item link-out">Bảo
+            mật<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://discord.com/channels/1392510100240859216/1489992038903713983" class="menu-item link-out">Quảng
+            bá<i class="fa fa-up-right-from-square"></i></a>
+        <a href="https://gaconmc.vercel.app/" class="menu-item link-out">Donate<i
+                class="fa fa-up-right-from-square"></i></a>
+        <a href="https://quydinh.vercel.app/" class="menu-item link-out">Quy định<i
+                class="fa fa-up-right-from-square"></i></a>
+        <a href="https://cachthamgia.vercel.app/" class="menu-item link-out">Ip Server<i
+                class="fa fa-up-right-from-square"></i></a>
         <a href="#staff" class="menu-item" onclick="toggleMenu()">Nhân viên</a>
         <!-- <a href="#reviews" class="menu-item" onclick="toggleMenu()">Đánh giá</a> -->
         <!-- <a href="#donate" class="menu-item" onclick="toggleMenu()">Donate</a> -->
@@ -985,41 +1012,100 @@
                 { n: "Bot", r: "QTV_Mã_Số: 100", a: "https://i.ibb.co/Q3d0cLTR/image.png", fb: "https://www.facebook.com/lam.van.may.2024" },
                 { n: "Hduong", r: "QTV_Mã_Số: 105", a: "https://i.ibb.co/zTcPm28V/image.png", fb: "https://www.facebook.com/le.tuan.anh.347063" },
                 { n: "Vanthanh", r: "QTV_Mã_Số: 108", a: "https://i.ibb.co/9HP5jBwQ/image.png", fb: "https://www.facebook.com/profile.php?id=61578342866527" },
+                { n: "HyperAko", r: "QTV_Mã_Số: 119", a: "", fb: "https://www.facebook.com/nguyen.duy.thai.292618" },
             ],
 
             t3: [
                 { n: "Candyy_white", r: "Support_Mã_Số: 209", a: "https://i.ibb.co/jvJXg6s8/image.png", fb: "https://www.facebook.com/truc.linh.hoang.147930" },
                 { n: "KriszXname", r: "Support_Mã_Số: 213", a: "https://i.ibb.co/C3BtHn9F/image.png", fb: "https://www.facebook.com/kim.ngan.936353" },
                 { n: "Chupnek", r: "Support_Mã_Số: 215", a: "https://i.ibb.co/GQvGxr9V/image.png", fb: "https://www.facebook.com/chup.ne.071206" },
-                { n: "NguyenHueNhu", r: "Support_Mã_Số: 216", a: "https://i.ibb.co/VpN6wP9k/image.png", fb: "https://www.facebook.com/profile.php?id=61558942435015" },
+                { n: "XimmexEG", r: "Support_Mã_Số: 216", a: "https://i.ibb.co/VpN6wP9k/image.png", fb: "https://www.facebook.com/profile.php?id=61558942435015" },
                 { n: "Tisxihiu", r: "Support_Mã_Số: 217", a: "https://i.ibb.co/35vtkqBm/image.png", fb: "https://www.facebook.com/emtiscte" },
+                { n: "Yue", r: "Support_Mã_Số: 217", a: "", fb: "https://www.facebook.com/yen.nhi.702417" },
             ]
         };
 
-        function render(id, data) {
+        async function render(id, data) {
             const row = document.getElementById(id);
-            
 
-            data.forEach(s => {
+
+            for (const s of data) {
 
                 // 👉 Nếu không có ảnh thì dùng Steve
                 const avatar = s.a && s.a.trim() !== ""
                     ? s.a
                     : "https://mc-heads.net/avatar/Steve";
+                const cleanName = s.n.replace(/[^a-zA-Z0-9]/g, '');
+
+                let voteCount = localStorage.getItem("vote_" + s.n) || 0;
+
+                try {
+
+                    const voteRef = window.doc(window.db, "votes", s.n);
+
+                    const snap = await getDoc(voteRef);
+
+                    if (snap.exists()) {
+
+                        voteCount = snap.data().count || 0;
+
+                        localStorage.setItem("vote_" + s.n, voteCount);
+
+                    }
+
+                } catch (err) {
+
+                    console.log(err);
+
+                }
 
                 row.innerHTML += `
-    <a href="${s.fb || '#'}" target="_blank" style="text-decoration:none; color:white;">
-        <div class="staff-card">
-            <img class="staff-avatar" src="${avatar}" width="60">
-            <div style="font-weight:800; font-size:14px;">${s.n}</div>
-            <div style="font-size:10px; opacity:0.5; text-transform:uppercase; margin-top:5px;">${s.r}</div>
-            <div style="font-size:11px; color:#a855f7; margin-top:3px;">${s.m || ""}</div>
-        </div>
-    </a>
+<div class="staff-card"
+onclick="window.open('${s.fb}','_blank')"
+style="cursor:pointer;">
+
+    <img class="staff-avatar" src="${avatar}" width="60">
+
+    <div style="font-weight:800; font-size:14px;">
+        ${s.n}
+    </div>
+
+    <div style="font-size:10px; opacity:0.5; text-transform:uppercase; margin-top:5px;">
+        ${s.r}
+    </div>
+
+    <div style="font-size:11px; color:#a855f7; margin-top:3px;">
+        ${s.m || ""}
+    </div>
+
+    <div id="vote-${s.n.replace(/[^a-zA-Z0-9]/g, '')}"
+    style="
+    margin-top:8px;
+    color:#ffcf40;
+    font-weight:bold;
+    font-size:13px;
+    ">
+    ⭐ ${voteCount} Uy Tín
+    </div>
+
+    <button onclick="event.stopPropagation(); vote('${s.n}')"
+    style="
+    margin-top:10px;
+    padding:8px 14px;
+    border:none;
+    border-radius:10px;
+    background:#a855f7;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    ">
+    ⭐ Vote
+    </button>
+
+</div>
 `;
-            });
+            }
         }
-        render("t1", staff.t1); render("t2", staff.t2); render("t3", staff.t3);
         async function loadServer() {
             const box = document.getElementById("serverStatus");
 
@@ -1135,6 +1221,235 @@
             <button onclick="closePopup()">OK</button>
         </div>
     </div>
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            increment
+        }
+            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA41tQBvDxY3SYJLoFwP6e1A4eVgHJOL3A",
+            authDomain: "vote-9fed0.firebaseapp.com",
+            projectId: "vote-9fed0",
+            storageBucket: "vote-9fed0.firebasestorage.app",
+            messagingSenderId: "903100711662",
+            appId: "1:903100711662:web:b08fe33d9eba366040a9ff",
+            measurementId: "G-J87VB2F8KK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+        window.db = db;
+        window.doc = doc;
+        window.getDoc = getDoc;
+
+        render("t1", staff.t1);
+        render("t2", staff.t2);
+        render("t3", staff.t3);
+
+        function showVotePopup(title, message) {
+
+            const old = document.getElementById("votePopup");
+
+            if (old) old.remove();
+
+            const div = document.createElement("div");
+
+            div.innerHTML = `
+
+    <div id="votePopup"
+    style="
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.65);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+    ">
+
+        <div
+        style="
+        width:340px;
+        background:
+        linear-gradient(
+        135deg,
+        #16161d,
+        #242433
+        );
+
+        border:1px solid rgba(255,255,255,0.08);
+
+        border-radius:24px;
+
+        padding:30px;
+
+        text-align:center;
+
+        box-shadow:
+        0 0 40px rgba(168,85,247,0.45);
+
+        animation:pop 0.25s ease;
+        ">
+
+            <div style="
+            font-size:55px;
+            margin-bottom:12px;
+            ">
+            ⭐
+            </div>
+
+            <h2 style="
+            color:white;
+            font-size:24px;
+            margin-bottom:10px;
+            ">
+            ${title}
+            </h2>
+
+            <div style="
+            color:#cfcfe7;
+            font-size:15px;
+            line-height:1.6;
+            ">
+            ${message}
+            </div>
+
+            <button onclick="
+            document.getElementById('votePopup').remove()
+            "
+            style="
+            margin-top:25px;
+            border:none;
+            padding:12px 30px;
+            border-radius:14px;
+            background:linear-gradient(
+            135deg,
+            #9333ea,
+            #a855f7
+            );
+            color:white;
+            font-weight:800;
+            cursor:pointer;
+            ">
+            OK
+            </button>
+
+        </div>
+
+    </div>
+    `;
+            document.body.appendChild(div);
+        }
+        /* Xoá Vote Nhân Viên Lệnh resetVotes() */
+        /*
+        window.resetVotes = async function () {
+
+            const names = [
+                "Kenxautrai07",
+                "ChuChang",
+                "TranMinhNhatxD",
+                "Bot",
+                "Hduong",
+                "Vanthanh",
+                "Candyy_white",
+                "KriszXname",
+                "Chupnek",
+                "NguyenHueNhu",
+                "Tisxihiu"
+            ];
+
+            for (const name of names) {
+
+                await setDoc(
+                    doc(db, "votes", name),
+                    { count: 0 }
+                );
+
+                localStorage.removeItem("vote_" + name);
+                localStorage.removeItem("voted_" + name);
+            }
+
+            location.reload();
+        }  */
+        /* xoá Vote Nhân Viên Lệnh resetVotes() */
+        window.vote = async function (name) {
+            const voted = localStorage.getItem("global_vote_time");
+            const votedName = localStorage.getItem("global_vote_name");
+
+            if (voted) {
+
+                const now = Date.now();
+
+                const diff = now - Number(voted);
+
+                const cooldown = 24 * 60 * 60 * 1000;
+
+                if (diff < cooldown) {
+
+                    const remain = cooldown - diff;
+
+                    const h = Math.floor(remain / 1000 / 60 / 60);
+
+                    const m = Math.floor((remain / 1000 / 60) % 60);
+
+                    showVotePopup(
+                        "Đã Vote Rồi",
+                        `Bạn đã vote cho <b>${votedName}</b><br><br>
+Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
+                    );
+
+                    return;
+                }
+            }
+            try {
+
+                const cleanName = name.replace(/[^a-zA-Z0-9]/g, '');
+
+                const voteRef = doc(db, "votes", name);
+
+                let current =
+                    Number(localStorage.getItem("vote_" + name) || 0) + 1;
+
+                document.getElementById("vote-" + cleanName)
+                    .innerHTML = "⭐ " + current + " Uy Tín";
+
+                localStorage.setItem("vote_" + name, current);
+
+                await setDoc(voteRef, {
+                    count: current
+                });
+
+                document.getElementById("vote-" + cleanName)
+                    .innerHTML = "⭐ " + current + " Uy Tín";
+                localStorage.setItem("vote_" + name, current);
+                localStorage.setItem("global_vote_time", Date.now());
+                localStorage.setItem("global_vote_name", name);
+                showVotePopup(
+                    "Vote Thành Công",
+                    "Bạn đã vote cho <b>" + name + "</b> 💜"
+                );
+
+            } catch (err) {
+
+                console.log(err);
+                alert(err.message);
+                console.log(err);
+
+            }
+
+        }
+
+    </script>
 </body>
 
 </html>
