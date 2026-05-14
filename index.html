@@ -1496,14 +1496,66 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
         }
     </style>
 
-    <script>
-        let views = Number(localStorage.getItem("website_views")) || 71;
+    <script type="module">
 
-        views++;
+        import {
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            increment
+        }
+            from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        localStorage.setItem("website_views", views);
+        const viewRef = doc(window.db, "stats", "views");
 
-        document.getElementById("viewCount").innerText = views;
+        async function updateViews() {
+
+            const viewed = sessionStorage.getItem("viewed");
+
+            // mỗi tab chỉ tính 1 lần
+            if (!viewed) {
+
+                try {
+
+                    const snap = await getDoc(viewRef);
+
+                    if (!snap.exists()) {
+
+                        await setDoc(viewRef, {
+                            count: 71
+                        });
+
+                    }
+
+                    await updateDoc(viewRef, {
+                        count: increment(1)
+                    });
+
+                    sessionStorage.setItem("viewed", "true");
+
+                } catch (e) {
+
+                    console.log(e);
+
+                }
+
+            }
+
+            // load số mắt
+            const newSnap = await getDoc(viewRef);
+
+            if (newSnap.exists()) {
+
+                document.getElementById("viewCount").innerText =
+                    newSnap.data().count;
+
+            }
+
+        }
+
+        updateViews();
+
     </script>
 </body>
 
