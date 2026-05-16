@@ -1236,13 +1236,13 @@ style="cursor:pointer;">
             from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyA41tQBvDxY3SYJLoFwP6e1A4eVgHJOL3A",
-            authDomain: "vote-9fed0.firebaseapp.com",
-            projectId: "vote-9fed0",
-            storageBucket: "vote-9fed0.firebasestorage.app",
-            messagingSenderId: "903100711662",
-            appId: "1:903100711662:web:b08fe33d9eba366040a9ff",
-            measurementId: "G-J87VB2F8KK"
+            apiKey: "AIzaSyBZDo5BJIXYOMexB9cabshe1moYpDzhpFM",
+            authDomain: "vote2-6e77d.firebaseapp.com",
+            projectId: "vote2-6e77d",
+            storageBucket: "vote2-6e77d.firebasestorage.app",
+            messagingSenderId: "44099609085",
+            appId: "1:44099609085:web:b00719ecc8fdd3c75a7994",
+            measurementId: "G-23F504CPSJ"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -1569,7 +1569,7 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
 
         updateViews();
         /* Set = setVote("name", 0) */
-        /* window.setVote = async function (name, amount) {
+        window.setVote = async function (name, amount) {
 
             await setDoc(
                 doc(db, "votes", name),
@@ -1584,7 +1584,7 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
             );
 
             location.reload();
-        } */
+        }
         /* set = setVote("name", 0) */
         /* View = setView(0) */
         window.setView = async function (amount) {
