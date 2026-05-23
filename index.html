@@ -1603,6 +1603,15 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
         }
         /* view = setView(0) */
     </script>
+    <script>
+document.addEventListener("contextmenu", e => e.preventDefault());
+</script>
+<script>
+document.onkeydown = function(e) {
+   /*if (e.keyCode == 123) return false; // F12 */
+  if (e.ctrlKey && e.key === 'u') return false; // Ctrl+U
+};
+</script>
 </body>
 
 </html>
