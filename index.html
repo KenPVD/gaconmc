@@ -768,6 +768,8 @@
 
             <!-- <a href="#rules" class="menu-item">Luật lệ</a> -->
 
+            <a href="#video" class="menu-item">Discord</a>
+
             <a href="https://discord.com/channels/1392510100240859216/1489522592732811434" class="menu-item link-out">
                 Dịch vụ <i class="fa fa-up-right-from-square"></i>
             </a>
@@ -1013,14 +1015,14 @@
                 { n: "Hduong", mc: ".HDuong191114", r: "QTV_Mã_Số: 105", a: "https://i.ibb.co/zTcPm28V/image.png", fb: "https://www.facebook.com/le.tuan.anh.347063" },
                 { n: "Vanthanh", mc: "VanThanh_Jr", r: "QTV_Mã_Số: 108", a: "https://i.ibb.co/9HP5jBwQ/image.png", fb: "https://www.facebook.com/profile.php?id=61578342866527" },
                 { n: "HyperAko", mc: "HyperAko", r: "QTV_Mã_Số: 119", a: "", fb: "https://www.facebook.com/nguyen.duy.thai.292618" },
+                { n: "Chupnek", mc: "Chupnek", r: "QTV_Mã_Số: 115", a: "https://i.ibb.co/GQvGxr9V/image.png", fb: "https://www.facebook.com/chup.ne.071206" },
             ],
 
             t3: [
                 { n: "Candyy_white", mc: "candyy_white", r: "Support_Mã_Số: 209", a: "https://i.ibb.co/jvJXg6s8/image.png", fb: "https://www.facebook.com/truc.linh.hoang.147930" },
                 { n: "KriszXname", mc: ".KriszXname", r: "Support_Mã_Số: 213", a: "https://i.ibb.co/C3BtHn9F/image.png", fb: "https://www.facebook.com/kim.ngan.936353" },
-                { n: "Chupnek", mc: "Chupnek", r: "Support_Mã_Số: 215", a: "https://i.ibb.co/GQvGxr9V/image.png", fb: "https://www.facebook.com/chup.ne.071206" },
                 { n: "XimmexEG", mc: "XimmexEG", r: "Support_Mã_Số: 216", a: "https://i.ibb.co/VpN6wP9k/image.png", fb: "https://www.facebook.com/profile.php?id=61558942435015" },
-                { n: "Tisxihiu", mc: ".Tisxihiiuu", r: "Support_Mã_Số: 217", a: "https://i.ibb.co/35vtkqBm/image.png", fb: "https://www.facebook.com/emtiscte" },
+                { n: "Tisxihiu", mc: ".Tisxihiiuu", r: "Support_Mã_Số: 217", a: "https://i.ibb.co/LhDxC48k/tieu.jpg", fb: "https://www.facebook.com/emtiscte" },
                 { n: "Yue", mc: "Yue", r: "Support_Mã_Số: 218", a: "https://i.ibb.co/WWFkgVVN/skibb.jpg", fb: "https://www.facebook.com/dao.thanh.432221" },
             ]
         };
@@ -1432,14 +1434,7 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
                     allStaff.find(x => x.n === name);
 
                 await setDoc(voteRef, {
-
-                    count: current,
-
-                    reward: 1000,
-
-                    minecraft:
-                        found?.mc || name
-
+                    count: current
                 });
 
                 document.getElementById("vote-" + cleanName)
@@ -1604,14 +1599,14 @@ Hãy đợi <b>${h}h ${m}m</b> nữa ⏳`
         /* view = setView(0) */
     </script>
     <script>
-document.addEventListener("contextmenu", e => e.preventDefault());
-</script>
-<script>
-document.onkeydown = function(e) {
-   /*if (e.keyCode == 123) return false; // F12 */
-  if (e.ctrlKey && e.key === 'u') return false; // Ctrl+U
-};
-</script>
+        document.addEventListener("contextmenu", e => e.preventDefault());
+    </script>
+    <script>
+        document.onkeydown = function (e) {
+            /*if (e.keyCode == 123) return false; // F12 */
+            if (e.ctrlKey && e.key === 'u') return false; // Ctrl+U
+        };
+    </script>
 </body>
 
 </html>
